@@ -7,19 +7,20 @@ on:
   workflow_dispatch:
     branches:
       - master
-    inputs:
-      release_tag:
-        description: 'release tag'
-        required: true
+    # inputs:
+    #   release_tag:
+    #     description: 'release tag'
+    #     required: true
 
 jobs:      
   mambaforge:
-    name: mambaforge (${{ matrix.os }}, Mambaforge)
+    name: mambaforge (${{ matrix.os }}, Mambaforge, Python${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}-latest
     strategy:
       fail-fast: false
       matrix:
         os: ["ubuntu", "macos", "windows"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
         include:
           - os: ubuntu
             miniforge-variant: Mambaforge
@@ -27,27 +28,51 @@ jobs:
             miniforge-variant: Mambaforge
           - os: windows
             miniforge-variant: Mambaforge
+
     steps:
       - name: Checkout master
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: master
 
+      # 安装conda环境
       - uses: conda-incubator/setup-miniconda@v2
         with:
           condarc-file: ${{ matrix.condarc-file }}
           miniforge-variant: ${{ matrix.miniforge-variant }}
           miniforge-version: ${{ matrix.miniforge-version }}
+          python-version: ${{ matrix.python-version }}
           use-mamba: true
 
+      # 安装一些依赖
       - name: Get latest ninja
         # Using 'v1' branch, the most recent ninja is installed. (1.10.2)
         uses: urkle/action-get-ninja@v1
-
       - name: Install Requirements
         run: bash ci/conda/install_swig.sh
 
-      - name: pack
-        run: |
-          mamba install conda-build anaconda-client
-          conda build ci/conda/
+      # - name: pack
+      #   run: |
+      #     mamba install conda-build anaconda-client
+      #     conda build ci/conda/
+
+      # 编译并上传conda包
+      - name: Build and upload the conda packages
+        uses: uibcdf/action-build-and-upload-conda-packages@v1.2.0
+        with:
+          meta_yaml_dir: devtools/conda-build
+          python-version: ${{ matrix.python-version }} # Values previously defined in `matrix`
+          user: ${{ secrets.CONDA_USER }}
+          label: dev
+          token: ${{ secrets.ANACONDA_TOKEN }}
+          overwrite: true
+
+      # 上传github release
+      # - name: Upload the artifacts
+      #   uses: AButler/upload-release-assets@v2.0
+      #   with:
+      #     # release_tag: ${{ steps.create_release.outputs.id }}
+      #     # release_id: ${{ steps.create_release.outputs.id }}
+      #     release-tag: ${{ github.event.inputs.release_tag }}
+      #     files: 'environment-*'
+      #     repo-token: ${{ secrets.GITHUB_TOKEN }}
