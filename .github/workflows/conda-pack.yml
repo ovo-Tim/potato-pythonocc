@@ -51,6 +51,7 @@ jobs:
       - name: Install Requirements
         run: | 
           bash ci/conda/install_swig.sh
+          mamba install numpy
           mamba install conda-build anaconda-client
 
       # - name: pack
