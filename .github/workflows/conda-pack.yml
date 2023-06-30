@@ -49,11 +49,12 @@ jobs:
         # Using 'v1' branch, the most recent ninja is installed. (1.10.2)
         uses: urkle/action-get-ninja@v1
       - name: Install Requirements
-        run: bash ci/conda/install_swig.sh
+        run: | 
+          bash ci/conda/install_swig.sh
+          mamba install conda-build anaconda-client
 
       # - name: pack
       #   run: |
-      #     mamba install conda-build anaconda-client
       #     conda build ci/conda/
 
       # 编译并上传conda包
