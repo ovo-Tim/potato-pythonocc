@@ -45,8 +45,7 @@ jobs:
         uses: urkle/action-get-ninja@v1
 
       - name: Install Requirements
-        run: |
-          pip install swig
+        run: bash ci/conda/install_swig.sh
 
       - name: pack
         run: |
