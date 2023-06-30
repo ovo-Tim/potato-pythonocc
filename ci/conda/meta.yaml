@@ -35,6 +35,8 @@ requirements:
     - numpy >=1.17
 
 test:
+  source_files:
+    - ../../test/*
   imports:
     - OCC
     - OCC.Core.BRepPrimAPI

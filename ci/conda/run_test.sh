@@ -1,5 +1,4 @@
 #!/bin/bash
-pwd
-cd ~/pythonocc-core/test
+ls
 python run_tests.py
 mypy test_mypy_classic_occ_bottle.py
