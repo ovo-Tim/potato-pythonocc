@@ -1,4 +1,4 @@
-name: conda-pak
+name: pythonocc-core-unstable bulider
 
 on:
   # pull_request:
