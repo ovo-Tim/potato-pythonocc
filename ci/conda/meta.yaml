@@ -9,7 +9,7 @@ source:
 
 
 build:
-  number: {{ GIT_DESCRIBE_NUMBER }}
+  number: 0
   binary_relocation: false [osx]
 
 requirements:
