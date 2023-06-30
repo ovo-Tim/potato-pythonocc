@@ -16,7 +16,7 @@
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Ubuntu
-    sudo rm /usr/bin/swig4.0
+    sudo rm /usr/bin/swig*
     sudo apt-get update
     sudo apt-get install build-essential procps curl file git
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
