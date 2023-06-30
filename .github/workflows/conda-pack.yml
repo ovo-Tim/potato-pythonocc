@@ -32,11 +32,23 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: master
+
       - uses: conda-incubator/setup-miniconda@v2
         with:
           condarc-file: ${{ matrix.condarc-file }}
           miniforge-variant: ${{ matrix.miniforge-variant }}
           miniforge-version: ${{ matrix.miniforge-version }}
           use-mamba: true
+
+      - name: Get latest ninja
+        # Using 'v1' branch, the most recent ninja is installed. (1.10.2)
+        uses: urkle/action-get-ninja@v1
+
+      - name: Install Requirements
+        run: |
+          pip install swig
+
       - name: pack
-        run: bash ci/conda/build.sh
+        run: |
+          mamba install conda-build anaconda-client
+          conda build ci/conda/
