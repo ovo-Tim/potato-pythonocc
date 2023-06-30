@@ -31,7 +31,7 @@ jobs:
       - name: Checkout master
         uses: actions/checkout@v2
         with:
-          ref: main
+          ref: master
       - uses: conda-incubator/setup-miniconda@v2
         with:
           condarc-file: ${{ matrix.condarc-file }}
