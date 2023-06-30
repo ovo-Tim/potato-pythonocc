@@ -19,6 +19,8 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     sudo apt-get update
     sudo apt-get install build-essential procps curl file git
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> $HOME/.bash_profile
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
     brew install swig
 else
     pip install swig
