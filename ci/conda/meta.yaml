@@ -35,8 +35,8 @@ requirements:
     - numpy >=1.17
 
 test:
-  source_files:
-    - ../../test/*
+  source_files: # source_files 的工作路径是 source package，是在 source section 中 source 指定的
+    - test/*
   imports:
     - OCC
     - OCC.Core.BRepPrimAPI
