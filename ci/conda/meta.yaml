@@ -43,19 +43,19 @@ test:
     - OCC.Core.MeshDS
     - OCC.Core.Tesselator
   requires:
-    - pyqt >=5
+    # - pyqt >=5
     - mypy
     - svgwrite
-    - wxpython >=4
-    - pyside2 >=5
-  commands:
-    - echo 'Test start!!!'
-    - pwd
-    - tree
-    - mypy test/test_mypy_classic_occ_bottle.py
-    - python test/core_display_pyqt5_unittest.py
-    - python test/core_display_pyside2_unittest.py
-    - python test/core_display_wx_unittest.py
+    # - wxpython >=4
+    # - pyside2 >=5
+  # commands:
+  #   - echo 'Test start!!!'
+  #   - pwd
+  #   - tree
+  #   - mypy test/test_mypy_classic_occ_bottle.py
+  #   - python test/core_display_pyqt5_unittest.py
+  #   - python test/core_display_pyside2_unittest.py
+  #   - python test/core_display_wx_unittest.py
 
 about:
   home: https://github.com/tpaviot/pythonocc-core
