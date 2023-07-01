@@ -36,7 +36,7 @@ requirements:
 
 test:
   source_files: # source_files 的工作路径是 source package，是在 source section 中 source 指定的
-    - test/*
+    - test/
   imports:
     - OCC
     - OCC.Core.BRepPrimAPI
@@ -51,11 +51,11 @@ test:
   commands:
     - echo 'Test start!!!'
     - pwd
-    - ls
-    - mypy test_mypy_classic_occ_bottle.py
-    - python core_display_pyqt5_unittest.py
-    - python core_display_pyside2_unittest.py
-    - python core_display_wx_unittest.py
+    - ll
+    - mypy test/test_mypy_classic_occ_bottle.py
+    - python test/core_display_pyqt5_unittest.py
+    - python test/core_display_pyside2_unittest.py
+    - python test/core_display_wx_unittest.py
 
 about:
   home: https://github.com/tpaviot/pythonocc-core
