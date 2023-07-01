@@ -43,11 +43,11 @@ test:
     - OCC.Core.MeshDS
     - OCC.Core.Tesselator
   requires:
-    - pyqt >=5
+    # - pyqt >=5
     - mypy
     - svgwrite
-    - wxpython >=4
-    - pyside2 >=5
+    # - wxpython >=4
+    # - pyside2 >=5
   commands:
     - echo 'Test start!!!'
     - pwd
