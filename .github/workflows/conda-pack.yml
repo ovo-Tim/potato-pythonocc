@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu", "macos", "windows"]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        # python-version: ["3.8", "3.9", "3.10", "3.11"]
         include:
           - os: ubuntu
             miniforge-variant: Mambaforge
@@ -41,7 +41,7 @@ jobs:
           condarc-file: ${{ matrix.condarc-file }}
           miniforge-variant: ${{ matrix.miniforge-variant }}
           miniforge-version: ${{ matrix.miniforge-version }}
-          python-version: ${{ matrix.python-version }}
+          # python-version: ${{ matrix.python-version }}
           use-mamba: true
 
       # 安装一些依赖
@@ -51,7 +51,7 @@ jobs:
       - name: Install Requirements
         run: | 
           bash ci/conda/install_swig.sh
-          pip install pyside2 pyside6 pyqt5 wxpython
+          pip install pyside2 pyside6 pyqt5
           mamba install numpy
           mamba install conda-build anaconda-client
 
@@ -64,7 +64,7 @@ jobs:
         uses: uibcdf/action-build-and-upload-conda-packages@v1.2.0
         with:
           meta_yaml_dir: ci/conda/
-          python-version: ${{ matrix.python-version }} # Values previously defined in `matrix`
+          # python-version: ${{ matrix.python-version }} # Values previously defined in `matrix`
           user: ${{ secrets.CONDA_USER }}
           label: dev
           token: ${{ secrets.ANACONDA_TOKEN }}
