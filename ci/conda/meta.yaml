@@ -46,7 +46,7 @@ test:
     # - pyqt >=5
     - mypy
     - svgwrite
-    # - wxpython >=4
+    - wxpython >=4
     # - pyside2 >=5
   # commands:
   #   - echo 'Test start!!!'
