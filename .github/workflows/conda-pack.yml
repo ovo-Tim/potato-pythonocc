@@ -65,7 +65,8 @@ jobs:
           gsed -i "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
           ls /Users/runner/miniconda3/
           ls /Users/runner/miniconda3/bin
-          echo "export PATH=\"/Users/runner/miniconda3/bin:$PATH\"" >> ~/.bashrc
+          # echo "export PATH=\"/Users/runner/miniconda3/bin:$PATH\"" >> ~/.bashrc
+          echo "export PATH=$PATH:/Users/runner/miniconda3/bin" >> ~/.bashrc
 
       - name: set other python ver
         if: runner.os != 'macOS'
@@ -77,7 +78,8 @@ jobs:
         run: |
           ls /usr/share/miniconda3/
           ls /usr/share/miniconda3/bin
-          echo "export PATH=\"/usr/share/miniconda3/bin:$PATH\"" >> ~/.bashrc
+          # echo "export PATH=\"/usr/share/miniconda3/bin:$PATH\"" >> ~/.bashrc
+          echo "export PATH=$PATH:/usr/share/miniconda3/bin" >> ~/.bashrc
 
       - name: test anaconda
         run: anaconda -V
