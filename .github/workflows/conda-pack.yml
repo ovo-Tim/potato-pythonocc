@@ -82,7 +82,12 @@ jobs:
           echo "export PATH=$PATH:/usr/share/miniconda3/bin" >> ~/.bashrc
 
       - name: test anaconda
-        run: anaconda -V
+        run: |
+          echo $PATH
+          cat ~/.bashrc
+          source ~/.bashrc
+          echo $PATH
+          anaconda -V
 
 
       # - name: pack
