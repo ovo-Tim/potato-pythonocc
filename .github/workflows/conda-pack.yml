@@ -56,7 +56,6 @@ jobs:
           python3 -m pip install pyside2 pyqt5
           mamba install numpy
           mamba install conda-build anaconda-client
-          sed -i "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
 
         
       - name: set mac python ver
