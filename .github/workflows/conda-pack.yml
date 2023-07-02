@@ -59,7 +59,6 @@ jobs:
           sed --version
           sed -i "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
           cat ./ci/conda/meta.yaml
-          anaconda -V
 
       # - name: pack
       #   run: |

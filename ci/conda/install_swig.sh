@@ -29,7 +29,7 @@ elif [[ "$OSTYPE" == "darwin"* ]]; then
     brew install tree
     brew install coreutils
     brew install gnu-sed
-    export PATH="$(brew --prefix coreutils)/libexec/gnubin:/usr/local/bin:$PATH"
+    echo 'export PATH="$(brew --prefix coreutils)/libexec/gnubin:/usr/local/bin:$PATH"' >> ~/.bash_profile
     source ~/.bash_profile
     pip install swig
 else
