@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu", "macos", "windows"]
-        # python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10", "3.11"]
         include:
           - os: ubuntu
             miniforge-variant: Mambaforge
@@ -41,20 +41,23 @@ jobs:
           condarc-file: ${{ matrix.condarc-file }}
           miniforge-variant: ${{ matrix.miniforge-variant }}
           miniforge-version: ${{ matrix.miniforge-version }}
-          python-version: 3.11
+          # python-version: 3.11
+          python-version: ${{ matrix.python-version }}
           use-mamba: true
 
       # 安装一些依赖
       - name: Get latest ninja
         # Using 'v1' branch, the most recent ninja is installed. (1.10.2)
         uses: urkle/action-get-ninja@v1
-      - name: Install Requirements
+      - name: Install Requirements & set python version
         run: | 
           bash ci/conda/install_swig.sh
           python3 -m pip install --user --upgrade pip
           python3 -m pip install pyside2 pyqt5
           mamba install numpy
           mamba install conda-build anaconda-client
+          sed -i '1i{% set python = ${{ matrix.python-version }} %}' ./ci/conda/meta.yaml
+          cat ./ci/conda/meta.yaml
 
       # - name: pack
       #   run: |
@@ -65,7 +68,7 @@ jobs:
         uses: uibcdf/action-build-and-upload-conda-packages@v1.2.0
         with:
           meta_yaml_dir: ci/conda/
-          python-version: 3.11
+          python-version: ${{ matrix.python-version }}
           user: ${{ secrets.CONDA_USER }}
           label: dev
           token: ${{ secrets.ANACONDA_TOKEN }}
