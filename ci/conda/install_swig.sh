@@ -16,6 +16,7 @@
 
 if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     # Ubuntu
+    export PATH=\"~/mambaforge/bin/:$PATH\"
     sudo rm /usr/bin/swig*
     sudo apt-get update
     sudo apt-get install build-essential procps curl file git tree
@@ -26,8 +27,10 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     swig -version
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     brew install tree
-    brew install gnu-sed --with-default-names
+    brew install coreutils
+    brew install gnu-sed
     export PATH="$(brew --prefix coreutils)/libexec/gnubin:/usr/local/bin:$PATH"
+    source ~/.bash_profile
     pip install swig
 else
     pip install swig
