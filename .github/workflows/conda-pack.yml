@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["ubuntu", "macos", "windows"]
+        os: ["debian", "macos", "windows"]
         python-version: ["3.8", "3.9", "3.10", "3.11"]
         include:
           - os: ubuntu
@@ -57,7 +57,16 @@ jobs:
           mamba install numpy
           mamba install conda-build anaconda-client
           sed -i "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
-          cat ./ci/conda/meta.yaml
+
+        
+      - name: set mac python ver
+        if: runner.os == "macos"
+        run: sed -i '' -e "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
+
+      - name: set other python ver
+        if: runner.os != "macos"
+        run: sed -i "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml  
+
 
       # - name: pack
       #   run: |
