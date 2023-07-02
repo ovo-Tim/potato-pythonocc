@@ -26,7 +26,10 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
     swig -version
 elif [[ "$OSTYPE" == "darwin"* ]]; then
     brew install tree
+    brew install gnu-sed --with-default-names
+    export PATH="$(brew --prefix coreutils)/libexec/gnubin:/usr/local/bin:$PATH"
     pip install swig
 else
     pip install swig
 fi
+
