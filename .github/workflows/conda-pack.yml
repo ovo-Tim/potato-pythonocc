@@ -51,7 +51,8 @@ jobs:
       - name: Install Requirements
         run: | 
           bash ci/conda/install_swig.sh
-          pip install pyside2 pyqt5
+          python3 -m pip3 install --user --upgrade pip
+          python3 -m pip3 install pyside2 pyqt5
           mamba install numpy
           mamba install conda-build anaconda-client
 

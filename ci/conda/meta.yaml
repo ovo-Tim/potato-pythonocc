@@ -37,6 +37,7 @@ requirements:
 test:
   source_files: # source_files 的工作路径是 source package，是在 source section 中 source 指定的
     - test/
+    - ci/test/test.sh
   imports:
     - OCC
     - OCC.Core.BRepPrimAPI
@@ -48,7 +49,8 @@ test:
     - svgwrite
     - wxpython >=4
     # - pyside2 >=5
-  # commands:
+  commands:
+    - bash test.sh
   #   - echo 'Test start!!!'
   #   - pwd
   #   - tree
