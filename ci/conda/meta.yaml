@@ -37,7 +37,7 @@ requirements:
 test:
   source_files: # source_files 的工作路径是 source package，是在 source section 中 source 指定的
     - test/
-    - ci/conda/test.sh
+    # - ci/conda/test.sh
   imports:
     - OCC
     - OCC.Core.BRepPrimAPI
@@ -50,10 +50,10 @@ test:
     - wxpython >=4
     # - pyside2 >=5
   commands:
-    - bash test.sh
-  #   - echo 'Test start!!!'
-  #   - pwd
-  #   - tree
+    - echo 'Test start!!!'
+    - pwd
+    - tree
+    # - bash test.sh
   #   - mypy test/test_mypy_classic_occ_bottle.py
   #   - python test/core_display_pyqt5_unittest.py
   #   - python test/core_display_pyside2_unittest.py
