@@ -62,11 +62,25 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install gnu-sed
-          gsed -i "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml  
+          gsed -i "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
+          ls /Users/runner/miniconda3/
+          ls /Users/runner/miniconda3/bin
+          echo "export PATH=\"/Users/runner/miniconda3/bin:$PATH\"" >> ~/.bashrc
 
       - name: set other python ver
         if: runner.os != 'macOS'
-        run: sed -i "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml  
+        run: |
+          sed -i "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
+
+      - name: set anaconda
+        if: runner.os == 'ubuntu'
+        run: |
+          ls /usr/share/miniconda3/
+          ls /usr/share/miniconda3/bin
+          echo "export PATH=\"/usr/share/miniconda3/bin:$PATH\"" >> ~/.bashrc
+
+      - name: test anaconda
+        run: anaconda -V
 
 
       # - name: pack
