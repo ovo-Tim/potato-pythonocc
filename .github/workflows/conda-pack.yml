@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["debian", "macos", "windows"]
+        os: ["debian", "macOS", "windows"]
         python-version: ["3.8", "3.9", "3.10", "3.11"]
         include:
           - os: ubuntu
@@ -60,11 +60,11 @@ jobs:
 
         
       - name: set mac python ver
-        if: runner.os == "macos"
+        if: runner.os == "macOS"
         run: sed -i '' -e "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
 
       - name: set other python ver
-        if: runner.os != "macos"
+        if: runner.os != "macOS"
         run: sed -i "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml  
 
 
