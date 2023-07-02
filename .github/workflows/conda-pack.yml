@@ -62,7 +62,7 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           brew install gnu-sed
-          gsed -i '' -e "1i\{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
+          gsed -i '' -e "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
 
       - name: set other python ver
         if: runner.os != 'macOS'
