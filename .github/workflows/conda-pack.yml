@@ -19,10 +19,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ["debian", "macOS", "windows"]
+        os: ["ubuntu", "macOS", "windows"]
         python-version: ["3.8", "3.9", "3.10", "3.11"]
         include:
-          - os: debian
+          - os: ubuntu
             miniforge-variant: Mambaforge
           - os: macos
             miniforge-variant: Mambaforge
@@ -60,7 +60,7 @@ jobs:
         
       - name: set mac python ver
         if: runner.os == 'macOS'
-        run: sed -i '' -e "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
+        run: sed -i '' -e "1i\{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
 
       - name: set other python ver
         if: runner.os != 'macOS'
