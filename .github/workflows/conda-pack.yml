@@ -82,7 +82,7 @@ jobs:
           ls /usr/share/miniconda3/bin
           # echo "export PATH=\"/usr/share/miniconda3/bin:$PATH\"" >> ~/.bashrc
           # echo "export PATH=$PATH:/usr/share/miniconda3/bin" >> ~/.bashrc
-          ln /usr/share/miniconda3/bin/anaconda /usr/bin
+          sudo ln /usr/share/miniconda3/bin/anaconda /usr/bin
 
       - name: test anaconda
         run: |
