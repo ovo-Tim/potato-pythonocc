@@ -56,6 +56,7 @@ jobs:
           python3 -m pip install pyside2 pyqt5
           mamba install numpy
           mamba install conda-build anaconda-client
+          touch ~/.bashrc
 
         
       - name: set mac python ver
@@ -63,10 +64,11 @@ jobs:
         run: |
           brew install gnu-sed
           gsed -i "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
-          ls /Users/runner/miniconda3/
-          ls /Users/runner/miniconda3/bin
+          tree /Users/runner/miniconda3/
+          # ls /Users/runner/miniconda3/bin
           # echo "export PATH=\"/Users/runner/miniconda3/bin:$PATH\"" >> ~/.bashrc
-          echo "export PATH=$PATH:/Users/runner/miniconda3/bin" >> ~/.bashrc
+          # echo "export PATH=$PATH:/Users/runner/miniconda3/bin" >> ~/.bashrc
+          ln /Users/runner/miniconda3/bin/anaconda /Users/runner/miniconda3/condabin
 
       - name: set other python ver
         if: runner.os != 'macOS'
@@ -79,14 +81,11 @@ jobs:
           ls /usr/share/miniconda3/
           ls /usr/share/miniconda3/bin
           # echo "export PATH=\"/usr/share/miniconda3/bin:$PATH\"" >> ~/.bashrc
-          echo "export PATH=$PATH:/usr/share/miniconda3/bin" >> ~/.bashrc
+          # echo "export PATH=$PATH:/usr/share/miniconda3/bin" >> ~/.bashrc
+          ln /usr/share/miniconda3/bin/anaconda /usr/bin
 
       - name: test anaconda
         run: |
-          echo $PATH
-          cat ~/.bashrc
-          source ~/.bashrc
-          echo $PATH
           anaconda -V
 
 
