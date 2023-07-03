@@ -56,7 +56,7 @@ jobs:
           python3 -m pip install pyside2 pyqt5
           mamba install numpy
           mamba install conda-build anaconda-client
-          touch ~/.bashrc
+          # touch ~/.bashrc
 
         
       - name: set mac python ver
@@ -76,7 +76,7 @@ jobs:
           sed -i "1i{% set python = '${{ matrix.python-version }}' %}" ./ci/conda/meta.yaml
 
       - name: set anaconda
-        if: runner.os == 'ubuntu'
+        if: runner.os == 'Linux'
         run: |
           ls /usr/share/miniconda3/
           ls /usr/share/miniconda3/bin
