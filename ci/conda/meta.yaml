@@ -1,4 +1,4 @@
-{% set version = "7.7.3" %}
+{% set version = "7.7.4" %}
 
 package:
   name: potato-pythonocc
@@ -26,11 +26,11 @@ requirements:
 
   host:
     - python {{ python }}
-    - occt ==7.7.1
+    - occt ==7.7.2
     - numpy >=1.17
 
   run:
-    - occt ==7.7.1
+    - occt ==7.7.2
     - six
     - numpy >=1.17
     - python {{ python }}.*
