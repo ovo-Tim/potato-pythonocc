@@ -20,7 +20,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ["ubuntu", "macOS", "windows"]
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         include:
           - os: ubuntu
             miniforge-variant: Mambaforge
@@ -68,7 +68,7 @@ jobs:
           # ls /Users/runner/miniconda3/bin
           # echo "export PATH=\"/Users/runner/miniconda3/bin:$PATH\"" >> ~/.bashrc
           # echo "export PATH=$PATH:/Users/runner/miniconda3/bin" >> ~/.bashrc
-          ln /Users/runner/miniconda3/bin/anaconda /Users/runner/miniconda3/condabin
+          ln /Users/runner/miniconda3/bin/anaconda /Users/runner/miniconda3/conda/bin
 
       - name: set other python ver
         if: runner.os != 'macOS'
