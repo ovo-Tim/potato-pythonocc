@@ -21,8 +21,9 @@ import logging
 import os
 import sys
 
-from OCC.Core.AIS import AIS_Manipulator
+from OCC.Core.AIS import AIS_Manipulator, AIS_Shape
 from OCC.Core.gp import gp_Trsf
+from OCC.Core.TopAbs import TopAbs_SOLID
 from OCC.Display import OCCViewer
 from OCC.Display.backend import get_qt_modules
 
@@ -95,6 +96,20 @@ class qtViewer3d(qtBaseViewer):
         self.zoom_at_cursor = True
         self.zoom_speed = 0.1
 
+        self.change_select_timer = QtCore.QTimer()
+        self.change_select_timer.timeout.connect(self.change_select)
+        self._change_select = True
+        self.select_mode = 0
+        self._max_select_mode = 3
+        self._select_solid = False
+
+    def select_solid(self):
+        self._select_solid = not self._select_solid
+        if self._select_solid:
+            self._display.SetSelectionMode(TopAbs_SOLID)
+        else:
+            self.change_select_timer.start(1)
+
     @property
     def qApp(self):
         # reference to QApplication instance
@@ -117,7 +132,7 @@ class qtViewer3d(qtBaseViewer):
             ord("B"): self._display.DisableAntiAliasing,
             ord("H"): self._display.SetModeHLR,
             ord("F"): self._display.FitAll,
-            ord("G"): self._display.SetSelectionMode,
+            ord("G"): self.select_solid,
         }
         self.createCursors()
 
@@ -216,6 +231,8 @@ class qtViewer3d(qtBaseViewer):
         modifiers = event.modifiers()
 
         if event.button() == QtCore.Qt.LeftButton:
+            if (self._display.selected_shapes is not None) or self._select_solid:
+                self.select_solid()
             if self._select_area:
                 [Xmin, Ymin, dx, dy] = self._drawbox
                 self._display.SelectArea(Xmin, Ymin, Xmin + dx, Ymin + dy)
@@ -302,6 +319,38 @@ class qtViewer3d(qtBaseViewer):
             self._drawbox = False
             self._display.MoveTo(pt.x(), pt.y())
             self.cursor = "arrow"
+
+        if not self._select_solid:
+            self.change_select_timer.start(1)
+
+    def change_select(self):
+        if self._change_select and (self._display.Context.DetectedOwner() is None):
+            self._display.Context.Activate(AIS_Shape.SelectionMode(self._display.lmodes[self.select_mode]), True)
+            self._display.Context.UpdateSelected(True)
+            self.select_mode += 1
+            self._change_select = False
+            return
+
+        if not self._change_select:
+            # print(1)
+            # print(self._display.Context.DetectedOwner())
+            if not (self._display.Context.DetectedOwner() is None): # 找到了    
+                # print("找到，停止！")          
+                self._display.Context.UpdateSelected(True)
+                self.change_select_timer.stop()
+                # self.select_mode = self.select_mode - 1
+                self._change_select = False
+                return
+            
+            if (self.select_mode >= self._max_select_mode): 
+                #找不到了
+                self.select_mode = 0
+                self._change_select = True
+                self.change_select_timer.stop()
+                return
+            
+            self._change_select = True
+            # print(self._display.lmodes[self.select_mode - 1])
 
 class qtViewer3dWithManipulator(qtViewer3d):
 
@@ -462,4 +511,3 @@ class qtViewer3dWithManipulator(qtViewer3d):
                 self._zoom_area = False
 
         self.cursor = "arrow"
-

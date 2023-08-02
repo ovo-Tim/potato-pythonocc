@@ -139,12 +139,6 @@ def get_color_from_name(color_name):
     return Quantity_Color(color_num)
 
 
-# some thing we'll need later
-modes = itertools.cycle(
-    [TopAbs_FACE, TopAbs_EDGE, TopAbs_VERTEX, TopAbs_SHELL, TopAbs_SOLID]
-)
-
-
 class Viewer3d(Display3d):
     def __init__(self):
         Display3d.__init__(self)
@@ -167,6 +161,13 @@ class Viewer3d(Display3d):
         self._overlay_items = []
 
         self._window_handle = None
+
+        # some thing we'll need later
+        self.modes = itertools.cycle(
+            # [TopAbs_FACE, TopAbs_EDGE, TopAbs_VERTEX, TopAbs_SHELL, TopAbs_SOLID]
+            [TopAbs_VERTEX, TopAbs_EDGE, TopAbs_FACE, TopAbs_SOLID]
+        )
+        self.lmodes = [TopAbs_VERTEX, TopAbs_EDGE, TopAbs_FACE]
 
     def get_parent(self):
         return self._parent
@@ -615,7 +616,7 @@ class Viewer3d(Display3d):
 
     def SetSelectionMode(self, mode=None):
         self.Context.Deactivate()
-        topo_level = next(modes)
+        topo_level = next(self.modes)
         if mode is None:
             self.Context.Activate(AIS_Shape.SelectionMode(topo_level), True)
         else:
