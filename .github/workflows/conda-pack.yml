@@ -68,7 +68,7 @@ jobs:
           # ls /Users/runner/miniconda3/bin
           # echo "export PATH=\"/Users/runner/miniconda3/bin:$PATH\"" >> ~/.bashrc
           # echo "export PATH=$PATH:/Users/runner/miniconda3/bin" >> ~/.bashrc
-          ln /Users/runner/miniconda3/bin/anaconda /Users/runner/miniconda3/conda/bin
+          ln /Users/runner/miniconda3/bin/anaconda /Users/runner/miniconda3/condabin
 
       - name: set other python ver
         if: runner.os != 'macOS'
