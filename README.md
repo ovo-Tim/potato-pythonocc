@@ -1,71 +1,49 @@
-[![Azure Build Status](https://dev.azure.com/tpaviot/pythonocc-core/_apis/build/status/tpaviot.pythonocc-core?branchName=master)](https://dev.azure.com/tpaviot/pythonocc-core/_build?definitionId=2)
-[![Downloads Badge](https://anaconda.org/conda-forge/pythonocc-core/badges/downloads.svg)](https://anaconda.org/conda-forge/pythonocc-core)
-[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/tpaviot/pythonocc-core.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/tpaviot/pythonocc-core/context:python)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/67c121324b8d4f37bc27029464c87020)](https://www.codacy.com/app/tpaviot/pythonocc-core?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=tpaviot/pythonocc-core&amp;utm_campaign=Badge_Grade)
-[![Binder](http://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/tpaviot/pythonocc-binderhub/7.7.0)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3605364.svg)](https://doi.org/10.5281/zenodo.3605364)
+# potato-pythonocc
+在 [pythonocc](https://github.com/tpaviot/pythonocc-core) 的基础上增加了一些喜欢的功能，实际更贴近一般 CAD 一些
 
-pythonocc-core
---------------
-
-About
------
-
-pythonocc provides 3D modeling and dataexchange features. It is intended to CAD/PDM/PLM and BIM related development. It is based on the OpenCascade Technology modeling kernel.
-
-Latest release: [pythonocc-core 7.7.0 (December 2022)](https://github.com/tpaviot/pythonocc-core/releases/tag/7.7.0)
-
-Features
---------
-pythonocc provides the following features:
-
-*   a full access from Python to almost all af the thousand OpenCascade C++ classes. Classes and methods/functions share the same names, and, as possible as it can be, the same signature
-*   3D visualization from the most famous Python Gui (pyQt, PySide1 and 2, wxPython)
-*   3D visualization in a web browser using WebGl and/or x3dom renderers
-*   3D visualization and work within a jupyter notebook
-*   Various utility Python classes/methods for DataExchange, Topology operations, inertia computations etc.
-
-Cite as
--------
-
-pythonocc is widely used in the industrial and academic communities. It is registered as a Zenodo open caccess software (https://zenodo.org/record/7471333) and should be cited as:
-
-Thomas Paviot. (2022). pythonocc (7.7.0). Zenodo. https://doi.org/10.5281/zenodo.3605364
-
-Try online at mybinder
-----------------------
-
-Click [![Binder](http://mybinder.org/badge.svg)](https://mybinder.org/v2/gh/tpaviot/pythonocc-binderhub/7.7.0) to open a jupyter notebook running latest pythonocc-core 7.7.0, gmesh (<http://gmsh.info/>) and latest IfcOpenshell (<https://github.com/IfcOpenShell/IfcOpenShell/tree/v0.6.0>) dev branch.
-
-Download/install binaries for Linux/OSX/Windows
------------------------------------------------
-
-pythonocc provides precompiled [conda packages](https://anaconda.org/pythonocc/pythonocc-core) (they depend on third part libraries made available from the dlr-sc and conda-forge conda channels) for python 3.8, 3.9 and 3.10. This will get you up and running in minutes whether you run win32/win64/linux64/osx64. Here is an example for python 3.9:
-
-```bash
-# first create an environment
-conda create --name=pyoccenv python=3.9
-source activate pyoccenv
-conda install -c conda-forge pythonocc-core=7.7.0
+## 安装
+[conda主页](https://anaconda.org/ovo-tim/potato-pythonocc)
+安装：
+``` bash
+conda install -c "ovo-tim/label/dev" potato-pythonocc
 ```
+(全部由 [github action](https://github.com/ovo-Tim/potato-pythonocc/actions/workflows/conda-pack.yml) 自动打包上传, 目前 MacOS 上传时出现问题)
 
-Other conda channels may provide pythonocc-core packages, check https://anaconda.org/search?q=pythonocc-core.
+## 更改
+### 增加对 PySide6 的支持
+实测 PySide2 一堆 BUG, 
+直接 `load_backend("qt-pyside6")` 即可食用
 
-Build from source
------------------
+### zoom at cursor
+实现在鼠标处缩放功能，而不是原版的定点缩放。
+这个可以通过设定 `qtViewer3d.zoom_at_cursor = False` 关掉
 
-Read the [INSTALL.md](https://github.com/tpaviot/pythonocc-core/blob/master/INSTALL.md) instructions where you find compilation instructions for all platforms.
+### 无需切换即可选中 点线面
+原版需按`G`切换选择模式，现在无需切换即可选择(自动帮你切换成需要的选择模式)
 
-Other pythonocc related resources
----------------------------------
+### 记录 Viewer3d 所有的 shape
+记录了每次调用 `Viewer3d.DisplayShape()` 创建的所有图形。保存在 `Viewer3d.shapes` 里
 
-*   Demos: python examples, as well as jupyter notebooks <https://github.com/tpaviot/pythonocc-demos>. A good place to start with pythonocc
-*   Docker, binderhub: docker and online jupyter notebooks <https://github.com/tpaviot/pythonocc-binderhub>
-*   Documentation: <https://github.com/tpaviot/pythonocc-documentation>
-*   <https://github.com/tpaviot/pythonocc-generator> automates the production of SWIG interface files used for the OpenCascade python wrapper
+### 重写了部分格式的导出函数，实现多个模型导出一个文件
+使用: `导出函数(shapes 列表, 导出路径)`
 
-License
--------
+已支持函数:
+- step: `write_step_file`
+- ~~STL: `write_stl_file`(暂时无法使用)~~
+- iges: `write_iges_file`
+- brep: `write_brep_file` (新增)
 
-You can redistribute it and/or modify it under the terms of the GNU Lesser
-General Public License version 3 as published by the Free Software Foundation.
+一个例子:
+``` python
+from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeTorus, BRepPrimAPI_MakeBox
+
+from OCC.Extend.DataExchange import write_step_file, write_iges_file, write_brep_file
+
+# creates a basic shape
+my_torus = BRepPrimAPI_MakeTorus(20.0, 10.0).Shape()
+box = BRepPrimAPI_MakeBox(30.0, 30.0, 18.0).Shape()
+
+write_step_file([my_torus, box], "./test.step")
+write_iges_file([my_torus, box], "./test.iges")
+write_brep_file([my_torus, box], "./test.brep")
+```

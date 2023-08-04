@@ -47,6 +47,7 @@ from OCC.Core.TDF import TDF_LabelSequence, TDF_Label
 from OCC.Core.Quantity import Quantity_Color, Quantity_TOC_RGB
 from OCC.Core.TopLoc import TopLoc_Location
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Transform
+from OCC.Core.ShapeFix import shapefix
 
 from OCC.Extend.TopologyUtils import (
     discretize_edge,
@@ -54,12 +55,22 @@ from OCC.Extend.TopologyUtils import (
     list_of_shapes_to_compound,
 )
 
+from OCC.Core.BRepTools import breptools
+
 try:
     import svgwrite
 
     HAVE_SVGWRITE = True
 except ImportError:
     HAVE_SVGWRITE = False
+
+def _create_Compound(shapes: list):
+    builder = BRep_Builder()
+    compound = TopoDS_Compound()
+    builder.MakeCompound(compound)
+    for i in shapes:
+        builder.Add(compound, i)
+    return compound
 
 
 ##########################
@@ -111,7 +122,7 @@ def read_step_file(filename, as_compound=True, verbosity=True):
     return None
 
 
-def write_step_file(a_shape, filename, application_protocol="AP203"):
+def _write_step_file(a_shape, filename, application_protocol="AP203"):
     """exports a shape to a STEP file
     a_shape: the topods_shape to export (a compound, a solid etc.)
     filename: the filename
@@ -135,9 +146,37 @@ def write_step_file(a_shape, filename, application_protocol="AP203"):
     status = step_writer.Write(filename)
 
     if not status == IFSelect_RetDone:
-        raise IOError("Error while writing shape to STEP file.")
+        raise IOError(f"Error while writing shape to STEP file.Err {status}")
     if not os.path.isfile(filename):
         raise IOError(f"{filename} not saved to filesystem.")
+    
+def write_step_file(shapes, filename, application_protocol="AP203"):
+    '''
+        Write by potato-pythonocc
+        shapes: topods_shape or list to export
+        filename: the filename
+        application protocol: "AP203" or "AP214IS" or "AP242DIS"
+    '''
+    if isinstance(shapes, list):
+        if application_protocol not in ["AP203", "AP214IS", "AP242DIS"]:
+            raise AssertionError(
+                f"application_protocol must be either AP203 or AP214IS. You passed {application_protocol}."
+            )
+        if os.path.isfile(filename):
+            print(f"Warning: {filename} file already exists and will be replaced")
+        step_writer = STEPControl_Writer()
+        Interface_Static.SetCVal("write.step.schema", application_protocol)
+        for i in shapes:
+            if i.IsNull():
+                raise AssertionError(f"Shape is null.")
+            step_writer.Transfer(i, STEPControl_AsIs)
+        status = step_writer.Write(filename)
+        if not status == IFSelect_RetDone:
+            raise IOError(f"Error while writing shape to STEP file.Err {status}")
+        if not os.path.isfile(filename):
+            raise IOError(f"{filename} not saved to filesystem.")
+    else:
+        _write_step_file(shapes, filename, application_protocol)
 
 
 def read_step_file_with_names_colors(filename):
@@ -390,14 +429,16 @@ def write_stl_file(
         raise AssertionError("mode should be either ascii or binary")
     if os.path.isfile(filename):
         print(f"Warning: {filename} already exists and will be replaced")
+
+    # potato-pythonocc: It's no need
     # first mesh the shape
-    mesh = BRepMesh_IncrementalMesh(
-        a_shape, linear_deflection, False, angular_deflection, True
-    )
-    # mesh.SetDeflection(0.05)
-    mesh.Perform()
-    if not mesh.IsDone():
-        raise AssertionError("Mesh is not done.")
+    # mesh = BRepMesh_IncrementalMesh(
+    #     a_shape, linear_deflection, False, angular_deflection, True
+    # )
+    # # mesh.SetDeflection(0.05)
+    # mesh.Perform()
+    # if not mesh.IsDone():
+    #     raise AssertionError("Mesh is not done.")
 
     stl_exporter = StlAPI_Writer()
     if mode == "ascii":
@@ -406,6 +447,37 @@ def write_stl_file(
         stl_exporter.SetASCIIMode(False)
     stl_exporter.Write(a_shape, filename)
 
+    if not os.path.isfile(filename):
+        raise IOError("File not written to disk.")
+    
+def _write_stl_file(shapes, filename, mode="ascii", linear_deflection=0.9, angular_deflection=0.5):
+    '''
+        export the shape to a STL file
+        Write by potato-pythonocc
+        shapes: topods_shape or list to export
+        filename: the filename
+        mode: optional, "ascii" by default. Can either be "binary"
+        linear_deflection: optional, default to 0.001. Lower, more occurate mesh
+        angular_deflection: optional, default to 0.5. Lower, more accurate_mesh
+    '''
+    if mode not in ["ascii", "binary"]:
+        raise AssertionError("mode should be either ascii or binary")
+    if os.path.isfile(filename):
+        print(f"Warning: {filename} already exists and will be replaced")
+
+    stl_exporter = StlAPI_Writer()
+    if mode == "ascii":
+        stl_exporter.SetASCIIMode(True)
+    else:  # binary, just set the ASCII flag to False
+        stl_exporter.SetASCIIMode(False)
+
+    if isinstance(shapes, list):
+        shapes = _create_Compound(shapes)
+        shapes = TopoDS_Shape(shapes)
+        
+    print(shapes)
+
+    print(stl_exporter.Write(shapes, filename)) # TODO: It returns false
     if not os.path.isfile(filename):
         raise IOError("File not written to disk.")
 
@@ -487,7 +559,7 @@ def read_iges_file(
     return _shapes
 
 
-def write_iges_file(a_shape, filename):
+def _write_iges_file(a_shape, filename):
     """exports a shape to a STEP file
     a_shape: the topods_shape to export (a compound, a solid etc.)
     filename: the filename
@@ -507,6 +579,30 @@ def write_iges_file(a_shape, filename):
         raise AssertionError("Not done.")
     if not os.path.isfile(filename):
         raise IOError("File not written to disk.")
+    
+def write_iges_file(shapes, filename):
+    """exports a shape to a STEP file
+    Write by potato-pythonocc
+    a_shape: the topods_shape to export (a compound, a solid etc.)
+    filename: the filename
+    application protocol: "AP203" or "AP214"
+    """
+    if isinstance(shapes, list):
+        if os.path.isfile(filename):
+            print(f"Warning: {filename} already exists and will be replaced")
+        iges_writer = IGESControl_Writer()
+        for a_shape in shapes:
+            if a_shape.IsNull():
+                raise AssertionError("Shape is null.")
+            iges_writer.AddShape(a_shape)
+        status = iges_writer.Write(filename)
+    
+    if status != IFSelect_RetDone:
+        raise AssertionError("Not done.")
+    if not os.path.isfile(filename):
+        raise IOError("File not written to disk.")
+
+    
 
 
 ##############
@@ -632,3 +728,20 @@ def export_shape_to_svg(
         print(f"Shape successfully exported to {filename}")
         return True
     return dwg.tostring()
+
+
+###############
+# BREP export #
+###############
+def write_brep_file(shapes, filename):
+    if os.path.isfile(filename):
+        print(f"Warning: {filename} already exists and will be replaced")
+    if isinstance(shapes, list):
+        shapes = _create_Compound(shapes)
+
+    status = breptools.Write(shapes, filename)
+    if not status:
+        raise AssertionError("Not done.")
+    if not os.path.isfile(filename):
+        raise IOError("File not written to disk.")
+    
