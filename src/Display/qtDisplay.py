@@ -107,26 +107,7 @@ class qtViewer3d(qtBaseViewer):
         self._max_select_mode = 3
         self._select_solid = False
 
-        self.select_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalSelected)
-        self.select_style.SetColor(Quantity_Color(Quantity_NOC_LIGHTSEAGREEN))
-        self.select_style.SetDisplayMode(1)
-        self.select_style.SetTransparency(0.6)
-
-        self.select_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_Selected)
-        self.select_style.SetColor(Quantity_Color(Quantity_NOC_LIGHTSEAGREEN))
-        self.select_style.SetDisplayMode(1)
-        self.select_style.SetTransparency(0.6)
-
-
-        self.hilight_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalDynamic)
-        self.hilight_style.SetColor(Quantity_Color(Quantity_NOC_LIGHTSKYBLUE))
-        self.hilight_style.SetDisplayMode(1)
-        self.hilight_style.SetTransparency(0.35)
-
-        self.hilight_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_Dynamic)
-        self.hilight_style.SetColor(Quantity_Color(Quantity_NOC_LIGHTSKYBLUE))
-        self.hilight_style.SetDisplayMode(1)
-        self.hilight_style.SetTransparency(0.35)
+        self.set_highlight()
 
         # self._display.Context.SetAutoActivateSelection(True)
 
@@ -232,8 +213,6 @@ class qtViewer3d(qtBaseViewer):
             else:
                 zoom_factor = 0.75
             self._display.ZoomFactor(zoom_factor)
-            
-        
 
     @property
     def cursor(self):
@@ -380,6 +359,34 @@ class qtViewer3d(qtBaseViewer):
             
             self._change_select = True
             # print(self._display.lmodes[self.select_mode - 1])
+
+    def set_highlight(self, 
+                        select_color = Quantity_Color(Quantity_NOC_LIGHTSEAGREEN),
+                        select_DisplayMode = 1,
+                        select_transparency = 0.5,
+                        dynamic_color = Quantity_Color(Quantity_NOC_LIGHTSKYBLUE),
+                        dynamic_DisplayMode = 1,
+                        dynamic_transparency = 0.35
+                      ):
+        self.LocalSelect_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalSelected)
+        self.LocalSelect_style.SetColor(select_color)
+        self.LocalSelect_style.SetDisplayMode(select_DisplayMode)
+        self.LocalSelect_style.SetTransparency(select_transparency)
+
+        self.select_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_Selected)
+        self.select_style.SetColor(select_color)
+        self.select_style.SetDisplayMode(select_DisplayMode)
+        self.select_style.SetTransparency(select_transparency)
+
+        self.LocalDynamic_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalDynamic)
+        self.LocalDynamic_style.SetColor(dynamic_color)
+        self.LocalDynamic_style.SetDisplayMode(dynamic_DisplayMode)
+        self.LocalDynamic_style.SetTransparency(dynamic_transparency)
+
+        self.Dynamic_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_Dynamic)
+        self.Dynamic_style.SetColor(dynamic_color)
+        self.Dynamic_style.SetDisplayMode(dynamic_DisplayMode)
+        self.Dynamic_style.SetTransparency(dynamic_transparency)
 
 class qtViewer3dWithManipulator(qtViewer3d):
     # emit signal when selection is changed
