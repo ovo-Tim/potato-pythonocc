@@ -25,11 +25,13 @@ import time
 
 import OCC
 from OCC.Core.Aspect import Aspect_GFM_VER
+import OCC.Core.AIS
 from OCC.Core.AIS import (
     AIS_Shape,
     AIS_Shaded,
     AIS_TexturedShape,
     AIS_WireFrame,
+    AIS_Shape,
 )
 from OCC.Core.gp import gp_Dir, gp_Pnt, gp_Pnt2d, gp_Vec
 from OCC.Core.BRepBuilderAPI import (
@@ -146,7 +148,7 @@ class Viewer3d(Display3d):
         self._inited = False
         self._local_context_opened = False
 
-        self.Context = self.GetContext()
+        self.Context:OCC.Core.AIS = self.GetContext()
         self.Viewer = self.GetViewer()
         self.View = self.GetView()
         self.camera = self.GetCamera()
@@ -168,7 +170,7 @@ class Viewer3d(Display3d):
         )
         self.lmodes = [TopAbs_VERTEX, TopAbs_EDGE, TopAbs_FACE]
 
-        self.shapes = [] # potato-pythonocc: Record all shapes
+        self.shapes = []
 
     def get_parent(self):
         return self._parent

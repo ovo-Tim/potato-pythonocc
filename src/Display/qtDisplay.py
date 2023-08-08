@@ -21,11 +21,15 @@ import logging
 import os
 import sys
 
+# import faulthandler; faulthandler.enable()
+
 from OCC.Core.AIS import AIS_Manipulator, AIS_Shape
 from OCC.Core.gp import gp_Trsf
 from OCC.Core.TopAbs import TopAbs_SOLID
 from OCC.Display import OCCViewer
 from OCC.Display.backend import get_qt_modules, get_loaded_backend
+from OCC.Core.Prs3d import Prs3d_Drawer, Prs3d_TypeOfHighlight_LocalDynamic, Prs3d_TypeOfHighlight_LocalSelected, Prs3d_TypeOfHighlight_Dynamic, Prs3d_TypeOfHighlight_Selected
+from OCC.Core.Quantity import Quantity_NOC_LIGHTSEAGREEN, Quantity_NOC_LIGHTSKYBLUE, Quantity_Color
 
 QtCore, QtGui, QtWidgets, QtOpenGL = get_qt_modules()
 
@@ -102,6 +106,29 @@ class qtViewer3d(qtBaseViewer):
         self.select_mode = 0
         self._max_select_mode = 3
         self._select_solid = False
+
+        self.select_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalSelected)
+        self.select_style.SetColor(Quantity_Color(Quantity_NOC_LIGHTSEAGREEN))
+        self.select_style.SetDisplayMode(1)
+        self.select_style.SetTransparency(0.6)
+
+        self.select_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_Selected)
+        self.select_style.SetColor(Quantity_Color(Quantity_NOC_LIGHTSEAGREEN))
+        self.select_style.SetDisplayMode(1)
+        self.select_style.SetTransparency(0.6)
+
+
+        self.hilight_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalDynamic)
+        self.hilight_style.SetColor(Quantity_Color(Quantity_NOC_LIGHTSKYBLUE))
+        self.hilight_style.SetDisplayMode(1)
+        self.hilight_style.SetTransparency(0.35)
+
+        self.hilight_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_Dynamic)
+        self.hilight_style.SetColor(Quantity_Color(Quantity_NOC_LIGHTSKYBLUE))
+        self.hilight_style.SetDisplayMode(1)
+        self.hilight_style.SetTransparency(0.35)
+
+        # self._display.Context.SetAutoActivateSelection(True)
 
         if get_loaded_backend() == 'PySide6':
             self.mouse_offset = 1.04
@@ -236,7 +263,7 @@ class qtViewer3d(qtBaseViewer):
         modifiers = event.modifiers()
 
         if event.button() == QtCore.Qt.LeftButton:
-            if (self._display.selected_shapes is not None) or self._select_solid:
+            if (self._display.selected_shapes and (self._display.Context.DetectedOwner())) or self._select_solid:
                 self.select_solid()
             if self._select_area:
                 [Xmin, Ymin, dx, dy] = self._drawbox
@@ -338,13 +365,9 @@ class qtViewer3d(qtBaseViewer):
             return
 
         if not self._change_select:
-            # print(1)
-            # print(self._display.Context.DetectedOwner())
             if not (self._display.Context.DetectedOwner() is None): # 找到了    
-                # print("找到，停止！")          
                 self._display.Context.UpdateSelected(True)
                 self.change_select_timer.stop()
-                # self.select_mode = self.select_mode - 1
                 self._change_select = False
                 return
             
