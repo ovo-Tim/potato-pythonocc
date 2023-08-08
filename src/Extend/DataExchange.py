@@ -54,6 +54,7 @@ from OCC.Extend.TopologyUtils import (
     get_sorted_hlr_edges,
     list_of_shapes_to_compound,
 )
+from OCC.Core.AIS import AIS_Shape
 
 from OCC.Core.BRepTools import breptools
 
@@ -69,6 +70,8 @@ def _create_Compound(shapes: list):
     compound = TopoDS_Compound()
     builder.MakeCompound(compound)
     for i in shapes:
+        if isinstance(i, AIS_Shape):
+            i = i.Shape()
         builder.Add(compound, i)
     return compound
 
@@ -167,6 +170,8 @@ def write_step_file(shapes, filename, application_protocol="AP203"):
         step_writer = STEPControl_Writer()
         Interface_Static.SetCVal("write.step.schema", application_protocol)
         for i in shapes:
+            if isinstance(i, AIS_Shape):
+                i = i.Shape()
             if i.IsNull():
                 raise AssertionError(f"Shape is null.")
             step_writer.Transfer(i, STEPControl_AsIs)
@@ -592,6 +597,8 @@ def write_iges_file(shapes, filename):
             print(f"Warning: {filename} already exists and will be replaced")
         iges_writer = IGESControl_Writer()
         for a_shape in shapes:
+            if isinstance(i, AIS_Shape):
+                i = i.Shape()
             if a_shape.IsNull():
                 raise AssertionError("Shape is null.")
             iges_writer.AddShape(a_shape)
