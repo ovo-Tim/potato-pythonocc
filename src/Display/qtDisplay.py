@@ -25,7 +25,7 @@ from OCC.Core.AIS import AIS_Manipulator, AIS_Shape
 from OCC.Core.gp import gp_Trsf
 from OCC.Core.TopAbs import TopAbs_SOLID
 from OCC.Display import OCCViewer
-from OCC.Display.backend import get_qt_modules
+from OCC.Display.backend import get_qt_modules, get_loaded_backend
 
 QtCore, QtGui, QtWidgets, QtOpenGL = get_qt_modules()
 
@@ -62,6 +62,7 @@ class qtBaseViewer(QtWidgets.QWidget):
 
 
 class qtViewer3d(qtBaseViewer):
+
     # emit signal when selection is changed
     # is a list of TopoDS_*
     HAVE_PYQT_SIGNAL = False
@@ -101,6 +102,11 @@ class qtViewer3d(qtBaseViewer):
         self.select_mode = 0
         self._max_select_mode = 3
         self._select_solid = False
+
+        if get_loaded_backend() == 'PySide6':
+            self.mouse_offset = 1.04
+        else:
+            self.mouse_offset = 1
 
     def select_solid(self):
         self._select_solid = not self._select_solid
@@ -209,6 +215,7 @@ class qtViewer3d(qtBaseViewer):
     @cursor.setter
     def cursor(self, value):
         if not self._current_cursor == value:
+
             self._current_cursor = value
             cursor = self._available_cursors.get(value)
 
@@ -315,7 +322,8 @@ class qtViewer3d(qtBaseViewer):
             self.update()
         else:
             self._drawbox = False
-            self._display.MoveTo(pt.x(), pt.y())
+            
+            self._display.MoveTo(int(pt.x()*self.mouse_offset), int(pt.y()*self.mouse_offset)) # Change by potato-pythonocc forum.qt.io/topic/147605/get-incorrect-widget-size-by-window-handle
             self.cursor = "arrow"
 
         if not self._select_solid:
@@ -499,9 +507,8 @@ class qtViewer3dWithManipulator(qtViewer3d):
                     # single select otherwise
                     self._display.Select(pt.x(), pt.y())
 
-                    if (
-                        self._display.selected_shapes is not None
-                    ) and self.HAVE_PYQT_SIGNAL:
+                    if (self._display.selected_shapes is not None) and self.HAVE_PYQT_SIGNAL:
+
                         self.sig_topods_selected.emit(self._display.selected_shapes)
 
         elif event.button() == QtCore.Qt.RightButton:
