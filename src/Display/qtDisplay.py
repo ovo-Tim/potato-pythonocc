@@ -30,6 +30,7 @@ from OCC.Display import OCCViewer
 from OCC.Display.backend import get_qt_modules, get_loaded_backend
 from OCC.Core.Prs3d import Prs3d_Drawer, Prs3d_TypeOfHighlight_LocalDynamic, Prs3d_TypeOfHighlight_LocalSelected, Prs3d_TypeOfHighlight_Dynamic, Prs3d_TypeOfHighlight_Selected
 from OCC.Core.Quantity import Quantity_NOC_LIGHTSEAGREEN, Quantity_NOC_LIGHTSKYBLUE, Quantity_Color
+from OCC.Core.Aspect import Aspect_TOHM_COLOR, Aspect_TOHM_BOUNDBOX
 
 QtCore, QtGui, QtWidgets, QtOpenGL = get_qt_modules()
 
@@ -330,6 +331,7 @@ class qtViewer3d(qtBaseViewer):
             self._drawbox = False
             
             self._display.MoveTo(int(pt.x()*self.mouse_offset), int(pt.y()*self.mouse_offset)) # Change by potato-pythonocc forum.qt.io/topic/147605/get-incorrect-widget-size-by-window-handle
+            self.mouse_3d_pos = self._display.View.ConvertToGrid(int(pt.x()*self.mouse_offset), int(pt.y()*self.mouse_offset))
             self.cursor = "arrow"
 
         if not self._select_solid:
