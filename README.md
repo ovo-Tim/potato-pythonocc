@@ -4,14 +4,16 @@
 <!-- TOC -->
 
 - [potato-pythonocc](#potato-pythonocc)
-  - [安装](#安装)
-  - [更改](#更改)
-    - [增加对 PySide6 的支持](#增加对-pyside6-的支持)
-    - [zoom at cursor](#zoom-at-cursor)
-    - [无需切换即可选中 点线面](#无需切换即可选中-点线面)
-    - [记录 Viewer3d 所有的 shape](#记录-viewer3d-所有的-shape)
-    - [重写了部分格式的导出函数，实现多个模型导出一个文件](#重写了部分格式的导出函数实现多个模型导出一个文件)
-    - [重写高亮主题](#重写高亮主题)
+    - [安装](#%E5%AE%89%E8%A3%85)
+    - [更改](#%E6%9B%B4%E6%94%B9)
+        - [增加对 PySide6 的支持](#%E5%A2%9E%E5%8A%A0%E5%AF%B9-pyside6-%E7%9A%84%E6%94%AF%E6%8C%81)
+        - [zoom at cursor](#zoom-at-cursor)
+        - [无需切换即可选中 点线面](#%E6%97%A0%E9%9C%80%E5%88%87%E6%8D%A2%E5%8D%B3%E5%8F%AF%E9%80%89%E4%B8%AD-%E7%82%B9%E7%BA%BF%E9%9D%A2)
+        - [记录 Viewer3d 所有的 shape](#%E8%AE%B0%E5%BD%95-viewer3d-%E6%89%80%E6%9C%89%E7%9A%84-shape)
+        - [重写了部分格式的导出函数，实现多个模型导出一个文件](#%E9%87%8D%E5%86%99%E4%BA%86%E9%83%A8%E5%88%86%E6%A0%BC%E5%BC%8F%E7%9A%84%E5%AF%BC%E5%87%BA%E5%87%BD%E6%95%B0%E5%AE%9E%E7%8E%B0%E5%A4%9A%E4%B8%AA%E6%A8%A1%E5%9E%8B%E5%AF%BC%E5%87%BA%E4%B8%80%E4%B8%AA%E6%96%87%E4%BB%B6)
+        - [重写高亮主题](#%E9%87%8D%E5%86%99%E9%AB%98%E4%BA%AE%E4%B8%BB%E9%A2%98)
+        - [增加 potaoViewer](#%E5%A2%9E%E5%8A%A0-potaoviewer)
+            - [move_to_mouse](#move_to_mouse)
 
 <!-- /TOC -->
 
@@ -24,6 +26,7 @@ conda install -c "ovo-tim/label/dev" potato-pythonocc
 (全部由 [github action](https://github.com/ovo-Tim/potato-pythonocc/actions/workflows/conda-pack.yml) 自动打包上传, 目前 MacOS 上传时出现问题)
 
 ## 更改
+
 ### 增加对 PySide6 的支持
 实测 PySide2 一堆 BUG, 
 直接 `load_backend("qt-pyside6")` 即可食用
@@ -61,6 +64,7 @@ write_step_file([my_torus, box], "./test.step")
 write_iges_file([my_torus, box], "./test.iges")
 write_brep_file([my_torus, box], "./test.brep")
 ```
+
 ### 重写高亮主题
 现在支持直接高亮一个面
 以前(只能高亮描边，不好看):
@@ -81,3 +85,9 @@ qtViewer3d.set_highlight(self,
                         dynamic_transparency = 0.35
                       )
 ```
+
+### 增加 potaoViewer
+在 `qtViewer3d` 的基础上增加了更多功能
+- 增加 `ViewCube`
+#### move_to_mouse
+只需要调用 `potaoViewer.move_to_mouse` 并传入要移动的 `AIS_Shape` 就可以实时将图形移动到鼠标位置
