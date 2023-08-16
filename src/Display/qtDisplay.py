@@ -28,7 +28,6 @@ from OCC.Core.TopoDS import TopoDS_Edge
 from OCC.Core.gp import gp_Trsf, gp_Pln, gp_Pnt, gp_Dir, gp_Vec, gp_Lin
 from OCC.Core.TopAbs import TopAbs_SOLID
 from OCC.Display import OCCViewer
-from OCC.Display.backend import get_qt_modules, get_loaded_backend
 from OCC.Core.Prs3d import  Prs3d_TypeOfHighlight_LocalDynamic, Prs3d_TypeOfHighlight_LocalSelected, Prs3d_TypeOfHighlight_Dynamic, Prs3d_TypeOfHighlight_Selected
 from OCC.Core.Quantity import Quantity_NOC_LIGHTSEAGREEN, Quantity_NOC_LIGHTSKYBLUE, Quantity_Color
 from OCC.Core.V3d import V3d_Xpos, V3d_Ypos, V3d_Zpos, V3d_Xneg, V3d_Yneg, V3d_Zneg
@@ -43,7 +42,8 @@ from OCC.Core.GeomAPI import GeomAPI_IntCS
 import faulthandler
 faulthandler.enable()
 
-QtCore, QtGui, QtWidgets, QtOpenGL = get_qt_modules()
+from qtpy import QtGui, QtWidgets, QtCore
+import qtpy
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -127,7 +127,7 @@ class qtViewer3d(qtBaseViewer):
 
         # self._display.Context.SetAutoActivateSelection(True)
 
-        if get_loaded_backend() == 'PySide6':
+        if qtpy.PYQT6 or qtpy.PYSIDE6:
             self.mouse_offset = 1.04
         else:
             self.mouse_offset = 1
@@ -663,6 +663,7 @@ class potaoViewer(qtViewer3d):
         Write by potato-pythonocc
         Base on qtViewer3d, add more function.
     '''
+    move_to_mouse_done = QtCore.Signal()
     def __init__(self, *kargs):
         super().__init__(*kargs)
 

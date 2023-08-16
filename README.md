@@ -29,9 +29,12 @@ conda install -c "ovo-tim/label/dev" potato-pythonocc
 
 ## 更改
 
-### 增加对 PySide6 的支持
-实测 PySide2 一堆 BUG, 
-直接 `load_backend("qt-pyside6")` 即可食用
+### 使用 qtpy 加载 QT 增加对 PySide6 的支持
+实测 PySide2 一堆 BUG,
+
+~~直接 `load_backend("qt-pyside6")` 即可食用~~
+
+设置 `QT_API` 环境变量即可，例：`os.environ['QT_API'] = 'pyside6'`
 
 ### zoom at cursor
 实现在鼠标处缩放功能，而不是原版的定点缩放。
