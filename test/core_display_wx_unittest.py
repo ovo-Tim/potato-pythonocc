@@ -19,14 +19,8 @@
 
 import sys
 
-from OCC.Display.backend import load_wx
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
-
-# check for wx
-if not load_wx():
-    print("wx required to run this test")
-    sys.exit()
 
 print("wx test running ...")
 wx_display, start_display, add_menu, add_function_to_menu = init_display("wx")

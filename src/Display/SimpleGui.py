@@ -35,7 +35,7 @@ def check_callable(_callable: Callable) -> None:
 
 
 def init_display(
-    backend_str: Optional[str] = "PySide6",
+    backend_str: Optional[str] = None,
     size: Optional[Tuple[int, int]] = (1024, 768),
     display_triedron: Optional[bool] = True,
     background_gradient_color1: Optional[List[int]] = [206, 215, 222],
@@ -138,7 +138,9 @@ def init_display(
             app.MainLoop()
 
     # Qt based simple GUI
-    elif "PySide" in used_backend or "PyQt" in used_backend:
+    else:
+        if backend_str is not None:
+            os.environ['QT_API'] = backend_str
         from OCC.Display.qtDisplay import qtViewer3d
 
         from qtpy import QtCore, QtWidgets
