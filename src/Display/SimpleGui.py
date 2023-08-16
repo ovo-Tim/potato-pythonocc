@@ -23,11 +23,9 @@ import sys
 from typing import Any, Callable, List, Optional, Tuple
 
 from OCC import VERSION
-from OCC.Display.backend import load_backend, get_qt_modules
 from OCC.Display.OCCViewer import OffscreenRenderer
 
 log = logging.getLogger(__name__)
-
 
 def check_callable(_callable: Callable) -> None:
     if not callable(_callable):
@@ -141,7 +139,7 @@ def init_display(
     elif "PySide" in used_backend or "PyQt" in used_backend:
         from OCC.Display.qtDisplay import qtViewer3d
 
-        QtCore, QtGui, QtWidgets, QtOpenGL = get_qt_modules()
+        from qtpy import QtCore, QtWidgets
         # check Qt version
         qt_version = None
         if hasattr(QtCore, "QT_VERSION_STR"):  # PyQt5
