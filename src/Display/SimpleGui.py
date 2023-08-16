@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 
-# Copyright 2009-2016 Thomas Paviot (tpaviot@gmail.com)
-##
-# This file is part of pythonOCC.
-##
-# pythonOCC is free software: you can redistribute it and/or modify
-# it under the terms of the GNU Lesser General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-##
-# pythonOCC is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU Lesser General Public License for more details.
-##
-# You should have received a copy of the GNU Lesser General Public License
-# along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+'''
+Copyright 2009-2016 Thomas Paviot (tpaviot@gmail.com)
+
+This file is part of pythonOCC.
+
+pythonOCC is free software: you can redistribute it and/or modify
+it under the terms of the GNU Lesser General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+pythonOCC is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
+'''
 
 import logging
 import os
@@ -33,7 +35,7 @@ def check_callable(_callable: Callable) -> None:
 
 
 def init_display(
-    backend_str: Optional[str] = None,
+    backend_str: Optional[str] = "PySide6",
     size: Optional[Tuple[int, int]] = (1024, 768),
     display_triedron: Optional[bool] = True,
     background_gradient_color1: Optional[List[int]] = [206, 215, 222],
@@ -76,7 +78,7 @@ def init_display(
 
         # returns empty classes and functions
         return offscreen_renderer, do_nothing, do_nothing, call_function
-    used_backend = load_backend(backend_str)
+    used_backend = backend_str
     # print(used_backend)
     # wxPython based simple GUI
     if used_backend == "wx":
@@ -171,14 +173,7 @@ def init_display(
                 self._menu_methods = {}
                 # place the window in the center of the screen, at half the
                 # screen size
-                self.centerOnScreen()
 
-            def centerOnScreen(self) -> None:
-                """Centers the window on the screen."""
-                resolution = QtWidgets.QApplication.desktop().screenGeometry()
-                x = (resolution.width() - self.frameSize().width()) // 2
-                y = (resolution.height() - self.frameSize().height()) // 2
-                self.move(x, y)
 
             def add_menu(self, menu_name: str) -> None:
                 _menu = self.menu_bar.addMenu("&" + menu_name)
@@ -205,7 +200,6 @@ def init_display(
         win = MainWindow()
         win.resize(size[0] - 1, size[1] - 1)
         win.show()
-        win.centerOnScreen()
         win.canva.InitDriver()
         win.resize(size[0], size[1])
         win.canva.qApp = app
