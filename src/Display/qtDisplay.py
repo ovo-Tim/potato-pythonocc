@@ -714,7 +714,6 @@ class potaoViewer(qtViewer3d):
         lp = curve.Value(l)
 
         pln = gp_Pln(fp, gp_Dir(lp.XYZ()))
-        print(lp.X(), lp.Y(), lp.Z())
 
         LengthDimension = PrsDim_LengthDimension(edge, pln)
 
