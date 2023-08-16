@@ -24,15 +24,16 @@ import sys
 # import faulthandler; faulthandler.enable()
 
 from OCC.Core.AIS import AIS_Manipulator, AIS_Shape, AIS_ViewCube
-from OCC.Core.TopoDS import TopoDS_Edge
-from OCC.Core.gp import gp_Trsf, gp_Pln, gp_Pnt, gp_Dir, gp_Vec, gp_Lin
-from OCC.Core.TopAbs import TopAbs_SOLID
+from OCC.Core.TopoDS import TopoDS_Edge, TopoDS_Shape
+from OCC.Core.gp import gp_Trsf, gp_Pln, gp_Pnt, gp_Dir, gp_Vec, gp_Lin, gp_Origin
+from OCC.Core.TopAbs import TopAbs_SOLID, TopAbs_EDGE
 from OCC.Display import OCCViewer
 from OCC.Core.Prs3d import  Prs3d_TypeOfHighlight_LocalDynamic, Prs3d_TypeOfHighlight_LocalSelected, Prs3d_TypeOfHighlight_Dynamic, Prs3d_TypeOfHighlight_Selected
 from OCC.Core.Quantity import Quantity_NOC_LIGHTSEAGREEN, Quantity_NOC_LIGHTSKYBLUE, Quantity_Color
 from OCC.Core.V3d import V3d_Xpos, V3d_Ypos, V3d_Zpos, V3d_Xneg, V3d_Yneg, V3d_Zneg
 from OCC.Core.Aspect import Aspect_GT_Rectangular, Aspect_GDM_Lines, Aspect_TOTP_RIGHT_UPPER
 from OCC.Core.TopLoc import TopLoc_Location
+from OCC.Core.TopExp import TopExp_Explorer
 from OCC.Core.BRep import BRep_Tool
 from OCC.Core.Graphic3d import Graphic3d_TransformPers, Graphic3d_TMF_TriedronPers, Graphic3d_Vec2i
 from OCC.Core.Geom import Geom_Line, Geom_Plane
@@ -486,6 +487,7 @@ class qtViewer3d(qtBaseViewer):
         # print(ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z())
         # return ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z()
 
+
 class qtViewer3dWithManipulator(qtViewer3d):
     # emit signal when selection is changed
     # is a list of TopoDS_*
@@ -690,6 +692,7 @@ class potaoViewer(qtViewer3d):
         Base on qtViewer3d, add more function.
     '''
     move_to_mouse_done = QtCore.Signal()
+    mouse_move_signal = QtCore.Signal()
     def __init__(self, *kargs):
         super().__init__(*kargs)
 
@@ -701,15 +704,16 @@ class potaoViewer(qtViewer3d):
         self.display.Viewer.ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines)
 
         self.moving_to_mouse = False
+        self.length_inputing = False
 
     def mouseMoveEvent(self, evt):
         super().mouseMoveEvent(evt)
-        if self.moving_to_mouse:
-            self._move_to_mouse(self.active)
+        self.mouse_move_signal.emit()
     
     def mouseReleaseEvent(self, event):
         super().mouseReleaseEvent(event)
         if event.button() == QtCore.Qt.LeftButton and self.moving_to_mouse:
+            self.mouse_move_signal.disconnect(self.moving_to_mouse)
             self.moving_to_mouse = False
             self.move_to_mouse_done.emit()
 
@@ -723,9 +727,9 @@ class potaoViewer(qtViewer3d):
         Returns:
             None
         """
-        self.moving_to_mouse = True
-        self.active = shape
-    
+        self.moving_to_mouse = lambda: self._move_to_mouse(shape)
+        self.mouse_move_signal.connect(self.moving_to_mouse)
+
     def _move_to_mouse(self, shape: AIS_Shape):
         trsf = gp_Trsf()
         trsf.SetTranslation(gp_Vec(
@@ -739,12 +743,17 @@ class potaoViewer(qtViewer3d):
         self.display.Context.Redisplay(shape, True)
 
     def length_input(self, edge: TopoDS_Edge):
+        self.length_inputing = lambda: self._length_input(edge)
+        self.mouse_move_signal.connect(self.length_inputing)
+
+    def _length_input(self, edge: TopoDS_Edge):
         curve, f, l = BRep_Tool.Curve(edge)
         fp = curve.Value(f)
         lp = curve.Value(l)
 
-        pln = gp_Pln(fp, gp_Dir(lp.XYZ()))
+        pln = gp_Pln(gp_Origin(), gp_Dir(lp.XYZ()))
 
         LengthDimension = PrsDim_LengthDimension(edge, pln)
 
         self.display.Context.Display(LengthDimension, True)
+        
