@@ -14,6 +14,8 @@
         - [重写高亮主题](#%E9%87%8D%E5%86%99%E9%AB%98%E4%BA%AE%E4%B8%BB%E9%A2%98)
         - [增加 potaoViewer](#%E5%A2%9E%E5%8A%A0-potaoviewer)
             - [move_to_mouse](#move_to_mouse)
+        - [增加新的坐标转换函数](#%E5%A2%9E%E5%8A%A0%E6%96%B0%E7%9A%84%E5%9D%90%E6%A0%87%E8%BD%AC%E6%8D%A2%E5%87%BD%E6%95%B0)
+        - [增加网格捕捉功能](#%E5%A2%9E%E5%8A%A0%E7%BD%91%E6%A0%BC%E6%8D%95%E6%8D%89%E5%8A%9F%E8%83%BD)
 
 <!-- /TOC -->
 
@@ -91,3 +93,10 @@ qtViewer3d.set_highlight(self,
 - 增加 `ViewCube`
 #### move_to_mouse
 只需要调用 `potaoViewer.move_to_mouse` 并传入要移动的 `AIS_Shape` 就可以实时将图形移动到鼠标位置
+
+### 增加新的坐标转换函数
+使用：`qtViewer3d.ConvertPos(X, Y)`
+
+相比于 `display.View.Convert`， `ConvertPos` 会将鼠标限制与某一个面上
+### 增加网格捕捉功能
+设置 `qtViewer3d.grid_snap` 即可设置捕捉距离，设0禁用
