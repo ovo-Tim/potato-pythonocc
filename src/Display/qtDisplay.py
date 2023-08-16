@@ -399,6 +399,17 @@ class qtViewer3d(qtBaseViewer):
                         dynamic_DisplayMode = 1,
                         dynamic_transparency = 0.35
                       ):
+        '''
+        Sets the highlight styles for the local select, select, local dynamic, and dynamic features of the display context.
+
+        Parameters:
+            select_color (Quantity_Color): The color for the local select and select styles. Default is Quantity_Color(Quantity_NOC_LIGHTSEAGREEN).
+            select_DisplayMode (int): The display mode for the local select and select styles. Default is 1.
+            select_transparency (float): The transparency for the local select and select styles. Default is 0.5.
+            dynamic_color (Quantity_Color): The color for the local dynamic and dynamic styles. Default is Quantity_Color(Quantity_NOC_LIGHTSKYBLUE).
+            dynamic_DisplayMode (int): The display mode for the local dynamic and dynamic styles. Default is 1.
+            dynamic_transparency (float): The transparency for the local dynamic and dynamic styles. Default is 0.35.
+        '''
         self.LocalSelect_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalSelected)
         self.LocalSelect_style.SetColor(select_color)
         self.LocalSelect_style.SetDisplayMode(select_DisplayMode)
@@ -420,9 +431,25 @@ class qtViewer3d(qtBaseViewer):
         self.Dynamic_style.SetTransparency(dynamic_transparency)
 
     def ConvertPos(self, x:int, y:int, PlaneOfTheView:gp_Pln = None):
-        '''
-            Convert 2d pos to 3d pos
-        '''
+        """
+        Converts the given x and y coordinates to a 3D coordinate in the view.
+
+        Args:
+            x (int): The x-coordinate.
+            y (int): The y-coordinate.
+            PlaneOfTheView (gp_Pln, optional): The plane of the view. Defaults to None.
+
+        Returns:
+            tuple: A tuple containing the x, y, and z coordinates of the converted point.
+
+        Raises:
+            Exception: If an error occurs during the conversion.
+
+        Example:
+            >>> ConvertPos(100, 200)
+            (1.0, 2.0, 3.0)
+        """
+
         try:
             X,Y,Z,VX,VY,VZ = self._display.View.ConvertWithProj(x, y)
             P1 = gp_Pnt()
@@ -458,7 +485,6 @@ class qtViewer3d(qtBaseViewer):
         # ResultPoint = elslib.Value(ConvertedPointOnPlane.X(), ConvertedPointOnPlane.Y(), PlaneOfTheView)
         # print(ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z())
         # return ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z()
-
 
 class qtViewer3dWithManipulator(qtViewer3d):
     # emit signal when selection is changed
@@ -685,19 +711,23 @@ class potaoViewer(qtViewer3d):
         super().mouseReleaseEvent(event)
         if event.button() == QtCore.Qt.LeftButton and self.moving_to_mouse:
             self.moving_to_mouse = False
+            self.move_to_mouse_done.emit()
 
     def move_to_mouse(self, shape: AIS_Shape):
-        '''
-            Move your AIS_Shape to mouse postion.
-        '''
+        """
+        Move the given shape to the position of the mouse.
+
+        Parameters:
+            shape (AIS_Shape): The shape to be moved.
+
+        Returns:
+            None
+        """
         self.moving_to_mouse = True
         self.active = shape
     
     def _move_to_mouse(self, shape: AIS_Shape):
         trsf = gp_Trsf()
-        # exp = TopExp_Explorer(shape.Shape(), TopAbs_VERTEX)
-        # exp.Next()
-        # point = BRep_Tool.Pnt(TopoDS_Vertex(exp.Current()))
         trsf.SetTranslation(gp_Vec(
                             self.mouse_3d_pos[0],
                             self.mouse_3d_pos[1],
