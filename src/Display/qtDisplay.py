@@ -23,22 +23,25 @@ import sys
 
 # import faulthandler; faulthandler.enable()
 
-from OCC.Core.AIS import AIS_Manipulator, AIS_Shape, AIS_ViewCube, AIS_InteractiveObject
-from OCC.Core.TopoDS import TopoDS_Shape, TopoDS_Vertex
-from OCC.Core.gp import gp_Trsf
-from OCC.Core.TopAbs import TopAbs_SOLID, TopAbs_VERTEX
+from OCC.Core.AIS import AIS_Manipulator, AIS_Shape, AIS_ViewCube
+from OCC.Core.TopoDS import TopoDS_Edge
+from OCC.Core.gp import gp_Trsf, gp_Pln, gp_Pnt, gp_Dir, gp_Vec, gp_Lin
+from OCC.Core.TopAbs import TopAbs_SOLID
 from OCC.Display import OCCViewer
 from OCC.Display.backend import get_qt_modules, get_loaded_backend
-from OCC.Core.Prs3d import Prs3d_Drawer, Prs3d_TypeOfHighlight_LocalDynamic, Prs3d_TypeOfHighlight_LocalSelected, Prs3d_TypeOfHighlight_Dynamic, Prs3d_TypeOfHighlight_Selected
+from OCC.Core.Prs3d import  Prs3d_TypeOfHighlight_LocalDynamic, Prs3d_TypeOfHighlight_LocalSelected, Prs3d_TypeOfHighlight_Dynamic, Prs3d_TypeOfHighlight_Selected
 from OCC.Core.Quantity import Quantity_NOC_LIGHTSEAGREEN, Quantity_NOC_LIGHTSKYBLUE, Quantity_Color
 from OCC.Core.V3d import V3d_Xpos, V3d_Ypos, V3d_Zpos, V3d_Xneg, V3d_Yneg, V3d_Zneg
 from OCC.Core.Aspect import Aspect_GT_Rectangular, Aspect_GDM_Lines, Aspect_TOTP_RIGHT_UPPER
 from OCC.Core.TopLoc import TopLoc_Location
-from OCC.Core.TopExp import TopExp_Explorer
 from OCC.Core.BRep import BRep_Tool
 from OCC.Core.Graphic3d import Graphic3d_TransformPers, Graphic3d_TMF_TriedronPers, Graphic3d_Vec2i
-from OCC.Core.gp import gp_Trsf, gp_Vec
-from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Transform
+from OCC.Core.Geom import Geom_Line, Geom_Plane
+from OCC.Core.PrsDim import PrsDim_LengthDimension
+from OCC.Core.GeomAPI import GeomAPI_IntCS
+
+import faulthandler
+faulthandler.enable()
 
 QtCore, QtGui, QtWidgets, QtOpenGL = get_qt_modules()
 
@@ -118,6 +121,9 @@ class qtViewer3d(qtBaseViewer):
         self.set_highlight()
 
         self.mouse_3d_pos = (0,0,0)
+
+        self.grid_snap = 3 # Set 0 to disable 
+        self.activity_plane: gp_Pln = gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1))
 
         # self._display.Context.SetAutoActivateSelection(True)
 
@@ -293,6 +299,21 @@ class qtViewer3d(qtBaseViewer):
         modifiers = evt.modifiers()
 
         self.mouse_pos = [pt.x(), pt.y()]
+        off_mouse_pos = int(pt.x()*self.mouse_offset), int(pt.y()*self.mouse_offset)
+
+        mouse_3d_pos = self.ConvertPos(*off_mouse_pos)
+        if self.grid_snap:
+            grid_pos = self._display.View.ConvertToGrid(*off_mouse_pos)
+            max_spacing = max([abs(mouse_3d_pos[i] - grid_pos[i]) 
+                               for i in range(2)
+                               ])
+            
+            if max_spacing <= self.grid_snap:
+                self.mouse_3d_pos = grid_pos
+            else:
+                self.mouse_3d_pos = mouse_3d_pos
+        else:
+            self.mouse_3d_pos = mouse_3d_pos
 
         # ROTATE
         if buttons == QtCore.Qt.LeftButton and not modifiers == QtCore.Qt.ShiftModifier:
@@ -339,8 +360,7 @@ class qtViewer3d(qtBaseViewer):
         else:
             self._drawbox = False
             
-            self._display.MoveTo(int(pt.x()*self.mouse_offset), int(pt.y()*self.mouse_offset)) # Change by potato-pythonocc forum.qt.io/topic/147605/get-incorrect-widget-size-by-window-handle
-            self.mouse_3d_pos = self._display.View.ConvertToGrid(int(pt.x()*self.mouse_offset), int(pt.y()*self.mouse_offset))
+            self._display.MoveTo(*off_mouse_pos) # Change by potato-pythonocc forum.qt.io/topic/147605/get-incorrect-widget-size-by-window-handle
             self.cursor = "arrow"
 
         if not self._select_solid:
@@ -398,6 +418,47 @@ class qtViewer3d(qtBaseViewer):
         self.Dynamic_style.SetColor(dynamic_color)
         self.Dynamic_style.SetDisplayMode(dynamic_DisplayMode)
         self.Dynamic_style.SetTransparency(dynamic_transparency)
+
+    def ConvertPos(self, x:int, y:int, PlaneOfTheView:gp_Pln = None):
+        '''
+            Convert 2d pos to 3d pos
+        '''
+        try:
+            X,Y,Z,VX,VY,VZ = self._display.View.ConvertWithProj(x, y)
+            P1 = gp_Pnt()
+            Vp2 = gp_Vec()
+            P1.SetCoord(X, Y, Z)
+            Vp2.SetCoord(VX,VY,VZ)
+            gpLin = gp_Lin(P1, gp_Dir(Vp2))
+            aCurve = Geom_Line(gpLin)
+
+            if PlaneOfTheView is None:
+                PlaneOfTheView = Geom_Plane(self.activity_plane)
+            CS = GeomAPI_IntCS(aCurve, PlaneOfTheView)
+            if CS.IsDone():
+                point = CS.Point(1)
+                return point.X(), point.Y(), point.Z()
+        except Exception as e:
+            logging.error(e)
+
+        # XEye, YEye, ZEye = self._display.View.Eye()
+        # XAt, YAt, ZAt = self._display.View.At()
+        # EyePoint = gp_Pnt(XEye, YEye, ZEye)
+        # AtPoint = gp_Pnt(XAt, YAt, ZAt)
+
+        # EyeVector = gp_Vec(EyePoint, AtPoint)
+        # EyeDir = gp_Dir(EyeVector)
+
+        # if PlaneOfTheView is None:
+        #     PlaneOfTheView = gp_Pln(AtPoint, EyeDir)
+        # X, Y, Z, Vx, Vy, Vz = self._display.View.ConvertWithProj(int(x), int(y))
+        # ConvertedPoint = gp_Pnt(X, Y, Z)
+        # ConvertedPointOnPlane = projlib.Project(PlaneOfTheView, ConvertedPoint)
+
+        # ResultPoint = elslib.Value(ConvertedPointOnPlane.X(), ConvertedPointOnPlane.Y(), PlaneOfTheView)
+        # print(ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z())
+        # return ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z()
+
 
 class qtViewer3dWithManipulator(qtViewer3d):
     # emit signal when selection is changed
@@ -624,18 +685,18 @@ class potaoViewer(qtViewer3d):
         if event.button() == QtCore.Qt.LeftButton and self.moving_to_mouse:
             self.moving_to_mouse = False
 
-    def move_to_mouse(self, interactive: AIS_Shape):
+    def move_to_mouse(self, shape: AIS_Shape):
         '''
             Move your AIS_Shape to mouse postion.
         '''
         self.moving_to_mouse = True
-        self.active = interactive
+        self.active = shape
     
-    def _move_to_mouse(self, interactive: AIS_Shape):
+    def _move_to_mouse(self, shape: AIS_Shape):
         trsf = gp_Trsf()
-        exp = TopExp_Explorer(interactive.Shape(), TopAbs_VERTEX)
-        exp.Next()
-        point = BRep_Tool.Pnt(TopoDS_Vertex(exp.Current()))
+        # exp = TopExp_Explorer(shape.Shape(), TopAbs_VERTEX)
+        # exp.Next()
+        # point = BRep_Tool.Pnt(TopoDS_Vertex(exp.Current()))
         trsf.SetTranslation(gp_Vec(
                             self.mouse_3d_pos[0],
                             self.mouse_3d_pos[1],
@@ -643,5 +704,16 @@ class potaoViewer(qtViewer3d):
                             ))
         Toploc = TopLoc_Location(trsf)
         # self.display.Context.SetLocation(interactive, Toploc) # core_animation.py
-        interactive.SetShape(interactive.Shape().Located(Toploc))
-        self.display.Context.Redisplay(interactive, True)
+        shape.SetShape(shape.Shape().Located(Toploc))
+        self.display.Context.Redisplay(shape, True)
+
+    def length_input(self, edge: TopoDS_Edge):
+        curve, f, l = BRep_Tool.Curve(edge)
+        fp = curve.Value(f)
+        lp = curve.Value(l)
+
+        pln = gp_Pln(fp, gp_Dir(lp.XYZ()))
+
+        LengthDimension = PrsDim_LengthDimension(edge, pln)
+
+        self.display.Context.Display(LengthDimension, True)
