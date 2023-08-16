@@ -6,7 +6,7 @@
 - [potato-pythonocc](#potato-pythonocc)
     - [安装](#%E5%AE%89%E8%A3%85)
     - [更改](#%E6%9B%B4%E6%94%B9)
-        - [增加对 PySide6 的支持](#%E5%A2%9E%E5%8A%A0%E5%AF%B9-pyside6-%E7%9A%84%E6%94%AF%E6%8C%81)
+        - [使用 qtpy 加载 QT 增加对 PySide6 的支持](#%E4%BD%BF%E7%94%A8-qtpy-%E5%8A%A0%E8%BD%BD-qt-%E5%A2%9E%E5%8A%A0%E5%AF%B9-pyside6-%E7%9A%84%E6%94%AF%E6%8C%81)
         - [zoom at cursor](#zoom-at-cursor)
         - [无需切换即可选中 点线面](#%E6%97%A0%E9%9C%80%E5%88%87%E6%8D%A2%E5%8D%B3%E5%8F%AF%E9%80%89%E4%B8%AD-%E7%82%B9%E7%BA%BF%E9%9D%A2)
         - [记录 Viewer3d 所有的 shape](#%E8%AE%B0%E5%BD%95-viewer3d-%E6%89%80%E6%9C%89%E7%9A%84-shape)
@@ -35,6 +35,8 @@ conda install -c "ovo-tim/label/dev" potato-pythonocc
 ~~直接 `load_backend("qt-pyside6")` 即可食用~~
 
 设置 `QT_API` 环境变量即可，例：`os.environ['QT_API'] = 'pyside6'`
+
+(`qtpy` 可能打破了 `SimpleGui` 原本的结构，不建议使用，有逝可以提 issus)
 
 ### zoom at cursor
 实现在鼠标处缩放功能，而不是原版的定点缩放。
