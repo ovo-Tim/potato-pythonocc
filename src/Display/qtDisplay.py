@@ -58,21 +58,17 @@ class qtBaseViewer(QtWidgets.QWidget):
         self._display = OCCViewer.Viewer3d()
         self._inited = False
 
-        # enable Mouse Tracking
-        self.setMouseTracking(True)
+        # # enable Mouse Tracking
+        # self.setMouseTracking(True)
 
-        # Strong focus
-        self.setFocusPolicy(QtCore.Qt.WheelFocus)
+        # # Strong focus
+        # self.setFocusPolicy(QtCore.Qt.WheelFocus)
 
-        self.setAttribute(QtCore.Qt.WA_NativeWindow)
-        self.setAttribute(QtCore.Qt.WA_PaintOnScreen)
-        self.setAttribute(QtCore.Qt.WA_NoSystemBackground)
+        # self.setAttribute(QtCore.Qt.WA_NativeWindow)
+        # self.setAttribute(QtCore.Qt.WA_PaintOnScreen)
+        # self.setAttribute(QtCore.Qt.WA_NoSystemBackground)
 
         self.setAutoFillBackground(False)
-
-    def resizeEvent(self, event):
-        super(qtBaseViewer, self).resizeEvent(event)
-        self._display.View.MustBeResized()
 
     def paintEngine(self):
         return None
@@ -494,6 +490,13 @@ class qtViewer3d(QtWidgets.QWidget):
         # ResultPoint = elslib.Value(ConvertedPointOnPlane.X(), ConvertedPointOnPlane.Y(), PlaneOfTheView)
         # print(ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z())
         # return ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self._display.View.MustBeResized()
+        self._display.Repaint()
+        QtCore.QCoreApplication.processEvents()
+
 
 class qtViewer3dWithManipulator(qtViewer3d):
     # emit signal when selection is changed
