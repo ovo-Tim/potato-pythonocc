@@ -123,9 +123,9 @@ class qtViewer3d(QtWidgets.QWidget):
 
         self.set_highlight()
 
-        self.mouse_3d_pos = (0,0,0)
+        self.mouse_3d_pos = [0,0,0]
 
-        self.grid_snap = 3 # Set 0 to disable 
+        self.grid_snap = 25 # Set 0 to disable 
         self.activity_plane: gp_Pln = gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1))
 
         self.setMouseTracking(True)
@@ -299,77 +299,78 @@ class qtViewer3d(QtWidgets.QWidget):
         self._drawbox = [self.dragStartPosX, self.dragStartPosY, dx, dy]
 
     def mouseMoveEvent(self, evt):
-        pt = evt.pos()
-        buttons = evt.buttons()
-        modifiers = evt.modifiers()
+        try:
+            pt = evt.pos()
+            buttons = evt.buttons()
+            modifiers = evt.modifiers()
 
-        self.mouse_pos = [pt.x(), pt.y()]
-        off_mouse_pos = int(pt.x()*self.mouse_offset), int(pt.y()*self.mouse_offset)
+            self.mouse_pos = [pt.x(), pt.y()]
+            off_mouse_pos = int(pt.x()*self.mouse_offset), int(pt.y()*self.mouse_offset)
 
-        mouse_3d_pos = self.ConvertPos(*off_mouse_pos)
-        if self.grid_snap:
-            grid_pos = self._display.View.ConvertToGrid(*off_mouse_pos)
-            max_spacing = max([abs(mouse_3d_pos[i] - grid_pos[i]) 
-                               for i in range(2)
-                               ])
-            
-            if max_spacing <= self.grid_snap:
-                self.mouse_3d_pos = grid_pos
+            mouse_3d_pos = self.ConvertPos(*off_mouse_pos)
+            if self.grid_snap:
+                grid_pos = self._display.View.ConvertToGrid(*off_mouse_pos)
+                for i in range(2):
+                    lenth = self._display.View.Convert(abs(mouse_3d_pos[i] - grid_pos[i]))
+                    if lenth < self.grid_snap:
+                        self.mouse_3d_pos[i] = grid_pos[i]
+                    else:
+                        self.mouse_3d_pos[i] = mouse_3d_pos[i]
             else:
                 self.mouse_3d_pos = mouse_3d_pos
-        else:
-            self.mouse_3d_pos = mouse_3d_pos
 
-        # ROTATE
-        if buttons == QtCore.Qt.LeftButton and not modifiers == QtCore.Qt.ShiftModifier:
-            self.cursor = "rotate"
-            self._display.Rotation(pt.x(), pt.y())
-            self._drawbox = False
-        # DYNAMIC ZOOM
-        elif (
-            buttons == QtCore.Qt.RightButton
-            and not modifiers == QtCore.Qt.ShiftModifier
-        ):
-            self.cursor = "zoom"
-            self._display.Repaint()
-            self._display.DynamicZoom(
-                abs(self.dragStartPosX),
-                abs(self.dragStartPosY),
-                abs(pt.x()),
-                abs(pt.y()),
-            )
-            self.dragStartPosX = pt.x()
-            self.dragStartPosY = pt.y()
-            self._drawbox = False
-        # PAN
-        elif buttons == QtCore.Qt.MiddleButton:
-            dx = pt.x() - self.dragStartPosX
-            dy = pt.y() - self.dragStartPosY
-            self.dragStartPosX = pt.x()
-            self.dragStartPosY = pt.y()
-            self.cursor = "pan"
-            self._display.Pan(dx, -dy)
-            self._drawbox = False
-        # DRAW BOX
-        # ZOOM WINDOW
-        elif buttons == QtCore.Qt.RightButton and modifiers == QtCore.Qt.ShiftModifier:
-            self._zoom_area = True
-            self.cursor = "zoom-area"
-            self.DrawBox(evt)
-            self.update()
-        # SELECT AREA
-        elif buttons == QtCore.Qt.LeftButton and modifiers == QtCore.Qt.ShiftModifier:
-            self._select_area = True
-            self.DrawBox(evt)
-            self.update()
-        else:
-            self._drawbox = False
-            
-            self._display.MoveTo(*off_mouse_pos) # Change by potato-pythonocc forum.qt.io/topic/147605/get-incorrect-widget-size-by-window-handle
-            self.cursor = "arrow"
+            # ROTATE
+            if buttons == QtCore.Qt.LeftButton and not modifiers == QtCore.Qt.ShiftModifier:
+                self.cursor = "rotate"
+                self._display.Rotation(pt.x(), pt.y())
+                self._drawbox = False
+            # DYNAMIC ZOOM
+            elif (
+                buttons == QtCore.Qt.RightButton
+                and not modifiers == QtCore.Qt.ShiftModifier
+            ):
+                self.cursor = "zoom"
+                self._display.Repaint()
+                self._display.DynamicZoom(
+                    abs(self.dragStartPosX),
+                    abs(self.dragStartPosY),
+                    abs(pt.x()),
+                    abs(pt.y()),
+                )
+                self.dragStartPosX = pt.x()
+                self.dragStartPosY = pt.y()
+                self._drawbox = False
+            # PAN
+            elif buttons == QtCore.Qt.MiddleButton:
+                dx = pt.x() - self.dragStartPosX
+                dy = pt.y() - self.dragStartPosY
+                self.dragStartPosX = pt.x()
+                self.dragStartPosY = pt.y()
+                self.cursor = "pan"
+                self._display.Pan(dx, -dy)
+                self._drawbox = False
+            # DRAW BOX
+            # ZOOM WINDOW
+            elif buttons == QtCore.Qt.RightButton and modifiers == QtCore.Qt.ShiftModifier:
+                self._zoom_area = True
+                self.cursor = "zoom-area"
+                self.DrawBox(evt)
+                self.update()
+            # SELECT AREA
+            elif buttons == QtCore.Qt.LeftButton and modifiers == QtCore.Qt.ShiftModifier:
+                self._select_area = True
+                self.DrawBox(evt)
+                self.update()
+            else:
+                self._drawbox = False
+                
+                self._display.MoveTo(*off_mouse_pos) # Change by potato-pythonocc forum.qt.io/topic/147605/get-incorrect-widget-size-by-window-handle
+                self.cursor = "arrow"
 
-        if not self._select_solid:
-            self.change_select_timer.start(1)
+            if not self._select_solid:
+                self.change_select_timer.start(1)
+        except Exception as e:
+            logging.error(e)
 
     def change_select(self):
         if self._change_select and (self._display.Context.DetectedOwner() is None):
