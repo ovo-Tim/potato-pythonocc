@@ -77,7 +77,7 @@ class qtBaseViewer(QtWidgets.QWidget):
     def paintEngine(self):
         return None
 
-class qtViewer3d(qtBaseViewer):
+class qtViewer3d(QtWidgets.QWidget):
 
     # emit signal when selection is changed
     # is a list of TopoDS_*
@@ -90,9 +90,15 @@ class qtViewer3d(qtBaseViewer):
         HAVE_PYQT_SIGNAL = True
 
     def __init__(self, *kargs):
-        qtBaseViewer.__init__(self, *kargs)
+        super(qtViewer3d, self).__init__()
 
         self.setObjectName("qt_viewer_3d")
+
+        self.main_layout = QtWidgets.QFormLayout(self)
+        self.setLayout(self.main_layout)
+        self.qtBaseViewer = qtBaseViewer()
+        self.main_layout.addWidget(self.qtBaseViewer)
+        self._display = self.qtBaseViewer._display
 
         self._drawbox = False
         self._zoom_area = False
@@ -125,6 +131,8 @@ class qtViewer3d(qtBaseViewer):
 
         self.grid_snap = 3 # Set 0 to disable 
         self.activity_plane: gp_Pln = gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1))
+
+        self.setMouseTracking(True)
 
         # self._display.Context.SetAutoActivateSelection(True)
 
@@ -486,7 +494,6 @@ class qtViewer3d(qtBaseViewer):
         # ResultPoint = elslib.Value(ConvertedPointOnPlane.X(), ConvertedPointOnPlane.Y(), PlaneOfTheView)
         # print(ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z())
         # return ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z()
-
 
 class qtViewer3dWithManipulator(qtViewer3d):
     # emit signal when selection is changed
