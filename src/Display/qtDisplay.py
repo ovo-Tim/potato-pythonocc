@@ -64,9 +64,9 @@ class qtBaseViewer(QtWidgets.QWidget):
         # # Strong focus
         # self.setFocusPolicy(QtCore.Qt.WheelFocus)
 
-        # self.setAttribute(QtCore.Qt.WA_NativeWindow)
-        # self.setAttribute(QtCore.Qt.WA_PaintOnScreen)
-        # self.setAttribute(QtCore.Qt.WA_NoSystemBackground)
+        self.setAttribute(QtCore.Qt.WA_NativeWindow)
+        self.setAttribute(QtCore.Qt.WA_PaintOnScreen)
+        self.setAttribute(QtCore.Qt.WA_NoSystemBackground)
 
         self.setAutoFillBackground(False)
 
@@ -86,9 +86,13 @@ class qtViewer3d(QtWidgets.QWidget):
         HAVE_PYQT_SIGNAL = True
 
     def __init__(self, *kargs):
-        super(qtViewer3d, self).__init__()
+        super().__init__()
 
         self.setObjectName("qt_viewer_3d")
+
+        self.setAttribute(QtCore.Qt.WA_NativeWindow)
+        self.setAttribute(QtCore.Qt.WA_PaintOnScreen)
+        self.setAttribute(QtCore.Qt.WA_NoSystemBackground)
 
         self.main_layout = QtWidgets.QFormLayout(self)
         self.setLayout(self.main_layout)
@@ -129,8 +133,6 @@ class qtViewer3d(QtWidgets.QWidget):
         self.activity_plane: gp_Pln = gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1))
 
         self.setMouseTracking(True)
-
-        # self._display.Context.SetAutoActivateSelection(True)
 
         if qtpy.PYQT6 or qtpy.PYSIDE6:
             self.mouse_offset = 1.04
@@ -215,7 +217,11 @@ class qtViewer3d(QtWidgets.QWidget):
         if not self._inited:
             self.InitDriver()
 
+        self._display.View.MustBeResized()
         self._display.Context.UpdateCurrentViewer()
+        self._display.Repaint()
+        self._display.Repaint()
+        self._display.Repaint()
 
         if self._drawbox:
             painter = QtGui.QPainter(self)
@@ -299,6 +305,7 @@ class qtViewer3d(QtWidgets.QWidget):
         self._drawbox = [self.dragStartPosX, self.dragStartPosY, dx, dy]
 
     def mouseMoveEvent(self, evt):
+        super().mouseMoveEvent(evt)
         try:
             pt = evt.pos()
             buttons = evt.buttons()
