@@ -25,7 +25,7 @@ import sys
 
 from OCC.Core.AIS import AIS_Manipulator, AIS_Shape, AIS_ViewCube
 from OCC.Core.TopoDS import TopoDS_Edge, TopoDS_Shape
-from OCC.Core.gp import gp_Trsf, gp_Pln, gp_Pnt, gp_Dir, gp_Vec, gp_Lin, gp_Origin
+from OCC.Core.gp import gp_Trsf, gp_Pln, gp_Pnt, gp_Dir, gp_Vec, gp_Lin, gp_Origin, gp
 from OCC.Core.TopAbs import TopAbs_SOLID, TopAbs_EDGE
 from OCC.Display import OCCViewer
 from OCC.Core.Prs3d import  Prs3d_TypeOfHighlight_LocalDynamic, Prs3d_TypeOfHighlight_LocalSelected, Prs3d_TypeOfHighlight_Dynamic, Prs3d_TypeOfHighlight_Selected
@@ -39,9 +39,6 @@ from OCC.Core.Graphic3d import Graphic3d_TransformPers, Graphic3d_TMF_TriedronPe
 from OCC.Core.Geom import Geom_Line, Geom_Plane
 from OCC.Core.PrsDim import PrsDim_LengthDimension
 from OCC.Core.GeomAPI import GeomAPI_IntCS
-
-import faulthandler
-faulthandler.enable()
 
 from qtpy import QtGui, QtWidgets, QtCore
 import qtpy
@@ -69,9 +66,6 @@ class qtBaseViewer(QtWidgets.QWidget):
         self.setAttribute(QtCore.Qt.WA_NoSystemBackground)
 
         self.setAutoFillBackground(False)
-
-    def paintEngine(self):
-        return None
 
 class qtViewer3d(QtWidgets.QWidget):
 
@@ -205,22 +199,21 @@ class qtViewer3d(QtWidgets.QWidget):
         else:
             log.info("key: code %i not mapped to any function" % code)
 
-    def focusInEvent(self, event):
-        if self._inited:
-            self._display.Repaint()
+    # def focusInEvent(self, event):
+    #     if self._inited:
+    #         # self._display.View.MustBeResized()
+    #         self._display.Repaint()
 
-    def focusOutEvent(self, event):
-        if self._inited:
-            self._display.Repaint()
+    # def focusOutEvent(self, event):
+    #     if self._inited:
+    #         self._display.Repaint()
 
     def paintEvent(self, event):
         if not self._inited:
             self.InitDriver()
 
         self._display.View.MustBeResized()
-        self._display.Context.UpdateCurrentViewer()
-        self._display.Repaint()
-        self._display.Repaint()
+        # self._display.Context.UpdateCurrentViewer()
         self._display.Repaint()
 
         if self._drawbox:
@@ -382,7 +375,7 @@ class qtViewer3d(QtWidgets.QWidget):
     def change_select(self):
         if self._change_select and (self._display.Context.DetectedOwner() is None):
             self._display.Context.Activate(AIS_Shape.SelectionMode(self._display.lmodes[self.select_mode]), True)
-            self._display.Context.UpdateSelected(True)
+            # self._display.Context.UpdateSelected(True)
             self.select_mode += 1
             self._change_select = False
             return
@@ -499,12 +492,11 @@ class qtViewer3d(QtWidgets.QWidget):
         # print(ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z())
         # return ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z()
 
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self._display.View.MustBeResized()
-        self._display.Repaint()
-        QtCore.QCoreApplication.processEvents()
-
+    # paintevent
+    # def resizeEvent(self, event):
+    #     super().resizeEvent(event)
+    #     self._display.View.MustBeResized()
+    #     self._display.Repaint()
 
 class qtViewer3dWithManipulator(qtViewer3d):
     # emit signal when selection is changed
@@ -711,6 +703,7 @@ class potaoViewer(qtViewer3d):
     '''
     move_to_mouse_done = QtCore.Signal()
     mouse_move_signal = QtCore.Signal()
+    resize_signal = QtCore.Signal()
     def __init__(self, *kargs):
         super().__init__(*kargs)
 
@@ -769,9 +762,12 @@ class potaoViewer(qtViewer3d):
         fp = curve.Value(f)
         lp = curve.Value(l)
 
-        pln = gp_Pln(gp_Origin(), gp_Dir(lp.XYZ()))
+        pln = gp_Pln(gp_Origin(), gp_Dir(gp.DZ))
 
         LengthDimension = PrsDim_LengthDimension(edge, pln)
 
         self.display.Context.Display(LengthDimension, True)
         
+    def resizeEvent(self, event):
+        self.resize_signal.emit()
+        return super().resizeEvent(event)
