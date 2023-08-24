@@ -532,7 +532,11 @@ class Viewer3d(Display3d):
             else:
                 # TODO: can we use .Set to attach all TopoDS_Shapes
                 # to this AIS_Shape instance?
-                shape_to_display = AIS_Shape(shape)
+
+                if not isinstance(shape, AIS_Shape):
+                    shape_to_display = AIS_Shape(shape)
+                else:
+                    shape_to_display = shape
 
             ais_shapes.append(shape_to_display)
 
