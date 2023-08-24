@@ -39,6 +39,7 @@ from OCC.Core.Graphic3d import Graphic3d_TransformPers, Graphic3d_TMF_TriedronPe
 from OCC.Core.Geom import Geom_Line, Geom_Plane
 from OCC.Core.PrsDim import PrsDim_LengthDimension
 from OCC.Core.GeomAPI import GeomAPI_IntCS
+from OCC.potato.shape import potato_shape
 
 from qtpy import QtGui, QtWidgets, QtCore
 import qtpy
@@ -728,7 +729,7 @@ class potaoViewer(qtViewer3d):
             self.moving_to_mouse = False
             self.move_to_mouse_done.emit()
 
-    def move_to_mouse(self, shape: AIS_Shape):
+    def move_to_mouse(self, shape: AIS_Shape | potato_shape):
         """
         Move the given shape to the position of the mouse.
 
@@ -741,17 +742,21 @@ class potaoViewer(qtViewer3d):
         self.moving_to_mouse = lambda: self._move_to_mouse(shape)
         self.mouse_move_signal.connect(self.moving_to_mouse)
 
-    def _move_to_mouse(self, shape: AIS_Shape):
-        trsf = gp_Trsf()
-        trsf.SetTranslation(gp_Vec(
-                            self.mouse_3d_pos[0],
-                            self.mouse_3d_pos[1],
-                            self.mouse_3d_pos[2]
-                            ))
-        Toploc = TopLoc_Location(trsf)
-        # self.display.Context.SetLocation(interactive, Toploc) # core_animation.py
-        shape.SetShape(shape.Shape().Located(Toploc))
-        self.display.Context.Redisplay(shape, True)
+    def _move_to_mouse(self, shape: AIS_Shape | potato_shape):
+        if isinstance(shape, AIS_Shape):       
+            trsf = gp_Trsf()
+            trsf.SetTranslation(gp_Vec(
+                                self.mouse_3d_pos[0],
+                                self.mouse_3d_pos[1],
+                                self.mouse_3d_pos[2]
+                                ))
+            Toploc = TopLoc_Location(trsf)
+            # self.display.Context.SetLocation(interactive, Toploc) # core_animation.py
+            shape.SetShape(shape.Shape().Located(Toploc))
+            self.display.Context.Redisplay(shape, True)
+        elif isinstance(shape, potato_shape):
+            shape.SetPos(self.mouse_3d_pos)
+            self.display.Context.Redisplay(shape.AIS_Shape(), True)
 
     def length_input(self, edge: TopoDS_Edge):
         self.length_inputing = lambda: self._length_input(edge)
