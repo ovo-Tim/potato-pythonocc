@@ -57,7 +57,7 @@ class qtBaseViewer(QtWidgets.QWidget):
         self._inited = False
 
         # # enable Mouse Tracking
-        # self.setMouseTracking(True)
+        self.setMouseTracking(True)
 
         # # Strong focus
         # self.setFocusPolicy(QtCore.Qt.WheelFocus)
@@ -67,6 +67,9 @@ class qtBaseViewer(QtWidgets.QWidget):
         self.setAttribute(QtCore.Qt.WA_NoSystemBackground)
 
         self.setAutoFillBackground(False)
+    
+    def Create(self):
+        self._display.Create(window_handle=self.winId(), parent=self)
 
 class qtViewer3d(QtWidgets.QWidget):
 
@@ -85,11 +88,12 @@ class qtViewer3d(QtWidgets.QWidget):
 
         self.setObjectName("qt_viewer_3d")
 
-        self.setAttribute(QtCore.Qt.WA_NativeWindow)
-        self.setAttribute(QtCore.Qt.WA_PaintOnScreen)
-        self.setAttribute(QtCore.Qt.WA_NoSystemBackground)
+        # self.setAttribute(QtCore.Qt.WA_NativeWindow)
+        # self.setAttribute(QtCore.Qt.WA_PaintOnScreen)
+        # self.setAttribute(QtCore.Qt.WA_NoSystemBackground)
+        self.setAttribute(QtCore.Qt.WA_DontCreateNativeAncestors)
 
-        self.main_layout = QtWidgets.QFormLayout(self)
+        self.main_layout = QtWidgets.QVBoxLayout(self)
         self.setLayout(self.main_layout)
         self.qtBaseViewer = qtBaseViewer()
         self.main_layout.addWidget(self.qtBaseViewer)
@@ -129,11 +133,6 @@ class qtViewer3d(QtWidgets.QWidget):
 
         self.setMouseTracking(True)
 
-        if qtpy.PYQT6 or qtpy.PYSIDE6:
-            self.mouse_offset = 1.04
-        else:
-            self.mouse_offset = 1
-
     def select_solid(self):
         self._select_solid = not self._select_solid
         if self._select_solid:
@@ -151,7 +150,8 @@ class qtViewer3d(QtWidgets.QWidget):
         self._qApp = value
 
     def InitDriver(self):
-        self._display.Create(window_handle=int(self.winId()), parent=self)
+        # self._display.Create(window_handle=int(self.winId()), parent=self)
+        self.qtBaseViewer.Create()
         # background gradient
         self._display.SetModeShaded()
         self._inited = True
@@ -216,6 +216,8 @@ class qtViewer3d(QtWidgets.QWidget):
         self._display.View.MustBeResized()
         # self._display.Context.UpdateCurrentViewer()
         self._display.Repaint()
+
+        # print(self.qtBaseViewer.size())
 
         if self._drawbox:
             painter = QtGui.QPainter(self)
@@ -306,7 +308,7 @@ class qtViewer3d(QtWidgets.QWidget):
             modifiers = evt.modifiers()
 
             self.mouse_pos = [pt.x(), pt.y()]
-            off_mouse_pos = int(pt.x()*self.mouse_offset), int(pt.y()*self.mouse_offset)
+            off_mouse_pos = pt.x(), pt.y()
 
             mouse_3d_pos = self.ConvertPos(*off_mouse_pos)
             if self.grid_snap:
