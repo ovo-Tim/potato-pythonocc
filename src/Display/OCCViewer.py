@@ -31,6 +31,7 @@ from OCC.Core.AIS import (
     AIS_Shaded,
     AIS_TexturedShape,
     AIS_WireFrame,
+    AIS_Shape,
 )
 from OCC.Core.gp import gp_Dir, gp_Pnt, gp_Pnt2d, gp_Vec
 from OCC.Core.BRepBuilderAPI import (
@@ -90,14 +91,21 @@ from OCC.Core.Graphic3d import (
 )
 from OCC.Core.Aspect import Aspect_TOTP_RIGHT_LOWER, Aspect_FM_STRETCH, Aspect_FM_NONE
 
+from OCC.Extend.TopologyUtils import TopologyExplorer
+from OCC.Extend.DataExchange import write_step_file
+
+# Shaders and Units definition must be found by occ
+# the fastest way to get done is to set the CASROOT env variable
+# it must point to the /share folder.
 if sys.platform == "win32":
+    # do the same for Units
     if "CASROOT" in os.environ:
         casroot_path = os.environ["CASROOT"]
         # raise an error, force the user to correctly set the variable
-        err_msg = f"Please set the CASROOT env variable ({casroot_path} is not ok)"
+        err_msg = "Please set the CASROOT env variable (%s is not ok)" % casroot_path
         if not os.path.isdir(casroot_path):
             raise AssertionError(err_msg)
-    else:
+    else:  # on miniconda or anaconda or whatever conda
         occ_package_path = os.path.dirname(OCC.__file__)
         casroot_path = os.path.join(
             occ_package_path, "..", "..", "..", "Library", "share", "oce"
@@ -123,12 +131,12 @@ def get_color_from_name(color_name):
     WHITE.
     color_name is the color name, case insensitive.
     """
-    enum_name = f"Quantity_NOC_{color_name.upper()}"
+    enum_name = "Quantity_NOC_%s" % color_name.upper()
     if enum_name in globals():
         color_num = globals()[enum_name]
-    elif f"{enum_name}1" in globals():
-        color_num = globals()[f"{enum_name}1"]
-        print(f"Many colors for color name {color_name}, using first.")
+    elif enum_name + "1" in globals():
+        color_num = globals()[enum_name + "1"]
+        print("Many colors for color name %s, using first." % color_name)
     else:
         color_num = Quantity_NOC_WHITE
         print("Color name not defined. Use White by default")
@@ -183,7 +191,7 @@ class Viewer3d(Display3d):
 
     def unregister_callback(self, callback):
         """Remove a callback from the callback list"""
-        if callback not in self._select_callbacks:
+        if not callback in self._select_callbacks:
             raise AssertionError("This callback is not registered")
         self._select_callbacks.remove(callback)
 
@@ -404,7 +412,7 @@ class Viewer3d(Display3d):
     def SetBackgroundImage(self, image_filename, stretch=True):
         """displays a background image (jpg, png etc.)"""
         if not os.path.isfile(image_filename):
-            raise IOError(f"image file {image_filename} not found.")
+            raise IOError("image file %s not found." % image_filename)
         if stretch:
             self.View.SetBackgroundImage(image_filename, Aspect_FM_STRETCH, True)
         else:
@@ -495,39 +503,41 @@ class Viewer3d(Display3d):
         elif isinstance(shapes, Geom2d_Curve):
             edge2d = BRepBuilderAPI_MakeEdge2d(shapes)
             shapes = [edge2d.Shape()]
+
         # if only one shapes, create a list with a single shape
         if not isinstance(shapes, list):
             shapes = [shapes]
         # build AIS_Shapes list
         for shape in shapes:
-            if material and texture or not material and texture:
-                shape_to_display = AIS_TexturedShape(shape)
-                (
-                    filename,
-                    toScaleU,
-                    toScaleV,
-                    toRepeatU,
-                    toRepeatV,
-                    originU,
-                    originV,
-                ) = texture.GetProperties()
-                shape_to_display.SetTextureFileName(filename)
-                shape_to_display.SetTextureMapOn()
-                shape_to_display.SetTextureScale(True, toScaleU, toScaleV)
-                shape_to_display.SetTextureRepeat(True, toRepeatU, toRepeatV)
-                shape_to_display.SetTextureOrigin(True, originU, originV)
-                shape_to_display.SetDisplayMode(3)
-            elif material:
-                shape_to_display = AIS_Shape(shape)
-                if isinstance(material, Graphic3d_NameOfMaterial):
-                    shape_to_display.SetMaterial(Graphic3d_MaterialAspect(material))
-                else:
-                    shape_to_display.SetMaterial(material)
+            if material or texture:
+                if texture:
+                    shape_to_display = AIS_TexturedShape(shape)
+                    (
+                        filename,
+                        toScaleU,
+                        toScaleV,
+                        toRepeatU,
+                        toRepeatV,
+                        originU,
+                        originV,
+                    ) = texture.GetProperties()
+                    shape_to_display.SetTextureFileName(filename)
+                    shape_to_display.SetTextureMapOn()
+                    shape_to_display.SetTextureScale(True, toScaleU, toScaleV)
+                    shape_to_display.SetTextureRepeat(True, toRepeatU, toRepeatV)
+                    shape_to_display.SetTextureOrigin(True, originU, originV)
+                    shape_to_display.SetDisplayMode(3)
+                elif material:
+                    shape_to_display = AIS_Shape(shape)
+                    if isinstance(material, Graphic3d_NameOfMaterial):
+                        shape_to_display.SetMaterial(Graphic3d_MaterialAspect(material))
+                    else:
+                        shape_to_display.SetMaterial(material)
             else:
                 # TODO: can we use .Set to attach all TopoDS_Shapes
                 # to this AIS_Shape instance?
-
                 if not isinstance(shape, AIS_Shape):
+                    print(shape)
                     shape_to_display = AIS_Shape(shape)
                 else:
                     shape_to_display = shape
@@ -595,7 +605,8 @@ class Viewer3d(Display3d):
             clr = color
         else:
             raise ValueError(
-                f'color should either be a string ( "BLUE" ) or a Quantity_Color(0.1, 0.8, 0.1) got {color}'
+                'color should either be a string ( "BLUE" ) or a Quantity_Color(0.1, 0.8, 0.1) got %s'
+                % color
             )
 
         return self.DisplayShape(shapes, color=clr, update=update)
@@ -745,12 +756,12 @@ class OffscreenRenderer(Viewer3d):
             if os.getenv("PYTHONOCC_OFFSCREEN_RENDERER_DUMP_IMAGE_PATH"):
                 path = os.getenv("PYTHONOCC_OFFSCREEN_RENDERER_DUMP_IMAGE_PATH")
                 if not os.path.isdir(path):
-                    raise IOError(f"{path} is not a valid path")
+                    raise IOError("%s is not a valid path" % path)
             else:
                 path = os.getcwd()
             image_full_name = os.path.join(path, image_filename)
             self.View.Dump(image_full_name)
             if not os.path.isfile(image_full_name):
                 raise IOError("OffscreenRenderer failed to render image to file")
-            print(f"OffscreenRenderer content dumped to {image_full_name}")
+            print("OffscreenRenderer content dumped to %s" % image_full_name)
         return r

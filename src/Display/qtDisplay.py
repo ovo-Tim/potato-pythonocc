@@ -20,26 +20,19 @@
 import logging
 import os
 import sys
+import time
 
 # import faulthandler; faulthandler.enable()
 
-from OCC.Core.AIS import AIS_Manipulator, AIS_Shape, AIS_ViewCube
-from OCC.Core.TopoDS import TopoDS_Edge, TopoDS_Shape
+from OCC.Core.AIS import AIS_Manipulator, AIS_Shape
 from OCC.Core.gp import gp_Trsf, gp_Pln, gp_Pnt, gp_Dir, gp_Vec, gp_Lin, gp_Origin, gp
 from OCC.Core.TopAbs import TopAbs_SOLID, TopAbs_EDGE
 from OCC.Display import OCCViewer
 from OCC.Core.Prs3d import  Prs3d_TypeOfHighlight_LocalDynamic, Prs3d_TypeOfHighlight_LocalSelected, Prs3d_TypeOfHighlight_Dynamic, Prs3d_TypeOfHighlight_Selected
 from OCC.Core.Quantity import Quantity_NOC_LIGHTSEAGREEN, Quantity_NOC_LIGHTSKYBLUE, Quantity_Color
-from OCC.Core.V3d import V3d_Xpos, V3d_Ypos, V3d_Zpos, V3d_Xneg, V3d_Yneg, V3d_Zneg
-from OCC.Core.Aspect import Aspect_GT_Rectangular, Aspect_GDM_Lines, Aspect_TOTP_RIGHT_UPPER
-from OCC.Core.TopLoc import TopLoc_Location
-from OCC.Core.TopExp import TopExp_Explorer
-from OCC.Core.BRep import BRep_Tool
-from OCC.Core.Graphic3d import Graphic3d_TransformPers, Graphic3d_TMF_TriedronPers, Graphic3d_Vec2i
 from OCC.Core.Geom import Geom_Line, Geom_Plane
 from OCC.Core.PrsDim import PrsDim_LengthDimension
 from OCC.Core.GeomAPI import GeomAPI_IntCS
-from OCC.potato.shape import potato_shape
 
 from qtpy import QtGui, QtWidgets, QtCore
 import qtpy
@@ -47,13 +40,60 @@ import qtpy
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
+class viewer(OCCViewer.Viewer3d):
+    def __init__(self):
+        super().__init__()
+        self.set_highlight()
+
+    def set_highlight(self, 
+                        select_color = Quantity_Color(Quantity_NOC_LIGHTSEAGREEN),
+                        select_DisplayMode = 1,
+                        select_transparency = 0.5,
+                        dynamic_color = Quantity_Color(Quantity_NOC_LIGHTSKYBLUE),
+                        dynamic_DisplayMode = 1,
+                        dynamic_transparency = 0.35
+                      ):
+        '''
+        Sets the highlight styles for the local select, select, local dynamic, and dynamic features of the display context.
+
+        Parameters:
+            select_color (Quantity_Color): The color for the local select and select styles. Default is Quantity_Color(Quantity_NOC_LIGHTSEAGREEN).
+            select_DisplayMode (int): The display mode for the local select and select styles. Default is 1.
+            select_transparency (float): The transparency for the local select and select styles. Default is 0.5.
+            dynamic_color (Quantity_Color): The color for the local dynamic and dynamic styles. Default is Quantity_Color(Quantity_NOC_LIGHTSKYBLUE).
+            dynamic_DisplayMode (int): The display mode for the local dynamic and dynamic styles. Default is 1.
+            dynamic_transparency (float): The transparency for the local dynamic and dynamic styles. Default is 0.35.
+        '''
+        self.LocalSelect_style = self.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalSelected)
+        self.LocalSelect_style.SetColor(select_color)
+        self.LocalSelect_style.SetDisplayMode(select_DisplayMode)
+        self.LocalSelect_style.SetTransparency(select_transparency)
+
+        self.select_style = self.Context.HighlightStyle(Prs3d_TypeOfHighlight_Selected)
+        self.select_style.SetColor(select_color)
+        self.select_style.SetDisplayMode(select_DisplayMode)
+        self.select_style.SetTransparency(select_transparency)
+
+        self.LocalDynamic_style = self.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalDynamic)
+        self.LocalDynamic_style.SetColor(dynamic_color)
+        self.LocalDynamic_style.SetDisplayMode(dynamic_DisplayMode)
+        self.LocalDynamic_style.SetTransparency(dynamic_transparency)
+
+        self.Dynamic_style = self.Context.HighlightStyle(Prs3d_TypeOfHighlight_Dynamic)
+        self.Dynamic_style.SetColor(dynamic_color)
+        self.Dynamic_style.SetDisplayMode(dynamic_DisplayMode)
+        self.Dynamic_style.SetTransparency(dynamic_transparency)
+
+def init_viewer():
+    _display = viewer()
+    return locals()
 
 class qtBaseViewer(QtWidgets.QWidget):
     """The base Qt Widget for an OCC viewer"""
 
     def __init__(self, parent=None):
         super(qtBaseViewer, self).__init__(parent)
-        self._display = OCCViewer.Viewer3d()
+        self._display = viewer()
         self._inited = False
 
         # # enable Mouse Tracking
@@ -62,25 +102,26 @@ class qtBaseViewer(QtWidgets.QWidget):
         # # Strong focus
         # self.setFocusPolicy(QtCore.Qt.WheelFocus)
 
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_NativeWindow)
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_PaintOnScreen)
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_NoSystemBackground)
+        self.setAttribute(QtCore.Qt.WA_NativeWindow)
+        self.setAttribute(QtCore.Qt.WA_PaintOnScreen)
+        self.setAttribute(QtCore.Qt.WA_NoSystemBackground)
 
         self.setAutoFillBackground(False)
     
     def Create(self):
-        self._display.Create(window_handle=self.winId(), parent=self)
+        self._display.Create(window_handle=self.winId())
 
 class qtViewer3d(QtWidgets.QWidget):
 
     # emit signal when selection is changed
     # is a list of TopoDS_*
-    if hasattr(QtCore, "pyqtSignal"):  # PyQt5
+    HAVE_PYQT_SIGNAL = False
+    if hasattr(QtCore, "pyqtSignal"):  # PyQt
         sig_topods_selected = QtCore.pyqtSignal(list)
+        HAVE_PYQT_SIGNAL = True
     elif hasattr(QtCore, "Signal"):  # PySide2
         sig_topods_selected = QtCore.Signal(list)
-    else:
-        raise IOError("no signal")
+        HAVE_PYQT_SIGNAL = True
 
     def __init__(self, *kargs):
         super().__init__()
@@ -122,8 +163,6 @@ class qtViewer3d(QtWidgets.QWidget):
         self.select_mode = 0
         self._max_select_mode = 3
         self._select_solid = False
-
-        self.set_highlight()
 
         self.mouse_3d_pos = [0,0,0]
 
@@ -178,7 +217,7 @@ class qtViewer3d(QtWidgets.QWidget):
         )
 
         self._available_cursors = {
-            "arrow": QtGui.QCursor(QtCore.Qt.CursorShape.ArrowCursor),  # default
+            "arrow": QtGui.QCursor(QtCore.Qt.ArrowCursor),  # default
             "pan": QtGui.QCursor(_CURSOR_PIX_PAN),
             "rotate": QtGui.QCursor(_CURSOR_PIX_ROT),
             "zoom": QtGui.QCursor(_CURSOR_PIX_ZOOM),
@@ -242,9 +281,12 @@ class qtViewer3d(QtWidgets.QWidget):
 
     @cursor.setter
     def cursor(self, value):
-        if self._current_cursor != value:
+        if not self._current_cursor == value:
+
             self._current_cursor = value
-            if cursor := self._available_cursors.get(value):
+            cursor = self._available_cursors.get(value)
+
+            if cursor:
                 self.qApp.setOverrideCursor(cursor)
             else:
                 self.qApp.restoreOverrideCursor()
@@ -267,14 +309,17 @@ class qtViewer3d(QtWidgets.QWidget):
                 [Xmin, Ymin, dx, dy] = self._drawbox
                 self._display.SelectArea(Xmin, Ymin, Xmin + dx, Ymin + dy)
                 self._select_area = False
-            elif modifiers == QtCore.Qt.ShiftModifier:
-                self._display.ShiftSelect(pt.x(), pt.y())
             else:
-                # single select otherwise
-                self._display.Select(pt.x(), pt.y())
+                # multiple select if shift is pressed
+                if modifiers == QtCore.Qt.ShiftModifier:
+                    self._display.ShiftSelect(pt.x(), pt.y())
+                else:
+                    # single select otherwise
+                    self._display.Select(pt.x(), pt.y())
 
-                if self._display.selected_shapes is not None:
-                    self.sig_topods_selected.emit(self._display.selected_shapes)
+                    if (self._display.selected_shapes is not None) and self.HAVE_PYQT_SIGNAL:
+
+                        self.sig_topods_selected.emit(self._display.selected_shapes)
 
         elif event.button() == QtCore.Qt.RightButton:
             if self._zoom_area:
@@ -393,45 +438,6 @@ class qtViewer3d(QtWidgets.QWidget):
             self._change_select = True
             # print(self._display.lmodes[self.select_mode - 1])
 
-    def set_highlight(self, 
-                        select_color = Quantity_Color(Quantity_NOC_LIGHTSEAGREEN),
-                        select_DisplayMode = 1,
-                        select_transparency = 0.5,
-                        dynamic_color = Quantity_Color(Quantity_NOC_LIGHTSKYBLUE),
-                        dynamic_DisplayMode = 1,
-                        dynamic_transparency = 0.35
-                      ):
-        '''
-        Sets the highlight styles for the local select, select, local dynamic, and dynamic features of the display context.
-
-        Parameters:
-            select_color (Quantity_Color): The color for the local select and select styles. Default is Quantity_Color(Quantity_NOC_LIGHTSEAGREEN).
-            select_DisplayMode (int): The display mode for the local select and select styles. Default is 1.
-            select_transparency (float): The transparency for the local select and select styles. Default is 0.5.
-            dynamic_color (Quantity_Color): The color for the local dynamic and dynamic styles. Default is Quantity_Color(Quantity_NOC_LIGHTSKYBLUE).
-            dynamic_DisplayMode (int): The display mode for the local dynamic and dynamic styles. Default is 1.
-            dynamic_transparency (float): The transparency for the local dynamic and dynamic styles. Default is 0.35.
-        '''
-        self.LocalSelect_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalSelected)
-        self.LocalSelect_style.SetColor(select_color)
-        self.LocalSelect_style.SetDisplayMode(select_DisplayMode)
-        self.LocalSelect_style.SetTransparency(select_transparency)
-
-        self.select_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_Selected)
-        self.select_style.SetColor(select_color)
-        self.select_style.SetDisplayMode(select_DisplayMode)
-        self.select_style.SetTransparency(select_transparency)
-
-        self.LocalDynamic_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalDynamic)
-        self.LocalDynamic_style.SetColor(dynamic_color)
-        self.LocalDynamic_style.SetDisplayMode(dynamic_DisplayMode)
-        self.LocalDynamic_style.SetTransparency(dynamic_transparency)
-
-        self.Dynamic_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_Dynamic)
-        self.Dynamic_style.SetColor(dynamic_color)
-        self.Dynamic_style.SetDisplayMode(dynamic_DisplayMode)
-        self.Dynamic_style.SetTransparency(dynamic_transparency)
-
     def ConvertPos(self, x:int, y:int, PlaneOfTheView:gp_Pln = None):
         """
         Converts the given x and y coordinates to a 3D coordinate in the view.
@@ -497,10 +503,13 @@ class qtViewer3d(QtWidgets.QWidget):
 class qtViewer3dWithManipulator(qtViewer3d):
     # emit signal when selection is changed
     # is a list of TopoDS_*
-    if hasattr(QtCore, "pyqtSignal"):  # PyQt5
+    HAVE_PYQT_SIGNAL = False
+    if hasattr(QtCore, "pyqtSignal"):  # PyQt
         sig_topods_selected = QtCore.pyqtSignal(list)
-    elif hasattr(QtCore, "Signal"):
+        HAVE_PYQT_SIGNAL = True
+    elif hasattr(QtCore, "Signal"):  # PySide2
         sig_topods_selected = QtCore.Signal(list)
+        HAVE_PYQT_SIGNAL = True
 
     def __init__(self, *kargs):
         qtBaseViewer.__init__(self, *kargs)
@@ -555,7 +564,7 @@ class qtViewer3dWithManipulator(qtViewer3d):
         buttons = int(evt.buttons())
         modifiers = evt.modifiers()
         # TRANSFORM via MANIPULATOR or ROTATE
-        if buttons == QtCore.Qt.LeftButton and modifiers != QtCore.Qt.ShiftModifier:
+        if buttons == QtCore.Qt.LeftButton and not modifiers == QtCore.Qt.ShiftModifier:
             if self.manipulator.HasActiveMode():
                 self.trsf = self.manipulator.Transform(
                     pt.x(), pt.y(), self._display.GetView()
@@ -566,7 +575,11 @@ class qtViewer3dWithManipulator(qtViewer3d):
                 self.cursor = "rotate"
                 self._display.Rotation(pt.x(), pt.y())
                 self._drawbox = False
-        elif buttons == QtCore.Qt.RightButton and modifiers != QtCore.Qt.ShiftModifier:
+        # DYNAMIC ZOOM
+        elif (
+            buttons == QtCore.Qt.RightButton
+            and not modifiers == QtCore.Qt.ShiftModifier
+        ):
             self.cursor = "zoom"
             self._display.Repaint()
             self._display.DynamicZoom(
@@ -578,6 +591,7 @@ class qtViewer3dWithManipulator(qtViewer3d):
             self.dragStartPosX = pt.x()
             self.dragStartPosY = pt.y()
             self._drawbox = False
+        # PAN
         elif buttons == QtCore.Qt.MidButton:
             dx = pt.x() - self.dragStartPosX
             dy = pt.y() - self.dragStartPosY
@@ -586,12 +600,15 @@ class qtViewer3dWithManipulator(qtViewer3d):
             self.cursor = "pan"
             self._display.Pan(dx, -dy)
             self._drawbox = False
-        elif buttons == QtCore.Qt.RightButton:
+        # DRAW BOX
+        # ZOOM WINDOW
+        elif buttons == QtCore.Qt.RightButton and modifiers == QtCore.Qt.ShiftModifier:
             self._zoom_area = True
             self.cursor = "zoom-area"
             self.DrawBox(evt)
             self.update()
-        elif buttons == QtCore.Qt.LeftButton:
+        # SELECT AREA
+        elif buttons == QtCore.Qt.LeftButton and modifiers == QtCore.Qt.ShiftModifier:
             self._select_area = True
             self.DrawBox(evt)
             self.update()
@@ -624,14 +641,17 @@ class qtViewer3dWithManipulator(qtViewer3d):
                 [Xmin, Ymin, dx, dy] = self._drawbox
                 self._display.SelectArea(Xmin, Ymin, Xmin + dx, Ymin + dy)
                 self._select_area = False
-            elif modifiers == QtCore.Qt.ShiftModifier:
-                self._display.ShiftSelect(pt.x(), pt.y())
             else:
-                # single select otherwise
-                self._display.Select(pt.x(), pt.y())
+                # multiple select if shift is pressed
+                if modifiers == QtCore.Qt.ShiftModifier:
+                    self._display.ShiftSelect(pt.x(), pt.y())
+                else:
+                    # single select otherwise
+                    self._display.Select(pt.x(), pt.y())
 
-                if self._display.selected_shapes is not None:
-                    self.sig_topods_selected.emit(self._display.selected_shapes)
+                    if (self._display.selected_shapes is not None) and self.HAVE_PYQT_SIGNAL:
+
+                        self.sig_topods_selected.emit(self._display.selected_shapes)
 
         elif event.button() == QtCore.Qt.RightButton:
             if self._zoom_area:
@@ -641,119 +661,3 @@ class qtViewer3dWithManipulator(qtViewer3d):
 
         self.cursor = "arrow"
 
-class potato_ViewCube(AIS_ViewCube):
-    '''
-        Write by potato-pythonocc
-        Provide more advanced features
-    '''
-    def __init__(self):
-        super().__init__()
-
-        self.SetBoxSideLabel(V3d_Xpos, _("Right"))
-        self.SetBoxSideLabel(V3d_Ypos, _("Back"))
-        self.SetBoxSideLabel(V3d_Zpos, _("Top"))
-        self.SetBoxSideLabel(V3d_Xneg, _("Left"))
-        self.SetBoxSideLabel(V3d_Yneg, _("Front"))
-        self.SetBoxSideLabel(V3d_Zneg, _("Bottom"))
-        self.SetFontHeight( self.Size() * 0.38)
-        self.SetTransparency(0.6)
-
-        # self.SetHilightMode(0)
-
-        self.SetTransformPersistence(
-            Graphic3d_TransformPers(
-                Graphic3d_TMF_TriedronPers,
-                Aspect_TOTP_RIGHT_UPPER,
-                Graphic3d_Vec2i(100, 100)
-            )
-        )
-    def SetSize(self, theValue: float, theToAdaptAnother: bool = True) -> None:
-        self.SetTransformPersistence(
-            Graphic3d_TransformPers(
-                Graphic3d_TMF_TriedronPers,
-                Aspect_TOTP_RIGHT_UPPER,
-                Graphic3d_Vec2i(theValue, theValue)
-            )
-        )
-        
-        super().SetSize(theValue, theToAdaptAnother)
-
-class potaoViewer(qtViewer3d):
-    '''
-        Write by potato-pythonocc
-        Base on qtViewer3d, add more function.
-    '''
-    move_to_mouse_done = QtCore.Signal()
-    mouse_move_signal = QtCore.Signal()
-    resize_signal = QtCore.Signal()
-    def __init__(self, *kargs):
-        super().__init__(*kargs)
-
-        self.display = self._display
-
-        self.ViewCube = potato_ViewCube()
-        self.display.Context.Display(self.ViewCube, True)
-
-        self.display.Viewer.ActivateGrid(Aspect_GT_Rectangular, Aspect_GDM_Lines)
-
-        self.moving_to_mouse = False
-        self.length_inputing = False
-
-    def mouseMoveEvent(self, evt):
-        super().mouseMoveEvent(evt)
-        self.mouse_move_signal.emit()
-    
-    def mouseReleaseEvent(self, event):
-        super().mouseReleaseEvent(event)
-        if event.button() == QtCore.Qt.LeftButton and self.moving_to_mouse:
-            self.mouse_move_signal.disconnect(self.moving_to_mouse)
-            self.moving_to_mouse = False
-            self.move_to_mouse_done.emit()
-
-    def move_to_mouse(self, shape: AIS_Shape | potato_shape):
-        """
-        Move the given shape to the position of the mouse.
-
-        Parameters:
-            shape (AIS_Shape): The shape to be moved.
-
-        Returns:
-            None
-        """
-        self.moving_to_mouse = lambda: self._move_to_mouse(shape)
-        self.mouse_move_signal.connect(self.moving_to_mouse)
-
-    def _move_to_mouse(self, shape: AIS_Shape | potato_shape):
-        if isinstance(shape, AIS_Shape):       
-            trsf = gp_Trsf()
-            trsf.SetTranslation(gp_Vec(
-                                self.mouse_3d_pos[0],
-                                self.mouse_3d_pos[1],
-                                self.mouse_3d_pos[2]
-                                ))
-            Toploc = TopLoc_Location(trsf)
-            # self.display.Context.SetLocation(interactive, Toploc) # core_animation.py
-            shape.SetShape(shape.Shape().Located(Toploc))
-            self.display.Context.Redisplay(shape, True)
-        elif isinstance(shape, potato_shape):
-            shape.SetPos(self.mouse_3d_pos)
-            self.display.Context.Redisplay(shape.AIS_Shape(), True)
-
-    def length_input(self, edge: TopoDS_Edge):
-        self.length_inputing = lambda: self._length_input(edge)
-        self.mouse_move_signal.connect(self.length_inputing)
-
-    def _length_input(self, edge: TopoDS_Edge):
-        curve, f, l = BRep_Tool.Curve(edge)
-        fp = curve.Value(f)
-        lp = curve.Value(l)
-
-        pln = gp_Pln(gp_Origin(), gp_Dir(gp.DZ))
-
-        LengthDimension = PrsDim_LengthDimension(edge, pln)
-
-        self.display.Context.Display(LengthDimension, True)
-        
-    def resizeEvent(self, event):
-        self.resize_signal.emit()
-        return super().resizeEvent(event)

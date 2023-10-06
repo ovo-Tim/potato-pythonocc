@@ -93,12 +93,6 @@ qtViewer3d.set_highlight(self,
                       )
 ```
 
-### 增加 potaoViewer
-在 `qtViewer3d` 的基础上增加了更多功能
-- 增加 `ViewCube`
-#### move_to_mouse
-只需要调用 `potaoViewer.move_to_mouse` 并传入要移动的 `AIS_Shape` 就可以实时将图形移动到鼠标位置
-
 ### 增加新的坐标转换函数
 使用：`qtViewer3d.ConvertPos(X, Y)`
 
