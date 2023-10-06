@@ -751,13 +751,14 @@ opencascade::handle<Image_Texture>
 		const opencascade::handle<Image_Texture> & BaseColorTexture();
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** GetColorCurv ******************/
 		/**** md5 signature: 94dac84988e85c1a6c1fff8156adc1a0 ****/
 		%feature("compactdefaultargs") GetColorCurv;
@@ -991,19 +992,19 @@ None
 		void UnSetColorSurf();
 
 
-            %extend{
-                bool __eq_wrapper__(const XCAFPrs_Style other) {
-                if (*self==other) return true;
-                else return false;
-                }
-            }
-            %pythoncode {
-            def __eq__(self, right):
-                try:
-                    return self.__eq_wrapper__(right)
-                except:
-                    return False
-            }
+%extend{
+    bool __eq_wrapper__(const XCAFPrs_Style other) {
+    if (*self==other) return true;
+    else return false;
+    }
+}
+%pythoncode {
+def __eq__(self, right):
+    try:
+        return self.__eq_wrapper__(right)
+    except:
+        return False
+}
 };
 
 

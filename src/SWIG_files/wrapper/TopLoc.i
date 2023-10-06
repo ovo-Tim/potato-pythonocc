@@ -115,13 +115,14 @@ None
 		 TopLoc_Datum3D(const gp_Trsf & T);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** Form ******************/
 		/**** md5 signature: f29bb1eb1523b456c279366338ab9947 ****/
 		%feature("compactdefaultargs") Form;
@@ -196,13 +197,14 @@ None
 		 TopLoc_ItemLocation(const opencascade::handle<TopLoc_Datum3D> & D, const Standard_Integer P);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 };
 
 
@@ -285,13 +287,14 @@ TopLoc_Location
 		TopLoc_Location Divided(const TopLoc_Location & Other);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** FirstDatum ******************/
 		/**** md5 signature: 6cdca59f5ca5329a1b7dd3455c8d5c55 ****/
 		%feature("compactdefaultargs") FirstDatum;
@@ -485,19 +488,19 @@ gp_Trsf
 		const gp_Trsf Transformation();
 
 
-            %extend{
-                bool __ne_wrapper__(const TopLoc_Location other) {
-                if (*self!=other) return true;
-                else return false;
-                }
-            }
-            %pythoncode {
-            def __ne__(self, right):
-                try:
-                    return self.__ne_wrapper__(right)
-                except:
-                    return True
-            }
+%extend{
+    bool __ne_wrapper__(const TopLoc_Location other) {
+    if (*self!=other) return true;
+    else return false;
+    }
+}
+%pythoncode {
+def __ne__(self, right):
+    try:
+        return self.__ne_wrapper__(right)
+    except:
+        return True
+}
 		/****************** operator * ******************/
 		/**** md5 signature: b914624702617b5c10e313c8e2b471b0 ****/
 		%feature("compactdefaultargs") operator *;
@@ -529,19 +532,19 @@ TopLoc_Location
 		TopLoc_Location operator /(const TopLoc_Location & Other);
 
 
-            %extend{
-                bool __eq_wrapper__(const TopLoc_Location other) {
-                if (*self==other) return true;
-                else return false;
-                }
-            }
-            %pythoncode {
-            def __eq__(self, right):
-                try:
-                    return self.__eq_wrapper__(right)
-                except:
-                    return False
-            }
+%extend{
+    bool __eq_wrapper__(const TopLoc_Location other) {
+    if (*self==other) return true;
+    else return false;
+    }
+}
+%pythoncode {
+def __eq__(self, right):
+    try:
+        return self.__eq_wrapper__(right)
+    except:
+        return False
+}
 };
 
 

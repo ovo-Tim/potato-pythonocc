@@ -49,16 +49,8 @@ test:
     - mypy
     - svgwrite
     - wxpython >=4
-    # - pyside2 >=5
-  commands:
-    - echo 'Test start!!!'
-    - pwd
-    - tree
-    # - bash test.sh
-  #   - mypy test/test_mypy_classic_occ_bottle.py
-  #   - python test/core_display_pyqt5_unittest.py
-  #   - python test/core_display_pyside2_unittest.py
-  #   - python test/core_display_wx_unittest.py
+    - pyside2 >=5
+    - pyside6
 
 about:
   home: https://github.com/tpaviot/pythonocc-core
