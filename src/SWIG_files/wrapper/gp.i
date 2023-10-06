@@ -58,18 +58,6 @@ from OCC.Core.Exception import *
 };
 
 /* public enums */
-enum gp_TrsfForm {
-	gp_Identity = 0,
-	gp_Rotation = 1,
-	gp_Translation = 2,
-	gp_PntMirror = 3,
-	gp_Ax1Mirror = 4,
-	gp_Ax2Mirror = 5,
-	gp_Scale = 6,
-	gp_CompoundTrsf = 7,
-	gp_Other = 8,
-};
-
 enum gp_EulerSequence {
 	gp_EulerAngles = 0,
 	gp_YawPitchRoll = 1,
@@ -99,30 +87,22 @@ enum gp_EulerSequence {
 	gp_Intrinsic_ZYZ = 25,
 };
 
+enum gp_TrsfForm {
+	gp_Identity = 0,
+	gp_Rotation = 1,
+	gp_Translation = 2,
+	gp_PntMirror = 3,
+	gp_Ax1Mirror = 4,
+	gp_Ax2Mirror = 5,
+	gp_Scale = 6,
+	gp_CompoundTrsf = 7,
+	gp_Other = 8,
+};
+
 /* end public enums declaration */
 
 /* python proxy classes for enums */
 %pythoncode {
-
-class gp_TrsfForm(IntEnum):
-	gp_Identity = 0
-	gp_Rotation = 1
-	gp_Translation = 2
-	gp_PntMirror = 3
-	gp_Ax1Mirror = 4
-	gp_Ax2Mirror = 5
-	gp_Scale = 6
-	gp_CompoundTrsf = 7
-	gp_Other = 8
-gp_Identity = gp_TrsfForm.gp_Identity
-gp_Rotation = gp_TrsfForm.gp_Rotation
-gp_Translation = gp_TrsfForm.gp_Translation
-gp_PntMirror = gp_TrsfForm.gp_PntMirror
-gp_Ax1Mirror = gp_TrsfForm.gp_Ax1Mirror
-gp_Ax2Mirror = gp_TrsfForm.gp_Ax2Mirror
-gp_Scale = gp_TrsfForm.gp_Scale
-gp_CompoundTrsf = gp_TrsfForm.gp_CompoundTrsf
-gp_Other = gp_TrsfForm.gp_Other
 
 class gp_EulerSequence(IntEnum):
 	gp_EulerAngles = 0
@@ -177,6 +157,26 @@ gp_Intrinsic_YZY = gp_EulerSequence.gp_Intrinsic_YZY
 gp_Intrinsic_YXY = gp_EulerSequence.gp_Intrinsic_YXY
 gp_Intrinsic_ZXZ = gp_EulerSequence.gp_Intrinsic_ZXZ
 gp_Intrinsic_ZYZ = gp_EulerSequence.gp_Intrinsic_ZYZ
+
+class gp_TrsfForm(IntEnum):
+	gp_Identity = 0
+	gp_Rotation = 1
+	gp_Translation = 2
+	gp_PntMirror = 3
+	gp_Ax1Mirror = 4
+	gp_Ax2Mirror = 5
+	gp_Scale = 6
+	gp_CompoundTrsf = 7
+	gp_Other = 8
+gp_Identity = gp_TrsfForm.gp_Identity
+gp_Rotation = gp_TrsfForm.gp_Rotation
+gp_Translation = gp_TrsfForm.gp_Translation
+gp_PntMirror = gp_TrsfForm.gp_PntMirror
+gp_Ax1Mirror = gp_TrsfForm.gp_Ax1Mirror
+gp_Ax2Mirror = gp_TrsfForm.gp_Ax2Mirror
+gp_Scale = gp_TrsfForm.gp_Scale
+gp_CompoundTrsf = gp_TrsfForm.gp_CompoundTrsf
+gp_Other = gp_TrsfForm.gp_Other
 };
 /* end python proxy for enums */
 
@@ -446,28 +446,23 @@ gp_Dir
 		const gp_Dir Direction();
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
-		/****************** InitFromJson ******************/
-		/**** md5 signature: ef88f08223ee594f1b33ebd2021df0e1 ****/
-		%feature("compactdefaultargs") InitFromJson;
-		%feature("autodoc", "Inits the content of me from the stream.
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 
-Parameters
-----------
-theSStream: Standard_SStream
-
-Returns
--------
-theStreamPos: int
-") InitFromJson;
-		Standard_Boolean InitFromJson(const Standard_SStream & theSStream, Standard_Integer &OutValue);
-
+        /****************** InitFromJsonString ******************/
+        %feature("autodoc", "1");
+        %extend{
+            bool InitFromJsonString(std::string json_string) {
+            std::stringstream s(json_string);
+            Standard_Integer pos=2;
+            return self->InitFromJson(s, pos);}
+        };
 		/****************** IsCoaxial ******************/
 		/**** md5 signature: 5a0f3aebace8af9610e7543d64eaa8a4 ****/
 		%feature("compactdefaultargs") IsCoaxial;
@@ -845,6 +840,24 @@ gp_Ax1
 };
 
 
+
+%extend gp_Ax1 {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Ax1 {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Ax1()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Ax1')
+    }
+};
 %extend gp_Ax1 {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -938,28 +951,23 @@ gp_Dir
 		const gp_Dir Direction();
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
-		/****************** InitFromJson ******************/
-		/**** md5 signature: ef88f08223ee594f1b33ebd2021df0e1 ****/
-		%feature("compactdefaultargs") InitFromJson;
-		%feature("autodoc", "Inits the content of me from the stream.
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 
-Parameters
-----------
-theSStream: Standard_SStream
-
-Returns
--------
-theStreamPos: int
-") InitFromJson;
-		Standard_Boolean InitFromJson(const Standard_SStream & theSStream, Standard_Integer &OutValue);
-
+        /****************** InitFromJsonString ******************/
+        %feature("autodoc", "1");
+        %extend{
+            bool InitFromJsonString(std::string json_string) {
+            std::stringstream s(json_string);
+            Standard_Integer pos=2;
+            return self->InitFromJson(s, pos);}
+        };
 		/****************** IsCoplanar ******************/
 		/**** md5 signature: b5afd6b5d22740e47c1cc2021bf5f05f ****/
 		%feature("compactdefaultargs") IsCoplanar;
@@ -1351,6 +1359,24 @@ gp_Dir
 };
 
 
+
+%extend gp_Ax2 {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Ax2 {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Ax2()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Ax2')
+    }
+};
 %extend gp_Ax2 {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -1426,13 +1452,14 @@ None
 		 gp_Ax22d(const gp_Ax2d & theA, const Standard_Boolean theIsSense = Standard_True);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** Location ******************/
 		/**** md5 signature: 0e4556028ba61472400043e40317f1e2 ****/
 		%feature("compactdefaultargs") Location;
@@ -1797,6 +1824,24 @@ gp_Dir2d
 };
 
 
+
+%extend gp_Ax22d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Ax22d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Ax22d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Ax22d')
+    }
+};
 %extend gp_Ax22d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -1862,13 +1907,14 @@ gp_Dir2d
 		const gp_Dir2d Direction();
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** IsCoaxial ******************/
 		/**** md5 signature: 75e748f680609f8e38c2264eb1a2db73 ****/
 		%feature("compactdefaultargs") IsCoaxial;
@@ -2216,6 +2262,24 @@ gp_Ax2d
 };
 
 
+
+%extend gp_Ax2d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Ax2d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Ax2d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Ax2d')
+    }
+};
 %extend gp_Ax2d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -2346,28 +2410,23 @@ gp_Dir
 		const gp_Dir Direction();
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
-		/****************** InitFromJson ******************/
-		/**** md5 signature: ef88f08223ee594f1b33ebd2021df0e1 ****/
-		%feature("compactdefaultargs") InitFromJson;
-		%feature("autodoc", "Inits the content of me from the stream.
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 
-Parameters
-----------
-theSStream: Standard_SStream
-
-Returns
--------
-theStreamPos: int
-") InitFromJson;
-		Standard_Boolean InitFromJson(const Standard_SStream & theSStream, Standard_Integer &OutValue);
-
+        /****************** InitFromJsonString ******************/
+        %feature("autodoc", "1");
+        %extend{
+            bool InitFromJsonString(std::string json_string) {
+            std::stringstream s(json_string);
+            Standard_Integer pos=2;
+            return self->InitFromJson(s, pos);}
+        };
 		/****************** IsCoplanar ******************/
 		/**** md5 signature: 839576f344c38c375debc9dad1060ac3 ****/
 		%feature("compactdefaultargs") IsCoplanar;
@@ -2792,6 +2851,24 @@ None
 };
 
 
+
+%extend gp_Ax3 {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Ax3 {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Ax3()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Ax3')
+    }
+};
 %extend gp_Ax3 {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -3273,6 +3350,24 @@ gp_Ax1
 };
 
 
+
+%extend gp_Circ {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Circ {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Circ()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Circ')
+    }
+};
 %extend gp_Circ {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -3809,6 +3904,24 @@ gp_Ax2d
 };
 
 
+
+%extend gp_Circ2d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Circ2d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Circ2d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Circ2d')
+    }
+};
 %extend gp_Circ2d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -4316,6 +4429,24 @@ gp_Ax1
 };
 
 
+
+%extend gp_Cone {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Cone {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Cone()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Cone')
+    }
+};
 %extend gp_Cone {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -4785,6 +4916,24 @@ gp_Ax1
 };
 
 
+
+%extend gp_Cylinder {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Cylinder {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Cylinder()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Cylinder')
+    }
+};
 %extend gp_Cylinder {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -5010,28 +5159,23 @@ float
 		Standard_Real DotCross(const gp_Dir & theV1, const gp_Dir & theV2);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
-		/****************** InitFromJson ******************/
-		/**** md5 signature: ef88f08223ee594f1b33ebd2021df0e1 ****/
-		%feature("compactdefaultargs") InitFromJson;
-		%feature("autodoc", "Inits the content of me from the stream.
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 
-Parameters
-----------
-theSStream: Standard_SStream
-
-Returns
--------
-theStreamPos: int
-") InitFromJson;
-		Standard_Boolean InitFromJson(const Standard_SStream & theSStream, Standard_Integer &OutValue);
-
+        /****************** InitFromJsonString ******************/
+        %feature("autodoc", "1");
+        %extend{
+            bool InitFromJsonString(std::string json_string) {
+            std::stringstream s(json_string);
+            Standard_Integer pos=2;
+            return self->InitFromJson(s, pos);}
+        };
 		/****************** IsEqual ******************/
 		/**** md5 signature: 53cc72d7d7a896d7782050052620e1b5 ****/
 		%feature("compactdefaultargs") IsEqual;
@@ -5436,6 +5580,24 @@ gp_Dir
 };
 
 
+
+%extend gp_Dir {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Dir {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Dir()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Dir')
+    }
+};
 %extend gp_Dir {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -5580,13 +5742,14 @@ float
 		Standard_Real Dot(const gp_Dir2d & theOther);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** IsEqual ******************/
 		/**** md5 signature: b5427191c2417e466f0abc9501d51e95 ****/
 		%feature("compactdefaultargs") IsEqual;
@@ -5932,6 +6095,24 @@ gp_Dir2d
 };
 
 
+
+%extend gp_Dir2d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Dir2d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Dir2d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Dir2d')
+    }
+};
 %extend gp_Dir2d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -6460,6 +6641,24 @@ gp_Ax1
 };
 
 
+
+%extend gp_Elips {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Elips {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Elips()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Elips')
+    }
+};
 %extend gp_Elips {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -7033,6 +7232,24 @@ gp_Ax2d
 };
 
 
+
+%extend gp_Elips2d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Elips2d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Elips2d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Elips2d')
+    }
+};
 %extend gp_Elips2d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -7087,13 +7304,14 @@ None
 		 gp_GTrsf(const gp_Mat & theM, const gp_XYZ & theV);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** Form ******************/
 		/**** md5 signature: f29bb1eb1523b456c279366338ab9947 ****/
 		%feature("compactdefaultargs") Form;
@@ -7425,19 +7643,37 @@ gp_GTrsf
 		gp_GTrsf operator *(const gp_GTrsf & theT);
 
 
-            %extend{
-                void __imul_wrapper__(const gp_GTrsf other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const gp_GTrsf other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 };
 
 
+
+%extend gp_GTrsf {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_GTrsf {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_GTrsf()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_GTrsf')
+    }
+};
 %extend gp_GTrsf {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -7809,19 +8045,37 @@ gp_GTrsf2d
 		gp_GTrsf2d operator *(const gp_GTrsf2d & theT);
 
 
-            %extend{
-                void __imul_wrapper__(const gp_GTrsf2d other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const gp_GTrsf2d other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 };
 
 
+
+%extend gp_GTrsf2d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_GTrsf2d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_GTrsf2d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_GTrsf2d')
+    }
+};
 %extend gp_GTrsf2d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -8394,6 +8648,24 @@ gp_Ax1
 };
 
 
+
+%extend gp_Hypr {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Hypr {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Hypr()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Hypr')
+    }
+};
 %extend gp_Hypr {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -9011,6 +9283,24 @@ gp_Ax2d
 };
 
 
+
+%extend gp_Hypr2d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Hypr2d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Hypr2d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Hypr2d')
+    }
+};
 %extend gp_Hypr2d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -9519,6 +9809,24 @@ gp_Lin
 };
 
 
+
+%extend gp_Lin {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Lin {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Lin()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Lin')
+    }
+};
 %extend gp_Lin {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -10030,6 +10338,24 @@ gp_Lin2d
 };
 
 
+
+%extend gp_Lin2d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Lin2d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Lin2d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Lin2d')
+    }
+};
 %extend gp_Lin2d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -10203,13 +10529,14 @@ gp_Mat
 		gp_Mat Divided(const Standard_Real theScalar);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** Invert ******************/
 		/**** md5 signature: 980f166f600d23a8c77565829af2eeff ****/
 		%feature("compactdefaultargs") Invert;
@@ -10634,27 +10961,27 @@ gp_Mat
 		gp_Mat operator *(const Standard_Real theScalar);
 
 
-            %extend{
-                void __imul_wrapper__(const gp_Mat other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const gp_Mat other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 
-            %extend{
-                void __imul_wrapper__(const Standard_Real other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const Standard_Real other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 		/****************** operator + ******************/
 		/**** md5 signature: c2a4fbf1f0a086324496c01898bbe173 ****/
 		%feature("compactdefaultargs") operator +;
@@ -10671,16 +10998,16 @@ gp_Mat
 		gp_Mat operator +(const gp_Mat & theOther);
 
 
-            %extend{
-                void __iadd_wrapper__(const gp_Mat other) {
-                *self += other;
-                }
-            }
-            %pythoncode {
-            def __iadd__(self, right):
-                self.__iadd_wrapper__(right)
-                return self
-            }
+%extend{
+    void __iadd_wrapper__(const gp_Mat other) {
+    *self += other;
+    }
+}
+%pythoncode {
+def __iadd__(self, right):
+    self.__iadd_wrapper__(right)
+    return self
+}
 		/****************** operator - ******************/
 		/**** md5 signature: 005d2557fc210ec6218060a310064329 ****/
 		%feature("compactdefaultargs") operator -;
@@ -10697,16 +11024,16 @@ gp_Mat
 		gp_Mat operator -(const gp_Mat & theOther);
 
 
-            %extend{
-                void __isub_wrapper__(const gp_Mat other) {
-                *self -= other;
-                }
-            }
-            %pythoncode {
-            def __isub__(self, right):
-                self.__isub_wrapper__(right)
-                return self
-            }
+%extend{
+    void __isub_wrapper__(const gp_Mat other) {
+    *self -= other;
+    }
+}
+%pythoncode {
+def __isub__(self, right):
+    self.__isub_wrapper__(right)
+    return self
+}
 		/****************** operator / ******************/
 		/**** md5 signature: 50cc92cc2a69d2e23a05248466cd8bca ****/
 		%feature("compactdefaultargs") operator /;
@@ -10723,19 +11050,37 @@ gp_Mat
 		gp_Mat operator /(const Standard_Real theScalar);
 
 
-            %extend{
-                void __itruediv_wrapper__(const Standard_Real other) {
-                *self /= other;
-                }
-            }
-            %pythoncode {
-            def __itruediv__(self, right):
-                self.__itruediv_wrapper__(right)
-                return self
-            }
+%extend{
+    void __itruediv_wrapper__(const Standard_Real other) {
+    *self /= other;
+    }
+}
+%pythoncode {
+def __itruediv__(self, right):
+    self.__itruediv_wrapper__(right)
+    return self
+}
 };
 
 
+
+%extend gp_Mat {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Mat {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Mat()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Mat')
+    }
+};
 %extend gp_Mat {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -11274,16 +11619,16 @@ gp_Mat2d
 		gp_Mat2d operator *(const Standard_Real theScalar);
 
 
-            %extend{
-                void __imul_wrapper__(const Standard_Real other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const Standard_Real other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 		/****************** operator + ******************/
 		/**** md5 signature: 54c36bc4369636c7afd7afc5c0751c62 ****/
 		%feature("compactdefaultargs") operator +;
@@ -11300,16 +11645,16 @@ gp_Mat2d
 		gp_Mat2d operator +(const gp_Mat2d & theOther);
 
 
-            %extend{
-                void __iadd_wrapper__(const gp_Mat2d other) {
-                *self += other;
-                }
-            }
-            %pythoncode {
-            def __iadd__(self, right):
-                self.__iadd_wrapper__(right)
-                return self
-            }
+%extend{
+    void __iadd_wrapper__(const gp_Mat2d other) {
+    *self += other;
+    }
+}
+%pythoncode {
+def __iadd__(self, right):
+    self.__iadd_wrapper__(right)
+    return self
+}
 		/****************** operator - ******************/
 		/**** md5 signature: e647ff009fd603b513358596ee1840b5 ****/
 		%feature("compactdefaultargs") operator -;
@@ -11326,16 +11671,16 @@ gp_Mat2d
 		gp_Mat2d operator -(const gp_Mat2d & theOther);
 
 
-            %extend{
-                void __isub_wrapper__(const gp_Mat2d other) {
-                *self -= other;
-                }
-            }
-            %pythoncode {
-            def __isub__(self, right):
-                self.__isub_wrapper__(right)
-                return self
-            }
+%extend{
+    void __isub_wrapper__(const gp_Mat2d other) {
+    *self -= other;
+    }
+}
+%pythoncode {
+def __isub__(self, right):
+    self.__isub_wrapper__(right)
+    return self
+}
 		/****************** operator / ******************/
 		/**** md5 signature: 5c63861d0b75195db183dc66c54cc61c ****/
 		%feature("compactdefaultargs") operator /;
@@ -11352,19 +11697,37 @@ gp_Mat2d
 		gp_Mat2d operator /(const Standard_Real theScalar);
 
 
-            %extend{
-                void __itruediv_wrapper__(const Standard_Real other) {
-                *self /= other;
-                }
-            }
-            %pythoncode {
-            def __itruediv__(self, right):
-                self.__itruediv_wrapper__(right)
-                return self
-            }
+%extend{
+    void __itruediv_wrapper__(const Standard_Real other) {
+    *self /= other;
+    }
+}
+%pythoncode {
+def __itruediv__(self, right):
+    self.__itruediv_wrapper__(right)
+    return self
+}
 };
 
 
+
+%extend gp_Mat2d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Mat2d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Mat2d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Mat2d')
+    }
+};
 %extend gp_Mat2d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -11827,6 +12190,24 @@ gp_Ax1
 };
 
 
+
+%extend gp_Parab {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Parab {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Parab()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Parab')
+    }
+};
 %extend gp_Parab {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -12309,6 +12690,24 @@ gp_Parab2d
 };
 
 
+
+%extend gp_Parab2d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Parab2d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Parab2d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Parab2d')
+    }
+};
 %extend gp_Parab2d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -12498,13 +12897,14 @@ float
 		Standard_Real Distance(const gp_Pln & theOther);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** Location ******************/
 		/**** md5 signature: becd3d5ba73b438c501a139df51b6b7f ****/
 		%feature("compactdefaultargs") Location;
@@ -12910,6 +13310,24 @@ gp_Ax1
 };
 
 
+
+%extend gp_Pln {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Pln {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Pln()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Pln')
+    }
+};
 %extend gp_Pln {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -13050,28 +13468,23 @@ float
 		Standard_Real Distance(const gp_Pnt & theOther);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
-		/****************** InitFromJson ******************/
-		/**** md5 signature: ef88f08223ee594f1b33ebd2021df0e1 ****/
-		%feature("compactdefaultargs") InitFromJson;
-		%feature("autodoc", "Inits the content of me from the stream.
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 
-Parameters
-----------
-theSStream: Standard_SStream
-
-Returns
--------
-theStreamPos: int
-") InitFromJson;
-		Standard_Boolean InitFromJson(const Standard_SStream & theSStream, Standard_Integer &OutValue);
-
+        /****************** InitFromJsonString ******************/
+        %feature("autodoc", "1");
+        %extend{
+            bool InitFromJsonString(std::string json_string) {
+            std::stringstream s(json_string);
+            Standard_Integer pos=2;
+            return self->InitFromJson(s, pos);}
+        };
 		/****************** IsEqual ******************/
 		/**** md5 signature: 866076bc094329e46528454cace96967 ****/
 		%feature("compactdefaultargs") IsEqual;
@@ -13489,6 +13902,24 @@ float
 };
 
 
+
+%extend gp_Pnt {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Pnt {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Pnt()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Pnt')
+    }
+};
 %extend gp_Pnt {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -13610,13 +14041,14 @@ float
 		Standard_Real Distance(const gp_Pnt2d & theOther);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** IsEqual ******************/
 		/**** md5 signature: dcdc340de48c0cde13c42d260d47b39e ****/
 		%feature("compactdefaultargs") IsEqual;
@@ -13977,6 +14409,24 @@ float
 };
 
 
+
+%extend gp_Pnt2d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Pnt2d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Pnt2d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Pnt2d')
+    }
+};
 %extend gp_Pnt2d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -14626,27 +15076,27 @@ gp_Vec
 		gp_Vec operator *(const gp_Vec & theVec);
 
 
-            %extend{
-                void __imul_wrapper__(const Standard_Real other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const Standard_Real other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 
-            %extend{
-                void __imul_wrapper__(const gp_Quaternion other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const gp_Quaternion other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 		/****************** operator + ******************/
 		/**** md5 signature: 8a4916c7f7f9f9981e41b258333dba26 ****/
 		%feature("compactdefaultargs") operator +;
@@ -14663,16 +15113,16 @@ gp_Quaternion
 		gp_Quaternion operator +(const gp_Quaternion & theOther);
 
 
-            %extend{
-                void __iadd_wrapper__(const gp_Quaternion other) {
-                *self += other;
-                }
-            }
-            %pythoncode {
-            def __iadd__(self, right):
-                self.__iadd_wrapper__(right)
-                return self
-            }
+%extend{
+    void __iadd_wrapper__(const gp_Quaternion other) {
+    *self += other;
+    }
+}
+%pythoncode {
+def __iadd__(self, right):
+    self.__iadd_wrapper__(right)
+    return self
+}
 		/****************** operator - ******************/
 		/**** md5 signature: 2400ff17b24d500dd5a6327221c22f34 ****/
 		%feature("compactdefaultargs") operator -;
@@ -14700,19 +15150,37 @@ gp_Quaternion
 		gp_Quaternion operator -(const gp_Quaternion & theOther);
 
 
-            %extend{
-                void __isub_wrapper__(const gp_Quaternion other) {
-                *self -= other;
-                }
-            }
-            %pythoncode {
-            def __isub__(self, right):
-                self.__isub_wrapper__(right)
-                return self
-            }
+%extend{
+    void __isub_wrapper__(const gp_Quaternion other) {
+    *self -= other;
+    }
+}
+%pythoncode {
+def __isub__(self, right):
+    self.__isub_wrapper__(right)
+    return self
+}
 };
 
 
+
+%extend gp_Quaternion {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Quaternion {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Quaternion()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Quaternion')
+    }
+};
 %extend gp_Quaternion {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -14819,6 +15287,24 @@ None
 };
 
 
+
+%extend gp_QuaternionNLerp {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_QuaternionNLerp {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_QuaternionNLerp()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_QuaternionNLerp')
+    }
+};
 %extend gp_QuaternionNLerp {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -14925,6 +15411,24 @@ None
 };
 
 
+
+%extend gp_QuaternionSLerp {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_QuaternionSLerp {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_QuaternionSLerp()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_QuaternionSLerp')
+    }
+};
 %extend gp_QuaternionSLerp {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -15390,6 +15894,24 @@ gp_Ax1
 };
 
 
+
+%extend gp_Sphere {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Sphere {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Sphere()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Sphere')
+    }
+};
 %extend gp_Sphere {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -15900,6 +16422,24 @@ gp_Ax1
 };
 
 
+
+%extend gp_Torus {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Torus {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Torus()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Torus')
+    }
+};
 %extend gp_Torus {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -15938,13 +16478,14 @@ None
 		 gp_Trsf(const gp_Trsf2d & theT);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** Form ******************/
 		/**** md5 signature: f29bb1eb1523b456c279366338ab9947 ****/
 		%feature("compactdefaultargs") Form;
@@ -15993,21 +16534,15 @@ gp_Mat
 ") HVectorialPart;
 		const gp_Mat HVectorialPart();
 
-		/****************** InitFromJson ******************/
-		/**** md5 signature: ef88f08223ee594f1b33ebd2021df0e1 ****/
-		%feature("compactdefaultargs") InitFromJson;
-		%feature("autodoc", "Inits the content of me from the stream.
 
-Parameters
-----------
-theSStream: Standard_SStream
-
-Returns
--------
-theStreamPos: int
-") InitFromJson;
-		Standard_Boolean InitFromJson(const Standard_SStream & theSStream, Standard_Integer &OutValue);
-
+        /****************** InitFromJsonString ******************/
+        %feature("autodoc", "1");
+        %extend{
+            bool InitFromJsonString(std::string json_string) {
+            std::stringstream s(json_string);
+            Standard_Integer pos=2;
+            return self->InitFromJson(s, pos);}
+        };
 		/****************** Invert ******************/
 		/**** md5 signature: 980f166f600d23a8c77565829af2eeff ****/
 		%feature("compactdefaultargs") Invert;
@@ -16484,19 +17019,37 @@ gp_Trsf
 		gp_Trsf operator *(const gp_Trsf & theT);
 
 
-            %extend{
-                void __imul_wrapper__(const gp_Trsf other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const gp_Trsf other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 };
 
 
+
+%extend gp_Trsf {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Trsf {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Trsf()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Trsf')
+    }
+};
 %extend gp_Trsf {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -16944,19 +17497,37 @@ gp_Trsf2d
 		gp_Trsf2d operator *(const gp_Trsf2d & theT);
 
 
-            %extend{
-                void __imul_wrapper__(const gp_Trsf2d other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const gp_Trsf2d other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 };
 
 
+
+%extend gp_Trsf2d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Trsf2d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Trsf2d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Trsf2d')
+    }
+};
 %extend gp_Trsf2d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -17288,13 +17859,14 @@ float
 		Standard_Real DotCross(const gp_Vec & theV1, const gp_Vec & theV2);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** IsEqual ******************/
 		/**** md5 signature: 2ac5ae9d97482a3a85db3acf17ae3ac7 ****/
 		%feature("compactdefaultargs") IsEqual;
@@ -17947,16 +18519,16 @@ float
 		Standard_Real operator *(const gp_Vec & theOther);
 
 
-            %extend{
-                void __imul_wrapper__(const Standard_Real other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const Standard_Real other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 		/****************** operator + ******************/
 		/**** md5 signature: 93b1480972ce5d4dbcc4bd90a181cd59 ****/
 		%feature("compactdefaultargs") operator +;
@@ -17973,16 +18545,16 @@ gp_Vec
 		gp_Vec operator +(const gp_Vec & theOther);
 
 
-            %extend{
-                void __iadd_wrapper__(const gp_Vec other) {
-                *self += other;
-                }
-            }
-            %pythoncode {
-            def __iadd__(self, right):
-                self.__iadd_wrapper__(right)
-                return self
-            }
+%extend{
+    void __iadd_wrapper__(const gp_Vec other) {
+    *self += other;
+    }
+}
+%pythoncode {
+def __iadd__(self, right):
+    self.__iadd_wrapper__(right)
+    return self
+}
 		/****************** operator - ******************/
 		/**** md5 signature: 13506a405f58dab7716acf05b5ec6fc7 ****/
 		%feature("compactdefaultargs") operator -;
@@ -18010,16 +18582,16 @@ gp_Vec
 		gp_Vec operator -();
 
 
-            %extend{
-                void __isub_wrapper__(const gp_Vec other) {
-                *self -= other;
-                }
-            }
-            %pythoncode {
-            def __isub__(self, right):
-                self.__isub_wrapper__(right)
-                return self
-            }
+%extend{
+    void __isub_wrapper__(const gp_Vec other) {
+    *self -= other;
+    }
+}
+%pythoncode {
+def __isub__(self, right):
+    self.__isub_wrapper__(right)
+    return self
+}
 		/****************** operator / ******************/
 		/**** md5 signature: 34acbb84206bf14cbc792d7112b3911e ****/
 		%feature("compactdefaultargs") operator /;
@@ -18036,19 +18608,37 @@ gp_Vec
 		gp_Vec operator /(const Standard_Real theScalar);
 
 
-            %extend{
-                void __itruediv_wrapper__(const Standard_Real other) {
-                *self /= other;
-                }
-            }
-            %pythoncode {
-            def __itruediv__(self, right):
-                self.__itruediv_wrapper__(right)
-                return self
-            }
+%extend{
+    void __itruediv_wrapper__(const Standard_Real other) {
+    *self /= other;
+    }
+}
+%pythoncode {
+def __itruediv__(self, right):
+    self.__itruediv_wrapper__(right)
+    return self
+}
 };
 
 
+
+%extend gp_Vec {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Vec {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Vec()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Vec')
+    }
+};
 %extend gp_Vec {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -18861,16 +19451,16 @@ gp_Vec2d
 		gp_Vec2d operator *(const Standard_Real theScalar);
 
 
-            %extend{
-                void __imul_wrapper__(const Standard_Real other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const Standard_Real other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 		/****************** operator + ******************/
 		/**** md5 signature: 34d7a6c112671277428feb10d3747300 ****/
 		%feature("compactdefaultargs") operator +;
@@ -18887,16 +19477,16 @@ gp_Vec2d
 		gp_Vec2d operator +(const gp_Vec2d & theOther);
 
 
-            %extend{
-                void __iadd_wrapper__(const gp_Vec2d other) {
-                *self += other;
-                }
-            }
-            %pythoncode {
-            def __iadd__(self, right):
-                self.__iadd_wrapper__(right)
-                return self
-            }
+%extend{
+    void __iadd_wrapper__(const gp_Vec2d other) {
+    *self += other;
+    }
+}
+%pythoncode {
+def __iadd__(self, right):
+    self.__iadd_wrapper__(right)
+    return self
+}
 		/****************** operator - ******************/
 		/**** md5 signature: cbda9d88ce3397da41adc1df0723fc91 ****/
 		%feature("compactdefaultargs") operator -;
@@ -18924,16 +19514,16 @@ gp_Vec2d
 		gp_Vec2d operator -(const gp_Vec2d & theRight);
 
 
-            %extend{
-                void __isub_wrapper__(const gp_Vec2d other) {
-                *self -= other;
-                }
-            }
-            %pythoncode {
-            def __isub__(self, right):
-                self.__isub_wrapper__(right)
-                return self
-            }
+%extend{
+    void __isub_wrapper__(const gp_Vec2d other) {
+    *self -= other;
+    }
+}
+%pythoncode {
+def __isub__(self, right):
+    self.__isub_wrapper__(right)
+    return self
+}
 		/****************** operator / ******************/
 		/**** md5 signature: b0e5e71aaabf55191684b3975d9eb54e ****/
 		%feature("compactdefaultargs") operator /;
@@ -18950,19 +19540,37 @@ gp_Vec2d
 		gp_Vec2d operator /(const Standard_Real theScalar);
 
 
-            %extend{
-                void __itruediv_wrapper__(const Standard_Real other) {
-                *self /= other;
-                }
-            }
-            %pythoncode {
-            def __itruediv__(self, right):
-                self.__itruediv_wrapper__(right)
-                return self
-            }
+%extend{
+    void __itruediv_wrapper__(const Standard_Real other) {
+    *self /= other;
+    }
+}
+%pythoncode {
+def __itruediv__(self, right):
+    self.__itruediv_wrapper__(right)
+    return self
+}
 };
 
 
+
+%extend gp_Vec2d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_Vec2d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_Vec2d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_Vec2d')
+    }
+};
 %extend gp_Vec2d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -19566,38 +20174,38 @@ gp_XY
 		gp_XY operator *(const gp_Mat2d & theMatrix);
 
 
-            %extend{
-                void __imul_wrapper__(const Standard_Real other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const Standard_Real other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 
-            %extend{
-                void __imul_wrapper__(const gp_XY other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const gp_XY other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 
-            %extend{
-                void __imul_wrapper__(const gp_Mat2d other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const gp_Mat2d other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 		/****************** operator + ******************/
 		/**** md5 signature: cbc6099231d3db5976720aa710b80ca4 ****/
 		%feature("compactdefaultargs") operator +;
@@ -19614,16 +20222,16 @@ gp_XY
 		gp_XY operator +(const gp_XY & theOther);
 
 
-            %extend{
-                void __iadd_wrapper__(const gp_XY other) {
-                *self += other;
-                }
-            }
-            %pythoncode {
-            def __iadd__(self, right):
-                self.__iadd_wrapper__(right)
-                return self
-            }
+%extend{
+    void __iadd_wrapper__(const gp_XY other) {
+    *self += other;
+    }
+}
+%pythoncode {
+def __iadd__(self, right):
+    self.__iadd_wrapper__(right)
+    return self
+}
 		/****************** operator - ******************/
 		/**** md5 signature: 67c07ba3c8d9e3c28626b927db1ec14a ****/
 		%feature("compactdefaultargs") operator -;
@@ -19651,16 +20259,16 @@ gp_XY
 		gp_XY operator -(const gp_XY & theOther);
 
 
-            %extend{
-                void __isub_wrapper__(const gp_XY other) {
-                *self -= other;
-                }
-            }
-            %pythoncode {
-            def __isub__(self, right):
-                self.__isub_wrapper__(right)
-                return self
-            }
+%extend{
+    void __isub_wrapper__(const gp_XY other) {
+    *self -= other;
+    }
+}
+%pythoncode {
+def __isub__(self, right):
+    self.__isub_wrapper__(right)
+    return self
+}
 		/****************** operator / ******************/
 		/**** md5 signature: aa3470df1c66fed23aa151e38121ca60 ****/
 		%feature("compactdefaultargs") operator /;
@@ -19677,19 +20285,37 @@ gp_XY
 		gp_XY operator /(const Standard_Real theScalar);
 
 
-            %extend{
-                void __itruediv_wrapper__(const Standard_Real other) {
-                *self /= other;
-                }
-            }
-            %pythoncode {
-            def __itruediv__(self, right):
-                self.__itruediv_wrapper__(right)
-                return self
-            }
+%extend{
+    void __itruediv_wrapper__(const Standard_Real other) {
+    *self /= other;
+    }
+}
+%pythoncode {
+def __itruediv__(self, right):
+    self.__itruediv_wrapper__(right)
+    return self
+}
 };
 
 
+
+%extend gp_XY {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_XY {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_XY()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_XY')
+    }
+};
 %extend gp_XY {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -19968,13 +20594,14 @@ float
 		Standard_Real DotCross(const gp_XYZ & theCoord1, const gp_XYZ & theCoord2);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** GetData ******************/
 		/**** md5 signature: e47b5b0ea190980bdbd67208fc1d8ad0 ****/
 		%feature("compactdefaultargs") GetData;
@@ -19986,21 +20613,15 @@ float *
 ") GetData;
 		const Standard_Real * GetData();
 
-		/****************** InitFromJson ******************/
-		/**** md5 signature: ef88f08223ee594f1b33ebd2021df0e1 ****/
-		%feature("compactdefaultargs") InitFromJson;
-		%feature("autodoc", "Inits the content of me from the stream.
 
-Parameters
-----------
-theSStream: Standard_SStream
-
-Returns
--------
-theStreamPos: int
-") InitFromJson;
-		Standard_Boolean InitFromJson(const Standard_SStream & theSStream, Standard_Integer &OutValue);
-
+        /****************** InitFromJsonString ******************/
+        %feature("autodoc", "1");
+        %extend{
+            bool InitFromJsonString(std::string json_string) {
+            std::stringstream s(json_string);
+            Standard_Integer pos=2;
+            return self->InitFromJson(s, pos);}
+        };
 		/****************** IsEqual ******************/
 		/**** md5 signature: f95d99d49ea9ee51a45d7b7802e91efd ****/
 		%feature("compactdefaultargs") IsEqual;
@@ -20471,38 +21092,38 @@ gp_XYZ
 		gp_XYZ operator *(const gp_Mat & theMatrix);
 
 
-            %extend{
-                void __imul_wrapper__(const Standard_Real other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const Standard_Real other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 
-            %extend{
-                void __imul_wrapper__(const gp_XYZ other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const gp_XYZ other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 
-            %extend{
-                void __imul_wrapper__(const gp_Mat other) {
-                *self *= other;
-                }
-            }
-            %pythoncode {
-            def __imul__(self, right):
-                self.__imul_wrapper__(right)
-                return self
-            }
+%extend{
+    void __imul_wrapper__(const gp_Mat other) {
+    *self *= other;
+    }
+}
+%pythoncode {
+def __imul__(self, right):
+    self.__imul_wrapper__(right)
+    return self
+}
 		/****************** operator + ******************/
 		/**** md5 signature: 8924adfbe261216bc106729e6a25edff ****/
 		%feature("compactdefaultargs") operator +;
@@ -20519,16 +21140,16 @@ gp_XYZ
 		gp_XYZ operator +(const gp_XYZ & theOther);
 
 
-            %extend{
-                void __iadd_wrapper__(const gp_XYZ other) {
-                *self += other;
-                }
-            }
-            %pythoncode {
-            def __iadd__(self, right):
-                self.__iadd_wrapper__(right)
-                return self
-            }
+%extend{
+    void __iadd_wrapper__(const gp_XYZ other) {
+    *self += other;
+    }
+}
+%pythoncode {
+def __iadd__(self, right):
+    self.__iadd_wrapper__(right)
+    return self
+}
 		/****************** operator - ******************/
 		/**** md5 signature: 307e5e28b06e165c7bed9d6fa5019e70 ****/
 		%feature("compactdefaultargs") operator -;
@@ -20545,16 +21166,16 @@ gp_XYZ
 		gp_XYZ operator -(const gp_XYZ & theOther);
 
 
-            %extend{
-                void __isub_wrapper__(const gp_XYZ other) {
-                *self -= other;
-                }
-            }
-            %pythoncode {
-            def __isub__(self, right):
-                self.__isub_wrapper__(right)
-                return self
-            }
+%extend{
+    void __isub_wrapper__(const gp_XYZ other) {
+    *self -= other;
+    }
+}
+%pythoncode {
+def __isub__(self, right):
+    self.__isub_wrapper__(right)
+    return self
+}
 		/****************** operator / ******************/
 		/**** md5 signature: aab1675bb3218dd6795d705ce7dac9af ****/
 		%feature("compactdefaultargs") operator /;
@@ -20571,19 +21192,37 @@ gp_XYZ
 		gp_XYZ operator /(const Standard_Real theScalar);
 
 
-            %extend{
-                void __itruediv_wrapper__(const Standard_Real other) {
-                *self /= other;
-                }
-            }
-            %pythoncode {
-            def __itruediv__(self, right):
-                self.__itruediv_wrapper__(right)
-                return self
-            }
+%extend{
+    void __itruediv_wrapper__(const Standard_Real other) {
+    *self /= other;
+    }
+}
+%pythoncode {
+def __itruediv__(self, right):
+    self.__itruediv_wrapper__(right)
+    return self
+}
 };
 
 
+
+%extend gp_XYZ {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend gp_XYZ {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = gp_XYZ()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of gp_XYZ')
+    }
+};
 %extend gp_XYZ {
 	%pythoncode {
 	__repr__ = _dumps_object

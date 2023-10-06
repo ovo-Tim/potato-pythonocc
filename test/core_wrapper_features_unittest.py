@@ -467,7 +467,7 @@ class TestWrapperFeatures(unittest.TestCase):
         # for this unittest, don't use the issinstance() function,
         # since the OCC.Geom2d module
         # is *not* manually imported
-        returned_object_type = "%s" % type(returned_object)
+        returned_object_type = f"{type(returned_object)}"
         self.assertEqual(
             returned_object_type, "<class 'OCC.Core.Geom2d.Geom2d_TrimmedCurve'>"
         )
@@ -757,8 +757,27 @@ class TestWrapperFeatures(unittest.TestCase):
         # check dump json export is working
         json_string = bnd_box.DumpJsonToString()
         # try to  the output string
-        json_imported_dict = json.loads("{" + json_string + "}")
-        self.assertTrue(len(json_imported_dict) > 0)  # at least one entry
+        json_imported_dict = json.loads(json_string)
+        self.assertEqual(json_imported_dict["CornerMin"], [-10, -10, -10])
+        self.assertEqual(json_imported_dict["CornerMax"], [10, 10, 10])
+
+    def test_ImportFromJson(self) -> None:
+        """Since opencascade 7x, some objects can be serialized to json"""
+        # create a sphere with a radius of 10.
+        p1 = gp_Pnt(1.0, 3.14, -5)
+        p2 = gp_Pnt()
+        p2.InitFromJsonString(p1.DumpJsonToString())
+        self.assertEqual(p2.X(), 1.0)
+        self.assertEqual(p2.Y(), 3.14)
+        self.assertEqual(p2.Z(), -5)
+
+    def test_json_pickle(self) -> None:
+        p1 = gp_Pnt(-1.0, 0.414, 7.88)
+        dmp = pickle.dumps(p1)
+        res = pickle.loads(dmp)
+        self.assertEqual(res.X(), -1.0)
+        self.assertEqual(res.Y(), 0.414)
+        self.assertEqual(res.Z(), 7.88)
 
     def test_harray1_harray2_hsequence(self) -> None:
         """Check that special wrappers for harray1, harray2 and hsequence.
@@ -861,7 +880,7 @@ class TestWrapperFeatures(unittest.TestCase):
         # try to import the module
         for core_module in available_core_modules:
             module_name = os.path.basename(core_module).split(".")[0]
-            importlib.import_module("OCC.Core.%s" % module_name)
+            importlib.import_module(f"OCC.Core.{module_name}")
 
     def test_aliases(self) -> None:
         """some classes are defined in c++ as typedef, i.e. they are only

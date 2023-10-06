@@ -72,9 +72,9 @@ from OCC.Core.Exception import *
 /* end python proxy for enums */
 
 /* handles */
+%wrap_handle(Bnd_HArray1OfBox2d)
 %wrap_handle(Bnd_HArray1OfBox)
 %wrap_handle(Bnd_HArray1OfSphere)
-%wrap_handle(Bnd_HArray1OfBox2d)
 /* end handles declaration */
 
 /* templates */
@@ -1847,13 +1847,14 @@ None
 		void Dump();
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** Enlarge ******************/
 		/**** md5 signature: b5dbc37ffece9eaee81e33bf3b715eef ****/
 		%feature("compactdefaultargs") Enlarge;
@@ -1921,21 +1922,15 @@ bool
 ") HasFinitePart;
 		Standard_Boolean HasFinitePart();
 
-		/****************** InitFromJson ******************/
-		/**** md5 signature: ef88f08223ee594f1b33ebd2021df0e1 ****/
-		%feature("compactdefaultargs") InitFromJson;
-		%feature("autodoc", "Inits the content of me from the stream.
 
-Parameters
-----------
-theSStream: Standard_SStream
-
-Returns
--------
-theStreamPos: int
-") InitFromJson;
-		Standard_Boolean InitFromJson(const Standard_SStream & theSStream, Standard_Integer &OutValue);
-
+        /****************** InitFromJsonString ******************/
+        %feature("autodoc", "1");
+        %extend{
+            bool InitFromJsonString(std::string json_string) {
+            std::stringstream s(json_string);
+            Standard_Integer pos=2;
+            return self->InitFromJson(s, pos);}
+        };
 		/****************** IsOpen ******************/
 		/**** md5 signature: 49b225479601710d1c8888cb2f18ffcf ****/
 		%feature("compactdefaultargs") IsOpen;
@@ -2405,6 +2400,24 @@ None
 };
 
 
+
+%extend Bnd_Box {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend Bnd_Box {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = Bnd_Box()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of Bnd_Box')
+    }
+};
 %extend Bnd_Box {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -2877,6 +2890,24 @@ None
 };
 
 
+
+%extend Bnd_Box2d {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend Bnd_Box2d {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = Bnd_Box2d()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of Bnd_Box2d')
+    }
+};
 %extend Bnd_Box2d {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -2977,13 +3008,14 @@ gp_XYZ
 		const gp_XYZ Center();
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** Enlarge ******************/
 		/**** md5 signature: d759fcc6f239218e61510f561f9d7a30 ****/
 		%feature("compactdefaultargs") Enlarge;
@@ -3280,6 +3312,24 @@ float
 };
 
 
+
+%extend Bnd_OBB {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend Bnd_OBB {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = Bnd_OBB()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of Bnd_OBB')
+    }
+};
 %extend Bnd_OBB {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -3375,13 +3425,14 @@ float
 		Standard_Real Delta();
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** Enlarge ******************/
 		/**** md5 signature: 2c37569c59dcd99db9a5ddf54944897c ****/
 		%feature("compactdefaultargs") Enlarge;
@@ -3618,22 +3669,40 @@ bool
 		Standard_Boolean Union(const Bnd_Range & theOther);
 
 
-            %extend{
-                bool __eq_wrapper__(const Bnd_Range other) {
-                if (*self==other) return true;
-                else return false;
-                }
-            }
-            %pythoncode {
-            def __eq__(self, right):
-                try:
-                    return self.__eq_wrapper__(right)
-                except:
-                    return False
-            }
+%extend{
+    bool __eq_wrapper__(const Bnd_Range other) {
+    if (*self==other) return true;
+    else return false;
+    }
+}
+%pythoncode {
+def __eq__(self, right):
+    try:
+        return self.__eq_wrapper__(right)
+    except:
+        return False
+}
 };
 
 
+
+%extend Bnd_Range {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend Bnd_Range {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = Bnd_Range()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of Bnd_Range')
+    }
+};
 %extend Bnd_Range {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -3882,6 +3951,24 @@ int
 };
 
 
+
+%extend Bnd_Sphere {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend Bnd_Sphere {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = Bnd_Sphere()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of Bnd_Sphere')
+    }
+};
 %extend Bnd_Sphere {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -3926,6 +4013,24 @@ BVH_Box<float, 3 >
 };
 
 
+
+%extend Bnd_Tools {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend Bnd_Tools {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = Bnd_Tools()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of Bnd_Tools')
+    }
+};
 %extend Bnd_Tools {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -3933,6 +4038,17 @@ BVH_Box<float, 3 >
 };
 
 /* harray1 classes */
+
+class Bnd_HArray1OfBox2d : public Bnd_Array1OfBox2d, public Standard_Transient {
+  public:
+    Bnd_HArray1OfBox2d(const Standard_Integer theLower, const Standard_Integer theUpper);
+    Bnd_HArray1OfBox2d(const Standard_Integer theLower, const Standard_Integer theUpper, const Bnd_Array1OfBox2d::value_type& theValue);
+    Bnd_HArray1OfBox2d(const Bnd_Array1OfBox2d& theOther);
+    const Bnd_Array1OfBox2d& Array1();
+    Bnd_Array1OfBox2d& ChangeArray1();
+};
+%make_alias(Bnd_HArray1OfBox2d)
+
 
 class Bnd_HArray1OfBox : public Bnd_Array1OfBox, public Standard_Transient {
   public:
@@ -3954,17 +4070,6 @@ class Bnd_HArray1OfSphere : public Bnd_Array1OfSphere, public Standard_Transient
     Bnd_Array1OfSphere& ChangeArray1();
 };
 %make_alias(Bnd_HArray1OfSphere)
-
-
-class Bnd_HArray1OfBox2d : public Bnd_Array1OfBox2d, public Standard_Transient {
-  public:
-    Bnd_HArray1OfBox2d(const Standard_Integer theLower, const Standard_Integer theUpper);
-    Bnd_HArray1OfBox2d(const Standard_Integer theLower, const Standard_Integer theUpper, const Bnd_Array1OfBox2d::value_type& theValue);
-    Bnd_HArray1OfBox2d(const Bnd_Array1OfBox2d& theOther);
-    const Bnd_Array1OfBox2d& Array1();
-    Bnd_Array1OfBox2d& ChangeArray1();
-};
-%make_alias(Bnd_HArray1OfBox2d)
 
 /* harray2 classes */
 /* hsequence classes */

@@ -2186,13 +2186,14 @@ float
 		Standard_Real Distance(const Quantity_Color & theColor);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** Epsilon ******************/
 		/**** md5 signature: 67863b45c70903f3df8806ec9bb0512a ****/
 		%feature("compactdefaultargs") Epsilon;
@@ -2245,21 +2246,15 @@ float
 ") Hue;
 		Standard_Real Hue();
 
-		/****************** InitFromJson ******************/
-		/**** md5 signature: ef88f08223ee594f1b33ebd2021df0e1 ****/
-		%feature("compactdefaultargs") InitFromJson;
-		%feature("autodoc", "Inits the content of me from the stream.
 
-Parameters
-----------
-theSStream: Standard_SStream
-
-Returns
--------
-theStreamPos: int
-") InitFromJson;
-		Standard_Boolean InitFromJson(const Standard_SStream & theSStream, Standard_Integer &OutValue);
-
+        /****************** InitFromJsonString ******************/
+        %feature("autodoc", "1");
+        %extend{
+            bool InitFromJsonString(std::string json_string) {
+            std::stringstream s(json_string);
+            Standard_Integer pos=2;
+            return self->InitFromJson(s, pos);}
+        };
 		/****************** IsDifferent ******************/
 		/**** md5 signature: 123ad10267aaf1936e39bb0bc28f84ef ****/
 		%feature("compactdefaultargs") IsDifferent;
@@ -2477,36 +2472,54 @@ theC3: float
 		void Values(Standard_Real &OutValue, Standard_Real &OutValue, Standard_Real &OutValue, const Quantity_TypeOfColor theType);
 
 
-            %extend{
-                bool __ne_wrapper__(const Quantity_Color other) {
-                if (*self!=other) return true;
-                else return false;
-                }
-            }
-            %pythoncode {
-            def __ne__(self, right):
-                try:
-                    return self.__ne_wrapper__(right)
-                except:
-                    return True
-            }
+%extend{
+    bool __ne_wrapper__(const Quantity_Color other) {
+    if (*self!=other) return true;
+    else return false;
+    }
+}
+%pythoncode {
+def __ne__(self, right):
+    try:
+        return self.__ne_wrapper__(right)
+    except:
+        return True
+}
 
-            %extend{
-                bool __eq_wrapper__(const Quantity_Color other) {
-                if (*self==other) return true;
-                else return false;
-                }
-            }
-            %pythoncode {
-            def __eq__(self, right):
-                try:
-                    return self.__eq_wrapper__(right)
-                except:
-                    return False
-            }
+%extend{
+    bool __eq_wrapper__(const Quantity_Color other) {
+    if (*self==other) return true;
+    else return false;
+    }
+}
+%pythoncode {
+def __eq__(self, right):
+    try:
+        return self.__eq_wrapper__(right)
+    except:
+        return False
+}
 };
 
 
+
+%extend Quantity_Color {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend Quantity_Color {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = Quantity_Color()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of Quantity_Color')
+    }
+};
 %extend Quantity_Color {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -2553,6 +2566,24 @@ bool
 };
 
 
+
+%extend Quantity_ColorHasher {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend Quantity_ColorHasher {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = Quantity_ColorHasher()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of Quantity_ColorHasher')
+    }
+};
 %extend Quantity_ColorHasher {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -2743,13 +2774,14 @@ NCollection_Vec4<float >
 		static NCollection_Vec4<float > Convert_sRGB_To_LinearRGB(const NCollection_Vec4<float> & theRGB);
 
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** GetRGB ******************/
 		/**** md5 signature: a34b3caa70b44fb7fb19647f1c2d613b ****/
 		%feature("compactdefaultargs") GetRGB;
@@ -2761,21 +2793,15 @@ Quantity_Color
 ") GetRGB;
 		const Quantity_Color & GetRGB();
 
-		/****************** InitFromJson ******************/
-		/**** md5 signature: ef88f08223ee594f1b33ebd2021df0e1 ****/
-		%feature("compactdefaultargs") InitFromJson;
-		%feature("autodoc", "Inits the content of me from the stream.
 
-Parameters
-----------
-theSStream: Standard_SStream
-
-Returns
--------
-theStreamPos: int
-") InitFromJson;
-		Standard_Boolean InitFromJson(const Standard_SStream & theSStream, Standard_Integer &OutValue);
-
+        /****************** InitFromJsonString ******************/
+        %feature("autodoc", "1");
+        %extend{
+            bool InitFromJsonString(std::string json_string) {
+            std::stringstream s(json_string);
+            Standard_Integer pos=2;
+            return self->InitFromJson(s, pos);}
+        };
 		/****************** IsDifferent ******************/
 		/**** md5 signature: c920c33d4688df25d56cabe0d9340122 ****/
 		%feature("compactdefaultargs") IsDifferent;
@@ -2855,36 +2881,54 @@ None
 		void SetValues(float theRed, float theGreen, float theBlue, float theAlpha);
 
 
-            %extend{
-                bool __ne_wrapper__(const Quantity_ColorRGBA other) {
-                if (*self!=other) return true;
-                else return false;
-                }
-            }
-            %pythoncode {
-            def __ne__(self, right):
-                try:
-                    return self.__ne_wrapper__(right)
-                except:
-                    return True
-            }
+%extend{
+    bool __ne_wrapper__(const Quantity_ColorRGBA other) {
+    if (*self!=other) return true;
+    else return false;
+    }
+}
+%pythoncode {
+def __ne__(self, right):
+    try:
+        return self.__ne_wrapper__(right)
+    except:
+        return True
+}
 
-            %extend{
-                bool __eq_wrapper__(const Quantity_ColorRGBA other) {
-                if (*self==other) return true;
-                else return false;
-                }
-            }
-            %pythoncode {
-            def __eq__(self, right):
-                try:
-                    return self.__eq_wrapper__(right)
-                except:
-                    return False
-            }
+%extend{
+    bool __eq_wrapper__(const Quantity_ColorRGBA other) {
+    if (*self==other) return true;
+    else return false;
+    }
+}
+%pythoncode {
+def __eq__(self, right):
+    try:
+        return self.__eq_wrapper__(right)
+    except:
+        return False
+}
 };
 
 
+
+%extend Quantity_ColorRGBA {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend Quantity_ColorRGBA {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = Quantity_ColorRGBA()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of Quantity_ColorRGBA')
+    }
+};
 %extend Quantity_ColorRGBA {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -2931,6 +2975,24 @@ bool
 };
 
 
+
+%extend Quantity_ColorRGBAHasher {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend Quantity_ColorRGBAHasher {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = Quantity_ColorRGBAHasher()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of Quantity_ColorRGBAHasher')
+    }
+};
 %extend Quantity_ColorRGBAHasher {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -3270,22 +3332,40 @@ Quantity_Date
 		Quantity_Date operator -(const Quantity_Period & aPeriod);
 
 
-            %extend{
-                bool __eq_wrapper__(const Quantity_Date other) {
-                if (*self==other) return true;
-                else return false;
-                }
-            }
-            %pythoncode {
-            def __eq__(self, right):
-                try:
-                    return self.__eq_wrapper__(right)
-                except:
-                    return False
-            }
+%extend{
+    bool __eq_wrapper__(const Quantity_Date other) {
+    if (*self==other) return true;
+    else return false;
+    }
+}
+%pythoncode {
+def __eq__(self, right):
+    try:
+        return self.__eq_wrapper__(right)
+    except:
+        return False
+}
 };
 
 
+
+%extend Quantity_Date {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend Quantity_Date {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = Quantity_Date()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of Quantity_Date')
+    }
+};
 %extend Quantity_Date {
 	%pythoncode {
 	__repr__ = _dumps_object
@@ -3554,22 +3634,40 @@ Quantity_Period
 		Quantity_Period operator -(const Quantity_Period & anOther);
 
 
-            %extend{
-                bool __eq_wrapper__(const Quantity_Period other) {
-                if (*self==other) return true;
-                else return false;
-                }
-            }
-            %pythoncode {
-            def __eq__(self, right):
-                try:
-                    return self.__eq_wrapper__(right)
-                except:
-                    return False
-            }
+%extend{
+    bool __eq_wrapper__(const Quantity_Period other) {
+    if (*self==other) return true;
+    else return false;
+    }
+}
+%pythoncode {
+def __eq__(self, right):
+    try:
+        return self.__eq_wrapper__(right)
+    except:
+        return False
+}
 };
 
 
+
+%extend Quantity_Period {
+%pythoncode {
+    def __getstate__(self):
+        return self.DumpJsonToString()
+    }
+};
+
+%extend Quantity_Period {
+%pythoncode {
+    def __setstate__(self, state):
+        inst = Quantity_Period()
+        if inst.InitFromJsonString(state):
+            self.this = inst.this
+        else:
+            raise IOError('Failed to set state of Quantity_Period')
+    }
+};
 %extend Quantity_Period {
 	%pythoncode {
 	__repr__ = _dumps_object
