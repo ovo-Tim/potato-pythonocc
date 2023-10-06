@@ -19,13 +19,8 @@
 
 import sys
 
-from OCC.Display.backend import load_pyqt6
 from OCC.Display.SimpleGui import init_display
 from OCC.Core.BRepPrimAPI import BRepPrimAPI_MakeBox
-
-# check for pyqt6
-if not load_pyqt6():
-    raise IOError("pyqt6 required to run this test")
 
 print("pyqt6 test running ...")
 pyqt6_display, start_display, add_menu, add_function_to_menu = init_display("pyqt6")
