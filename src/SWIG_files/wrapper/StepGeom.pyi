@@ -9,10 +9,10 @@ from OCC.Core.TCollection import *
 from OCC.Core.StepBasic import *
 from OCC.Core.TColStd import *
 
-#the following typedef cannot be wrapped as is
-StepGeom_Array2OfCartesianPoint = NewType('StepGeom_Array2OfCartesianPoint', Any)
-#the following typedef cannot be wrapped as is
-StepGeom_Array2OfSurfacePatch = NewType('StepGeom_Array2OfSurfacePatch', Any)
+# the following typedef cannot be wrapped as is
+StepGeom_Array2OfCartesianPoint = NewType("StepGeom_Array2OfCartesianPoint", Any)
+# the following typedef cannot be wrapped as is
+StepGeom_Array2OfSurfacePatch = NewType("StepGeom_Array2OfSurfacePatch", Any)
 
 class StepGeom_Array1OfBoundaryCurve:
     @overload

@@ -13,11 +13,11 @@ from OCC.Core.gp import *
 from OCC.Core.TColStd import *
 from OCC.Core.V3d import *
 
-Handle_PrsMgr_Presentation3d = NewType('Handle_PrsMgr_Presentation3d', Handle_PrsMgr_Presentation)
-Handle_PrsMgr_PresentationManager3d = NewType('Handle_PrsMgr_PresentationManager3d', Handle_PrsMgr_PresentationManager)
-Prs3d_Presentation = NewType('Prs3d_Presentation', Graphic3d_Structure)
-PrsMgr_Presentation3d = NewType('PrsMgr_Presentation3d', PrsMgr_Presentation)
-PrsMgr_PresentationManager3d = NewType('PrsMgr_PresentationManager3d', PrsMgr_PresentationManager)
+Handle_PrsMgr_Presentation3d = NewType("Handle_PrsMgr_Presentation3d", Handle_PrsMgr_Presentation)
+Handle_PrsMgr_PresentationManager3d = NewType("Handle_PrsMgr_PresentationManager3d", Handle_PrsMgr_PresentationManager)
+Prs3d_Presentation = NewType("Prs3d_Presentation", Graphic3d_Structure)
+PrsMgr_Presentation3d = NewType("PrsMgr_Presentation3d", PrsMgr_Presentation)
+PrsMgr_PresentationManager3d = NewType("PrsMgr_PresentationManager3d", PrsMgr_PresentationManager)
 
 class PrsMgr_ListOfPresentableObjects:
     def __init__(self) -> None: ...

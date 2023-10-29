@@ -17,19 +17,19 @@ from OCC.Core.TopAbs import *
 from OCC.Core.BVH import *
 from OCC.Core.Bnd import *
 
-SelectBasics_EntityOwner = NewType('SelectBasics_EntityOwner', SelectMgr_EntityOwner)
-#the following typedef cannot be wrapped as is
-SelectMgr_IndexedDataMapOfOwnerCriterion = NewType('SelectMgr_IndexedDataMapOfOwnerCriterion', Any)
-#the following typedef cannot be wrapped as is
-SelectMgr_IndexedMapOfHSensitive = NewType('SelectMgr_IndexedMapOfHSensitive', Any)
-#the following typedef cannot be wrapped as is
-SelectMgr_IndexedMapOfOwner = NewType('SelectMgr_IndexedMapOfOwner', Any)
-#the following typedef cannot be wrapped as is
-SelectMgr_Mat4 = NewType('SelectMgr_Mat4', Any)
-#the following typedef cannot be wrapped as is
-SelectMgr_Vec3 = NewType('SelectMgr_Vec3', Any)
-#the following typedef cannot be wrapped as is
-SelectMgr_Vec4 = NewType('SelectMgr_Vec4', Any)
+SelectBasics_EntityOwner = NewType("SelectBasics_EntityOwner", SelectMgr_EntityOwner)
+# the following typedef cannot be wrapped as is
+SelectMgr_IndexedDataMapOfOwnerCriterion = NewType("SelectMgr_IndexedDataMapOfOwnerCriterion", Any)
+# the following typedef cannot be wrapped as is
+SelectMgr_IndexedMapOfHSensitive = NewType("SelectMgr_IndexedMapOfHSensitive", Any)
+# the following typedef cannot be wrapped as is
+SelectMgr_IndexedMapOfOwner = NewType("SelectMgr_IndexedMapOfOwner", Any)
+# the following typedef cannot be wrapped as is
+SelectMgr_Mat4 = NewType("SelectMgr_Mat4", Any)
+# the following typedef cannot be wrapped as is
+SelectMgr_Vec3 = NewType("SelectMgr_Vec3", Any)
+# the following typedef cannot be wrapped as is
+SelectMgr_Vec4 = NewType("SelectMgr_Vec4", Any)
 
 class SelectMgr_ListOfFilter:
     def __init__(self) -> None: ...

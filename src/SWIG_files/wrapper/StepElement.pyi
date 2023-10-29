@@ -8,12 +8,12 @@ from OCC.Core.StepRepr import *
 from OCC.Core.StepData import *
 from OCC.Core.TColStd import *
 
-#the following typedef cannot be wrapped as is
-StepElement_Array2OfCurveElementPurposeMember = NewType('StepElement_Array2OfCurveElementPurposeMember', Any)
-#the following typedef cannot be wrapped as is
-StepElement_Array2OfSurfaceElementPurpose = NewType('StepElement_Array2OfSurfaceElementPurpose', Any)
-#the following typedef cannot be wrapped as is
-StepElement_Array2OfSurfaceElementPurposeMember = NewType('StepElement_Array2OfSurfaceElementPurposeMember', Any)
+# the following typedef cannot be wrapped as is
+StepElement_Array2OfCurveElementPurposeMember = NewType("StepElement_Array2OfCurveElementPurposeMember", Any)
+# the following typedef cannot be wrapped as is
+StepElement_Array2OfSurfaceElementPurpose = NewType("StepElement_Array2OfSurfaceElementPurpose", Any)
+# the following typedef cannot be wrapped as is
+StepElement_Array2OfSurfaceElementPurposeMember = NewType("StepElement_Array2OfSurfaceElementPurposeMember", Any)
 
 class StepElement_Array1OfCurveElementEndReleasePacket:
     @overload

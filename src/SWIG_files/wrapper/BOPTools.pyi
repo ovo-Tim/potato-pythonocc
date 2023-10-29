@@ -13,28 +13,28 @@ from OCC.Core.Geom import *
 from OCC.Core.Geom2d import *
 from OCC.Core.BRepAdaptor import *
 
-#the following typedef cannot be wrapped as is
-BOPTools_Box2dPairSelector = NewType('BOPTools_Box2dPairSelector', Any)
-#the following typedef cannot be wrapped as is
-BOPTools_Box2dTree = NewType('BOPTools_Box2dTree', Any)
-#the following typedef cannot be wrapped as is
-BOPTools_Box2dTreeSelector = NewType('BOPTools_Box2dTreeSelector', Any)
-#the following typedef cannot be wrapped as is
-BOPTools_BoxPairSelector = NewType('BOPTools_BoxPairSelector', Any)
-#the following typedef cannot be wrapped as is
-BOPTools_BoxTree = NewType('BOPTools_BoxTree', Any)
-#the following typedef cannot be wrapped as is
-BOPTools_BoxTreeSelector = NewType('BOPTools_BoxTreeSelector', Any)
-#the following typedef cannot be wrapped as is
-BOPTools_IndexedDataMapOfSetShape = NewType('BOPTools_IndexedDataMapOfSetShape', Any)
-#the following typedef cannot be wrapped as is
-BOPTools_ListIteratorOfListOfConnexityBlock = NewType('BOPTools_ListIteratorOfListOfConnexityBlock', Any)
-#the following typedef cannot be wrapped as is
-BOPTools_ListIteratorOfListOfCoupleOfShape = NewType('BOPTools_ListIteratorOfListOfCoupleOfShape', Any)
-#the following typedef cannot be wrapped as is
-BOPTools_MapIteratorOfMapOfSet = NewType('BOPTools_MapIteratorOfMapOfSet', Any)
-#the following typedef cannot be wrapped as is
-BOPTools_MapOfSet = NewType('BOPTools_MapOfSet', Any)
+# the following typedef cannot be wrapped as is
+BOPTools_Box2dPairSelector = NewType("BOPTools_Box2dPairSelector", Any)
+# the following typedef cannot be wrapped as is
+BOPTools_Box2dTree = NewType("BOPTools_Box2dTree", Any)
+# the following typedef cannot be wrapped as is
+BOPTools_Box2dTreeSelector = NewType("BOPTools_Box2dTreeSelector", Any)
+# the following typedef cannot be wrapped as is
+BOPTools_BoxPairSelector = NewType("BOPTools_BoxPairSelector", Any)
+# the following typedef cannot be wrapped as is
+BOPTools_BoxTree = NewType("BOPTools_BoxTree", Any)
+# the following typedef cannot be wrapped as is
+BOPTools_BoxTreeSelector = NewType("BOPTools_BoxTreeSelector", Any)
+# the following typedef cannot be wrapped as is
+BOPTools_IndexedDataMapOfSetShape = NewType("BOPTools_IndexedDataMapOfSetShape", Any)
+# the following typedef cannot be wrapped as is
+BOPTools_ListIteratorOfListOfConnexityBlock = NewType("BOPTools_ListIteratorOfListOfConnexityBlock", Any)
+# the following typedef cannot be wrapped as is
+BOPTools_ListIteratorOfListOfCoupleOfShape = NewType("BOPTools_ListIteratorOfListOfCoupleOfShape", Any)
+# the following typedef cannot be wrapped as is
+BOPTools_MapIteratorOfMapOfSet = NewType("BOPTools_MapIteratorOfMapOfSet", Any)
+# the following typedef cannot be wrapped as is
+BOPTools_MapOfSet = NewType("BOPTools_MapOfSet", Any)
 
 class BOPTools_ListOfConnexityBlock:
     def __init__(self) -> None: ...

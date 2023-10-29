@@ -11,21 +11,21 @@ from OCC.Core.gp import *
 from OCC.Core.TColStd import *
 from OCC.Core.TopAbs import *
 
-#the following typedef cannot be wrapped as is
-TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape = NewType('TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape', Any)
-#the following typedef cannot be wrapped as is
-TNaming_MapIteratorOfMapOfNamedShape = NewType('TNaming_MapIteratorOfMapOfNamedShape', Any)
-#the following typedef cannot be wrapped as is
-TNaming_MapIteratorOfMapOfShape = NewType('TNaming_MapIteratorOfMapOfShape', Any)
-#the following typedef cannot be wrapped as is
-TNaming_MapOfNamedShape = NewType('TNaming_MapOfNamedShape', Any)
-#the following typedef cannot be wrapped as is
-TNaming_MapOfShape = NewType('TNaming_MapOfShape', Any)
-#the following typedef cannot be wrapped as is
-TNaming_NamedShapeHasher = NewType('TNaming_NamedShapeHasher', Any)
-TNaming_PtrAttribute = NewType('TNaming_PtrAttribute', TNaming_NamedShape)
-TNaming_PtrNode = NewType('TNaming_PtrNode', TNaming_Node)
-TNaming_PtrRefShape = NewType('TNaming_PtrRefShape', TNaming_RefShape)
+# the following typedef cannot be wrapped as is
+TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape = NewType("TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape", Any)
+# the following typedef cannot be wrapped as is
+TNaming_MapIteratorOfMapOfNamedShape = NewType("TNaming_MapIteratorOfMapOfNamedShape", Any)
+# the following typedef cannot be wrapped as is
+TNaming_MapIteratorOfMapOfShape = NewType("TNaming_MapIteratorOfMapOfShape", Any)
+# the following typedef cannot be wrapped as is
+TNaming_MapOfNamedShape = NewType("TNaming_MapOfNamedShape", Any)
+# the following typedef cannot be wrapped as is
+TNaming_MapOfShape = NewType("TNaming_MapOfShape", Any)
+# the following typedef cannot be wrapped as is
+TNaming_NamedShapeHasher = NewType("TNaming_NamedShapeHasher", Any)
+TNaming_PtrAttribute = NewType("TNaming_PtrAttribute", TNaming_NamedShape)
+TNaming_PtrNode = NewType("TNaming_PtrNode", TNaming_Node)
+TNaming_PtrRefShape = NewType("TNaming_PtrRefShape", TNaming_RefShape)
 
 class TNaming_ListOfIndexedDataMapOfShapeListOfShape:
     def __init__(self) -> None: ...

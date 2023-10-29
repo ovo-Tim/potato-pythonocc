@@ -15,14 +15,14 @@ from OCC.Core.BRepTools import *
 from OCC.Core.BOPTools import *
 from OCC.Core.TopAbs import *
 
-#the following typedef cannot be wrapped as is
-BOPAlgo_ListIteratorOfListOfCheckResult = NewType('BOPAlgo_ListIteratorOfListOfCheckResult', Any)
-BOPAlgo_PArgumentAnalyzer = NewType('BOPAlgo_PArgumentAnalyzer', BOPAlgo_ArgumentAnalyzer)
-BOPAlgo_PBOP = NewType('BOPAlgo_PBOP', BOPAlgo_BOP)
-BOPAlgo_PBuilder = NewType('BOPAlgo_PBuilder', BOPAlgo_Builder)
-BOPAlgo_PPaveFiller = NewType('BOPAlgo_PPaveFiller', BOPAlgo_PaveFiller)
-BOPAlgo_PSection = NewType('BOPAlgo_PSection', BOPAlgo_Section)
-BOPAlgo_PWireEdgeSet = NewType('BOPAlgo_PWireEdgeSet', BOPAlgo_WireEdgeSet)
+# the following typedef cannot be wrapped as is
+BOPAlgo_ListIteratorOfListOfCheckResult = NewType("BOPAlgo_ListIteratorOfListOfCheckResult", Any)
+BOPAlgo_PArgumentAnalyzer = NewType("BOPAlgo_PArgumentAnalyzer", BOPAlgo_ArgumentAnalyzer)
+BOPAlgo_PBOP = NewType("BOPAlgo_PBOP", BOPAlgo_BOP)
+BOPAlgo_PBuilder = NewType("BOPAlgo_PBuilder", BOPAlgo_Builder)
+BOPAlgo_PPaveFiller = NewType("BOPAlgo_PPaveFiller", BOPAlgo_PaveFiller)
+BOPAlgo_PSection = NewType("BOPAlgo_PSection", BOPAlgo_Section)
+BOPAlgo_PWireEdgeSet = NewType("BOPAlgo_PWireEdgeSet", BOPAlgo_WireEdgeSet)
 
 class BOPAlgo_ListOfCheckResult:
     def __init__(self) -> None: ...

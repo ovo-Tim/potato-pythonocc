@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2022 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2023 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define XBREPMESHDOCSTRING
 "XBRepMesh module, see official documentation at
-https://www.opencascade.com/doc/occt-7.6.0/refman/html/package_xbrepmesh.html"
+https://www.opencascade.com/doc/occt-7.7.0/refman/html/package_xbrepmesh.html"
 %enddef
 %module (package="OCC.Core", docstring=XBREPMESHDOCSTRING) XBRepMesh
 
@@ -37,7 +37,6 @@ https://www.opencascade.com/doc/occt-7.6.0/refman/html/package_xbrepmesh.html"
 
 
 %{
-#include<BRepMesh_Delaun.hxx>
 #include<XBRepMesh_module.hxx>
 
 //Dependencies
@@ -99,8 +98,7 @@ class XBRepMesh {
 		/****************** Discret ******************/
 		/**** md5 signature: 2d40e0c47db8d58631623439c9d30c12 ****/
 		%feature("compactdefaultargs") Discret;
-		%feature("autodoc", "No available documentation.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theShape: TopoDS_Shape
@@ -108,9 +106,13 @@ theDeflection: float
 theAngle: float
 theAlgo: BRepMesh_DiscretRoot *
 
-Returns
+Return
 -------
 int
+
+Description
+-----------
+No available documentation.
 ") Discret;
 		static Standard_Integer Discret(const TopoDS_Shape & theShape, const Standard_Real theDeflection, const Standard_Real theAngle, BRepMesh_DiscretRoot * & theAlgo);
 

@@ -7,10 +7,10 @@ from OCC.Core.Adaptor3d import *
 from OCC.Core.TopoDS import *
 from OCC.Core.TopTools import *
 
-#the following typedef cannot be wrapped as is
-BRepCheck_HListOfStatus = NewType('BRepCheck_HListOfStatus', Any)
-#the following typedef cannot be wrapped as is
-BRepCheck_IndexedDataMapOfShapeResult = NewType('BRepCheck_IndexedDataMapOfShapeResult', Any)
+# the following typedef cannot be wrapped as is
+BRepCheck_HListOfStatus = NewType("BRepCheck_HListOfStatus", Any)
+# the following typedef cannot be wrapped as is
+BRepCheck_IndexedDataMapOfShapeResult = NewType("BRepCheck_IndexedDataMapOfShapeResult", Any)
 
 class BRepCheck_ListOfStatus:
     def __init__(self) -> None: ...

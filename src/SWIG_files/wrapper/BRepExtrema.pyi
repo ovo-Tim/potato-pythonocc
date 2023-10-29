@@ -11,8 +11,8 @@ from OCC.Core.Bnd import *
 from OCC.Core.BVH import *
 from OCC.Core.Poly import *
 
-#the following typedef cannot be wrapped as is
-BRepExtrema_ShapeList = NewType('BRepExtrema_ShapeList', Any)
+# the following typedef cannot be wrapped as is
+BRepExtrema_ShapeList = NewType("BRepExtrema_ShapeList", Any)
 
 class BRepExtrema_SeqOfSolution:
     def __init__(self) -> None: ...

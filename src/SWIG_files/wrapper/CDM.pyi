@@ -8,14 +8,14 @@ from OCC.Core.TCollection import *
 from OCC.Core.Message import *
 from OCC.Core.Resource import *
 
-#the following typedef cannot be wrapped as is
-CDM_DocumentHasher = NewType('CDM_DocumentHasher', Any)
-CDM_DocumentPointer = NewType('CDM_DocumentPointer', CDM_Document)
-#the following typedef cannot be wrapped as is
-CDM_MapIteratorOfMapOfDocument = NewType('CDM_MapIteratorOfMapOfDocument', Any)
-#the following typedef cannot be wrapped as is
-CDM_MapOfDocument = NewType('CDM_MapOfDocument', Any)
-CDM_NamesDirectory = NewType('CDM_NamesDirectory', TColStd_DataMapOfStringInteger)
+# the following typedef cannot be wrapped as is
+CDM_DocumentHasher = NewType("CDM_DocumentHasher", Any)
+CDM_DocumentPointer = NewType("CDM_DocumentPointer", CDM_Document)
+# the following typedef cannot be wrapped as is
+CDM_MapIteratorOfMapOfDocument = NewType("CDM_MapIteratorOfMapOfDocument", Any)
+# the following typedef cannot be wrapped as is
+CDM_MapOfDocument = NewType("CDM_MapOfDocument", Any)
+CDM_NamesDirectory = NewType("CDM_NamesDirectory", TColStd_DataMapOfStringInteger)
 
 class CDM_ListOfDocument:
     def __init__(self) -> None: ...

@@ -7,8 +7,8 @@ from OCC.Core.TCollection import *
 from OCC.Core.OSD import *
 from OCC.Core.TColStd import *
 
-#the following typedef cannot be wrapped as is
-Message_HArrayOfMsg = NewType('Message_HArrayOfMsg', Any)
+# the following typedef cannot be wrapped as is
+Message_HArrayOfMsg = NewType("Message_HArrayOfMsg", Any)
 
 class Message_ListOfAlert:
     def __init__(self) -> None: ...

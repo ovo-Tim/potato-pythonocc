@@ -4,9 +4,9 @@ from typing import overload, NewType, Optional, Tuple
 from OCC.Core.Standard import *
 from OCC.Core.NCollection import *
 
-#the following typedef cannot be wrapped as is
-Storage_PType = NewType('Storage_PType', Any)
-Storage_Position = NewType('Storage_Position', long)
+# the following typedef cannot be wrapped as is
+Storage_PType = NewType("Storage_PType", Any)
+Storage_Position = NewType("Storage_Position", long)
 
 class Storage_ArrayOfCallBack:
     @overload

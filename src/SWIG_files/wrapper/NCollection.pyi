@@ -3,24 +3,31 @@ from typing import overload, NewType, Optional, Tuple
 
 from OCC.Core.Standard import *
 
-NCollection_String = NewType('NCollection_String', NCollection_Utf8String)
-#the following typedef cannot be wrapped as is
-NCollection_Utf16Iter = NewType('NCollection_Utf16Iter', Any)
-#the following typedef cannot be wrapped as is
-NCollection_Utf16String = NewType('NCollection_Utf16String', Any)
-#the following typedef cannot be wrapped as is
-NCollection_Utf32Iter = NewType('NCollection_Utf32Iter', Any)
-#the following typedef cannot be wrapped as is
-NCollection_Utf32String = NewType('NCollection_Utf32String', Any)
-#the following typedef cannot be wrapped as is
-NCollection_Utf8Iter = NewType('NCollection_Utf8Iter', Any)
-#the following typedef cannot be wrapped as is
-NCollection_Utf8String = NewType('NCollection_Utf8String', Any)
-#the following typedef cannot be wrapped as is
-NCollection_UtfWideIter = NewType('NCollection_UtfWideIter', Any)
-#the following typedef cannot be wrapped as is
-NCollection_UtfWideString = NewType('NCollection_UtfWideString', Any)
-Standard_Size = NewType('Standard_Size', int)
+NCollection_String = NewType("NCollection_String", NCollection_Utf8String)
+# the following typedef cannot be wrapped as is
+NCollection_Utf16Iter = NewType("NCollection_Utf16Iter", Any)
+# the following typedef cannot be wrapped as is
+NCollection_Utf16String = NewType("NCollection_Utf16String", Any)
+# the following typedef cannot be wrapped as is
+NCollection_Utf32Iter = NewType("NCollection_Utf32Iter", Any)
+# the following typedef cannot be wrapped as is
+NCollection_Utf32String = NewType("NCollection_Utf32String", Any)
+# the following typedef cannot be wrapped as is
+NCollection_Utf8Iter = NewType("NCollection_Utf8Iter", Any)
+# the following typedef cannot be wrapped as is
+NCollection_Utf8String = NewType("NCollection_Utf8String", Any)
+# the following typedef cannot be wrapped as is
+NCollection_UtfWideIter = NewType("NCollection_UtfWideIter", Any)
+# the following typedef cannot be wrapped as is
+NCollection_UtfWideString = NewType("NCollection_UtfWideString", Any)
+Standard_Size = NewType("Standard_Size", int)
+
+class NCollection_CellFilter_Action(IntEnum):
+    CellFilter_Keep: int = ...
+    CellFilter_Purge: int = ...
+
+CellFilter_Keep = NCollection_CellFilter_Action.CellFilter_Keep
+CellFilter_Purge = NCollection_CellFilter_Action.CellFilter_Purge
 
 class NCollection_StdAllocator:
     @overload
@@ -66,6 +73,15 @@ class NCollection_Shared: ...
 
 #classnotwrapped
 class NCollection_AlignedAllocator: ...
+
+#classnotwrapped
+class NCollection_CellFilter: ...
+
+#classnotwrapped
+class NCollection_CellFilter_InspectorXYZ: ...
+
+#classnotwrapped
+class NCollection_CellFilter_InspectorXY: ...
 
 #classnotwrapped
 class NCollection_Sequence: ...
@@ -126,6 +142,9 @@ class NCollection_UBTree: ...
 
 #classnotwrapped
 class NCollection_LocalArray: ...
+
+#classnotwrapped
+class NCollection_StlIterator: ...
 
 #classnotwrapped
 class NCollection_AccAllocator: ...

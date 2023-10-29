@@ -12,11 +12,11 @@ from OCC.Core.gp import *
 from OCC.Core.TCollection import *
 from OCC.Core.TColStd import *
 
-#the following typedef cannot be wrapped as is
-TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo = NewType('TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo', Any)
-TopOpeBRepBuild_PBuilder = NewType('TopOpeBRepBuild_PBuilder', TopOpeBRepBuild_Builder)
-TopOpeBRepBuild_PGTopo = NewType('TopOpeBRepBuild_PGTopo', TopOpeBRepBuild_GTopo)
-TopOpeBRepBuild_PWireEdgeSet = NewType('TopOpeBRepBuild_PWireEdgeSet', TopOpeBRepBuild_WireEdgeSet)
+# the following typedef cannot be wrapped as is
+TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo = NewType("TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo", Any)
+TopOpeBRepBuild_PBuilder = NewType("TopOpeBRepBuild_PBuilder", TopOpeBRepBuild_Builder)
+TopOpeBRepBuild_PGTopo = NewType("TopOpeBRepBuild_PGTopo", TopOpeBRepBuild_GTopo)
+TopOpeBRepBuild_PWireEdgeSet = NewType("TopOpeBRepBuild_PWireEdgeSet", TopOpeBRepBuild_WireEdgeSet)
 
 class TopOpeBRepBuild_ListOfListOfLoop:
     def __init__(self) -> None: ...

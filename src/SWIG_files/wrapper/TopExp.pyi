@@ -7,7 +7,7 @@ from OCC.Core.TopoDS import *
 from OCC.Core.TopAbs import *
 from OCC.Core.TopTools import *
 
-TopExp_Stack = NewType('TopExp_Stack', TopoDS_Iterator)
+TopExp_Stack = NewType("TopExp_Stack", TopoDS_Iterator)
 
 class topexp:
     @staticmethod

@@ -12,7 +12,7 @@ from OCC.Core.Message import *
 from OCC.Core.TColStd import *
 from OCC.Core.Resource import *
 
-TDocStd_XLinkPtr = NewType('TDocStd_XLinkPtr', TDocStd_XLink)
+TDocStd_XLinkPtr = NewType("TDocStd_XLinkPtr", TDocStd_XLink)
 
 class TDocStd_SequenceOfApplicationDelta:
     def __init__(self) -> None: ...

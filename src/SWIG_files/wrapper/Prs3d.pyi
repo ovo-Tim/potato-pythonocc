@@ -14,9 +14,9 @@ from OCC.Core.Aspect import *
 from OCC.Core.Quantity import *
 from OCC.Core.TColStd import *
 
-#the following typedef cannot be wrapped as is
-Prs3d_NListIteratorOfListOfSequenceOfPnt = NewType('Prs3d_NListIteratorOfListOfSequenceOfPnt', Any)
-Prs3d_Presentation = NewType('Prs3d_Presentation', Graphic3d_Structure)
+# the following typedef cannot be wrapped as is
+Prs3d_NListIteratorOfListOfSequenceOfPnt = NewType("Prs3d_NListIteratorOfListOfSequenceOfPnt", Any)
+Prs3d_Presentation = NewType("Prs3d_Presentation", Graphic3d_Structure)
 
 class Prs3d_NListOfSequenceOfPnt:
     def __init__(self) -> None: ...

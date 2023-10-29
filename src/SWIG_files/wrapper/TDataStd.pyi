@@ -7,7 +7,7 @@ from OCC.Core.TColStd import *
 from OCC.Core.TDF import *
 from OCC.Core.TCollection import *
 
-TDataStd_PtrTreeNode = NewType('TDataStd_PtrTreeNode', TDataStd_TreeNode)
+TDataStd_PtrTreeNode = NewType("TDataStd_PtrTreeNode", TDataStd_TreeNode)
 
 class TDataStd_LabelArray1:
     @overload

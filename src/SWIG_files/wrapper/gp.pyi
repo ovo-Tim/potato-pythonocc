@@ -5,10 +5,10 @@ from OCC.Core.Standard import *
 from OCC.Core.NCollection import *
 from OCC.Core.TColStd import *
 
-#the following typedef cannot be wrapped as is
-gp_Vec2f = NewType('gp_Vec2f', Any)
-#the following typedef cannot be wrapped as is
-gp_Vec3f = NewType('gp_Vec3f', Any)
+# the following typedef cannot be wrapped as is
+gp_Vec2f = NewType("gp_Vec2f", Any)
+# the following typedef cannot be wrapped as is
+gp_Vec3f = NewType("gp_Vec3f", Any)
 
 class gp_EulerSequence(IntEnum):
     gp_EulerAngles: int = ...

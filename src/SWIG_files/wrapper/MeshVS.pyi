@@ -18,19 +18,19 @@ from OCC.Core.PrsMgr import *
 from OCC.Core.Prs3d import *
 from OCC.Core.Aspect import *
 
-MeshVS_BuilderPriority = NewType('MeshVS_BuilderPriority', Standard_Integer)
-MeshVS_DisplayModeFlags = NewType('MeshVS_DisplayModeFlags', Standard_Integer)
-#the following typedef cannot be wrapped as is
-MeshVS_MapIteratorOfMapOfTwoNodes = NewType('MeshVS_MapIteratorOfMapOfTwoNodes', Any)
-#the following typedef cannot be wrapped as is
-MeshVS_MapOfTwoNodes = NewType('MeshVS_MapOfTwoNodes', Any)
-MeshVS_MeshPtr = NewType('MeshVS_MeshPtr', MeshVS_Mesh)
-#the following typedef cannot be wrapped as is
-MeshVS_NodePair = NewType('MeshVS_NodePair', Any)
-#the following typedef cannot be wrapped as is
-MeshVS_TwoColorsHasher = NewType('MeshVS_TwoColorsHasher', Any)
-#the following typedef cannot be wrapped as is
-MeshVS_TwoNodesHasher = NewType('MeshVS_TwoNodesHasher', Any)
+MeshVS_BuilderPriority = NewType("MeshVS_BuilderPriority", Standard_Integer)
+MeshVS_DisplayModeFlags = NewType("MeshVS_DisplayModeFlags", Standard_Integer)
+# the following typedef cannot be wrapped as is
+MeshVS_MapIteratorOfMapOfTwoNodes = NewType("MeshVS_MapIteratorOfMapOfTwoNodes", Any)
+# the following typedef cannot be wrapped as is
+MeshVS_MapOfTwoNodes = NewType("MeshVS_MapOfTwoNodes", Any)
+MeshVS_MeshPtr = NewType("MeshVS_MeshPtr", MeshVS_Mesh)
+# the following typedef cannot be wrapped as is
+MeshVS_NodePair = NewType("MeshVS_NodePair", Any)
+# the following typedef cannot be wrapped as is
+MeshVS_TwoColorsHasher = NewType("MeshVS_TwoColorsHasher", Any)
+# the following typedef cannot be wrapped as is
+MeshVS_TwoNodesHasher = NewType("MeshVS_TwoNodesHasher", Any)
 
 class MeshVS_Array1OfSequenceOfInteger:
     @overload

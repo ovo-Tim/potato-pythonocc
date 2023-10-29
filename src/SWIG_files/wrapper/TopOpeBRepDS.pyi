@@ -13,17 +13,17 @@ from OCC.Core.TopTools import *
 from OCC.Core.gp import *
 from OCC.Core.TColStd import *
 
-#the following typedef cannot be wrapped as is
-TopOpeBRepDS_DoubleMapIteratorOfDoubleMapOfIntegerShape = NewType('TopOpeBRepDS_DoubleMapIteratorOfDoubleMapOfIntegerShape', Any)
-#the following typedef cannot be wrapped as is
-TopOpeBRepDS_DoubleMapOfIntegerShape = NewType('TopOpeBRepDS_DoubleMapOfIntegerShape', Any)
-#the following typedef cannot be wrapped as is
-TopOpeBRepDS_IndexedDataMapOfShapeWithState = NewType('TopOpeBRepDS_IndexedDataMapOfShapeWithState', Any)
-#the following typedef cannot be wrapped as is
-TopOpeBRepDS_IndexedDataMapOfVertexPoint = NewType('TopOpeBRepDS_IndexedDataMapOfVertexPoint', Any)
-#the following typedef cannot be wrapped as is
-TopOpeBRepDS_MapOfShapeData = NewType('TopOpeBRepDS_MapOfShapeData', Any)
-TopOpeBRepDS_PDataStructure = NewType('TopOpeBRepDS_PDataStructure', TopOpeBRepDS_DataStructure)
+# the following typedef cannot be wrapped as is
+TopOpeBRepDS_DoubleMapIteratorOfDoubleMapOfIntegerShape = NewType("TopOpeBRepDS_DoubleMapIteratorOfDoubleMapOfIntegerShape", Any)
+# the following typedef cannot be wrapped as is
+TopOpeBRepDS_DoubleMapOfIntegerShape = NewType("TopOpeBRepDS_DoubleMapOfIntegerShape", Any)
+# the following typedef cannot be wrapped as is
+TopOpeBRepDS_IndexedDataMapOfShapeWithState = NewType("TopOpeBRepDS_IndexedDataMapOfShapeWithState", Any)
+# the following typedef cannot be wrapped as is
+TopOpeBRepDS_IndexedDataMapOfVertexPoint = NewType("TopOpeBRepDS_IndexedDataMapOfVertexPoint", Any)
+# the following typedef cannot be wrapped as is
+TopOpeBRepDS_MapOfShapeData = NewType("TopOpeBRepDS_MapOfShapeData", Any)
+TopOpeBRepDS_PDataStructure = NewType("TopOpeBRepDS_PDataStructure", TopOpeBRepDS_DataStructure)
 
 class TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference:
     @overload

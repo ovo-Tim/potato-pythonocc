@@ -13,16 +13,16 @@ from OCC.Core.TColStd import *
 from OCC.Core.Bnd import *
 from OCC.Core.Image import *
 
-Handle_V3d_Light = NewType('Handle_V3d_Light', Handle_Graphic3d_CLight)
-V3d_Light = NewType('V3d_Light', Graphic3d_CLight)
-#the following typedef cannot be wrapped as is
-V3d_ListOfLightIterator = NewType('V3d_ListOfLightIterator', Any)
-#the following typedef cannot be wrapped as is
-V3d_ListOfViewIterator = NewType('V3d_ListOfViewIterator', Any)
-V3d_TypeOfBackfacingModel = NewType('V3d_TypeOfBackfacingModel', Graphic3d_TypeOfBackfacingModel)
-V3d_TypeOfLight = NewType('V3d_TypeOfLight', Graphic3d_TypeOfLightSource)
-V3d_TypeOfShadingModel = NewType('V3d_TypeOfShadingModel', Graphic3d_TypeOfShadingModel)
-V3d_ViewerPointer = NewType('V3d_ViewerPointer', V3d_Viewer)
+Handle_V3d_Light = NewType("Handle_V3d_Light", Handle_Graphic3d_CLight)
+V3d_Light = NewType("V3d_Light", Graphic3d_CLight)
+# the following typedef cannot be wrapped as is
+V3d_ListOfLightIterator = NewType("V3d_ListOfLightIterator", Any)
+# the following typedef cannot be wrapped as is
+V3d_ListOfViewIterator = NewType("V3d_ListOfViewIterator", Any)
+V3d_TypeOfBackfacingModel = NewType("V3d_TypeOfBackfacingModel", Graphic3d_TypeOfBackfacingModel)
+V3d_TypeOfLight = NewType("V3d_TypeOfLight", Graphic3d_TypeOfLightSource)
+V3d_TypeOfShadingModel = NewType("V3d_TypeOfShadingModel", Graphic3d_TypeOfShadingModel)
+V3d_ViewerPointer = NewType("V3d_ViewerPointer", V3d_Viewer)
 
 class V3d_ListOfLight:
     def __init__(self) -> None: ...

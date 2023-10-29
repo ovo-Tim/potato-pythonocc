@@ -11,7 +11,7 @@ from OCC.Core.Adaptor3d import *
 from OCC.Core.BRepAdaptor import *
 from OCC.Core.Adaptor2d import *
 
-BRepTopAdaptor_SeqOfPtr = NewType('BRepTopAdaptor_SeqOfPtr', TColStd_SequenceOfAddress)
+BRepTopAdaptor_SeqOfPtr = NewType("BRepTopAdaptor_SeqOfPtr", TColStd_SequenceOfAddress)
 
 class BRepTopAdaptor_FClass2d:
     def __init__(self, F: TopoDS_Face, Tol: float) -> None: ...

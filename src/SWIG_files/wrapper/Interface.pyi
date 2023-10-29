@@ -8,10 +8,10 @@ from OCC.Core.Message import *
 from OCC.Core.TColStd import *
 from OCC.Core.MoniTool import *
 
-#the following typedef cannot be wrapped as is
-Interface_IndexedMapOfAsciiString = NewType('Interface_IndexedMapOfAsciiString', Any)
-#the following typedef cannot be wrapped as is
-Interface_VectorOfFileParameter = NewType('Interface_VectorOfFileParameter', Any)
+# the following typedef cannot be wrapped as is
+Interface_IndexedMapOfAsciiString = NewType("Interface_IndexedMapOfAsciiString", Any)
+# the following typedef cannot be wrapped as is
+Interface_VectorOfFileParameter = NewType("Interface_VectorOfFileParameter", Any)
 
 class Interface_Array1OfFileParameter:
     @overload

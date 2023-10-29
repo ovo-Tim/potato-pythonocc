@@ -6,8 +6,8 @@ from OCC.Core.NCollection import *
 from OCC.Core.TColStd import *
 from OCC.Core.TCollection import *
 
-#the following typedef cannot be wrapped as is
-Expr_MapOfNamedUnknown = NewType('Expr_MapOfNamedUnknown', Any)
+# the following typedef cannot be wrapped as is
+Expr_MapOfNamedUnknown = NewType("Expr_MapOfNamedUnknown", Any)
 
 class Expr_Array1OfGeneralExpression:
     @overload

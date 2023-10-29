@@ -4,50 +4,50 @@ from typing import overload, NewType, Optional, Tuple
 from OCC.Core.Standard import *
 from OCC.Core.NCollection import *
 
-#the following typedef cannot be wrapped as is
-BVH_Array2d = NewType('BVH_Array2d', Any)
-#the following typedef cannot be wrapped as is
-BVH_Array2f = NewType('BVH_Array2f', Any)
-#the following typedef cannot be wrapped as is
-BVH_Array2i = NewType('BVH_Array2i', Any)
-#the following typedef cannot be wrapped as is
-BVH_Array3d = NewType('BVH_Array3d', Any)
-#the following typedef cannot be wrapped as is
-BVH_Array3f = NewType('BVH_Array3f', Any)
-#the following typedef cannot be wrapped as is
-BVH_Array3i = NewType('BVH_Array3i', Any)
-#the following typedef cannot be wrapped as is
-BVH_Array4d = NewType('BVH_Array4d', Any)
-#the following typedef cannot be wrapped as is
-BVH_Array4f = NewType('BVH_Array4f', Any)
-#the following typedef cannot be wrapped as is
-BVH_Array4i = NewType('BVH_Array4i', Any)
-#the following typedef cannot be wrapped as is
-BVH_EncodedLink = NewType('BVH_EncodedLink', Any)
-#the following typedef cannot be wrapped as is
-BVH_Mat4d = NewType('BVH_Mat4d', Any)
-#the following typedef cannot be wrapped as is
-BVH_Mat4f = NewType('BVH_Mat4f', Any)
-#the following typedef cannot be wrapped as is
-BVH_PrimitiveSet3d = NewType('BVH_PrimitiveSet3d', Any)
-#the following typedef cannot be wrapped as is
-BVH_Vec2d = NewType('BVH_Vec2d', Any)
-#the following typedef cannot be wrapped as is
-BVH_Vec2f = NewType('BVH_Vec2f', Any)
-#the following typedef cannot be wrapped as is
-BVH_Vec2i = NewType('BVH_Vec2i', Any)
-#the following typedef cannot be wrapped as is
-BVH_Vec3d = NewType('BVH_Vec3d', Any)
-#the following typedef cannot be wrapped as is
-BVH_Vec3f = NewType('BVH_Vec3f', Any)
-#the following typedef cannot be wrapped as is
-BVH_Vec3i = NewType('BVH_Vec3i', Any)
-#the following typedef cannot be wrapped as is
-BVH_Vec4d = NewType('BVH_Vec4d', Any)
-#the following typedef cannot be wrapped as is
-BVH_Vec4f = NewType('BVH_Vec4f', Any)
-#the following typedef cannot be wrapped as is
-BVH_Vec4i = NewType('BVH_Vec4i', Any)
+# the following typedef cannot be wrapped as is
+BVH_Array2d = NewType("BVH_Array2d", Any)
+# the following typedef cannot be wrapped as is
+BVH_Array2f = NewType("BVH_Array2f", Any)
+# the following typedef cannot be wrapped as is
+BVH_Array2i = NewType("BVH_Array2i", Any)
+# the following typedef cannot be wrapped as is
+BVH_Array3d = NewType("BVH_Array3d", Any)
+# the following typedef cannot be wrapped as is
+BVH_Array3f = NewType("BVH_Array3f", Any)
+# the following typedef cannot be wrapped as is
+BVH_Array3i = NewType("BVH_Array3i", Any)
+# the following typedef cannot be wrapped as is
+BVH_Array4d = NewType("BVH_Array4d", Any)
+# the following typedef cannot be wrapped as is
+BVH_Array4f = NewType("BVH_Array4f", Any)
+# the following typedef cannot be wrapped as is
+BVH_Array4i = NewType("BVH_Array4i", Any)
+# the following typedef cannot be wrapped as is
+BVH_EncodedLink = NewType("BVH_EncodedLink", Any)
+# the following typedef cannot be wrapped as is
+BVH_Mat4d = NewType("BVH_Mat4d", Any)
+# the following typedef cannot be wrapped as is
+BVH_Mat4f = NewType("BVH_Mat4f", Any)
+# the following typedef cannot be wrapped as is
+BVH_PrimitiveSet3d = NewType("BVH_PrimitiveSet3d", Any)
+# the following typedef cannot be wrapped as is
+BVH_Vec2d = NewType("BVH_Vec2d", Any)
+# the following typedef cannot be wrapped as is
+BVH_Vec2f = NewType("BVH_Vec2f", Any)
+# the following typedef cannot be wrapped as is
+BVH_Vec2i = NewType("BVH_Vec2i", Any)
+# the following typedef cannot be wrapped as is
+BVH_Vec3d = NewType("BVH_Vec3d", Any)
+# the following typedef cannot be wrapped as is
+BVH_Vec3f = NewType("BVH_Vec3f", Any)
+# the following typedef cannot be wrapped as is
+BVH_Vec3i = NewType("BVH_Vec3i", Any)
+# the following typedef cannot be wrapped as is
+BVH_Vec4d = NewType("BVH_Vec4d", Any)
+# the following typedef cannot be wrapped as is
+BVH_Vec4f = NewType("BVH_Vec4f", Any)
+# the following typedef cannot be wrapped as is
+BVH_Vec4i = NewType("BVH_Vec4i", Any)
 
 
 class BVH_AxisSelector:
@@ -97,6 +97,9 @@ class BVH_BoxSet: ...
 
 #classnotwrapped
 class BVH_Tools: ...
+
+#classnotwrapped
+class BVH_IndexedBoxSet: ...
 
 #classnotwrapped
 class BVH_Distance: ...

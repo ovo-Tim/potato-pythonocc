@@ -21,8 +21,8 @@ from OCC.Core.Law import *
 from OCC.Core.Bisector import *
 from OCC.Core.TColgp import *
 
-#the following typedef cannot be wrapped as is
-BRepFill_IndexedDataMapOfOrientedShapeListOfShape = NewType('BRepFill_IndexedDataMapOfOrientedShapeListOfShape', Any)
+# the following typedef cannot be wrapped as is
+BRepFill_IndexedDataMapOfOrientedShapeListOfShape = NewType("BRepFill_IndexedDataMapOfOrientedShapeListOfShape", Any)
 
 class BRepFill_ListOfOffsetWire:
     def __init__(self) -> None: ...
