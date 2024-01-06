@@ -39,8 +39,8 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           # condarc-file: ${{ matrix.condarc-file }}
-          # miniforge-variant: ${{ matrix.miniforge-variant }}
-          # miniforge-version: ${{ matrix.miniforge-version }}
+          miniforge-variant: ${{ matrix.miniforge-variant }}
+          miniforge-version: ${{ matrix.miniforge-version }}
           # python-version: 3.11
           python-version: ${{ matrix.python-version }}
           use-mamba: true
