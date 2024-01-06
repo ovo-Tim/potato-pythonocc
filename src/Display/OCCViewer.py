@@ -173,8 +173,6 @@ class Viewer3d(Display3d):
         )
         self.lmodes = [TopAbs_VERTEX, TopAbs_EDGE, TopAbs_FACE]
 
-        self.shapes = []
-
     def get_parent(self):
         return self._parent
 
@@ -578,7 +576,6 @@ class Viewer3d(Display3d):
             self.FitAll()
             self.Repaint()
         
-        self.shapes += ais_shapes
         return ais_shapes
 
     def DisplayColoredShape(
