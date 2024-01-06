@@ -9,8 +9,8 @@ from OCC.Core.Message import *
 from OCC.Core.TColStd import *
 from OCC.Core.CDM import *
 
-#the following typedef cannot be wrapped as is
-PCDM_BaseDriverPointer = NewType('PCDM_BaseDriverPointer', Any)
+# the following typedef cannot be wrapped as is
+PCDM_BaseDriverPointer = NewType("PCDM_BaseDriverPointer", Any)
 
 class PCDM_SequenceOfDocument:
     def __init__(self) -> None: ...

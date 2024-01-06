@@ -10,7 +10,7 @@ from OCC.Core.Geom import *
 from OCC.Core.TopLoc import *
 from OCC.Core.TopAbs import *
 
-BinTools_LocationSetPtr = NewType('BinTools_LocationSetPtr', BinTools_LocationSet)
+BinTools_LocationSetPtr = NewType("BinTools_LocationSetPtr", BinTools_LocationSet)
 
 
 class BinTools_FormatVersion(IntEnum):

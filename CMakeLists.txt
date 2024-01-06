@@ -25,7 +25,7 @@ set(PYTHONOCC_VERSION_MINOR 7)
 set(PYTHONOCC_VERSION_PATCH 2)
 
 #  Empty for official releases, set to -dev, -rc1, etc for development releases
-set(PYTHONOCC_VERSION_DEVEL -dev)
+set(PYTHONOCC_VERSION_DEVEL )
 
 # set OCCT version
 set(OCCT_VERSION_MAJOR 7)
@@ -195,7 +195,7 @@ set(OCCT_MODEL_LIBRARIES TKernel TKMath TKBRep TKG2d TKG3d TKGeomBase TKBO
 set(OCCT_VISUALIZATION_LIBRARIES TKService TKV3d TKOpenGl TKMeshVS)
 set(OCCT_DATAEXCHANGE_LIBRARIES TKBinXCAF TKIGES TKRWMesh TKSTEP TKSTEP209 TKSTEPAttr
                                TKSTEPBase TKSTL TKVRML TKXCAF TKXDEIGES TKXDESTEP TKXSBase
-                               TKXmlXCAF)
+                               TKXmlXCAF TKXDE TKXDECascade)
 set(OCCT_OCAF_LIBRARIES TKCDF TKLCAF TKCAF TKBinL TKXmlL TKBin TKXml TKStdL
                        TKStd TKTObj TKBinTObj TKXmlTObj TKVCAF)
 

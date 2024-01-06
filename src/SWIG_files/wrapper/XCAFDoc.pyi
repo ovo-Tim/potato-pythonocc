@@ -20,7 +20,7 @@ from OCC.Core.TopTools import *
 from OCC.Core.XCAFView import *
 from OCC.Core.Graphic3d import *
 
-XCAFDoc_PartId = NewType('XCAFDoc_PartId', TCollection_AsciiString)
+XCAFDoc_PartId = NewType("XCAFDoc_PartId", TCollection_AsciiString)
 
 class XCAFDoc_GraphNodeSequence:
     def __init__(self) -> None: ...

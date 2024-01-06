@@ -9,23 +9,23 @@ from OCC.Core.Graphic3d import *
 from OCC.Core.TCollection import *
 from OCC.Core.Image import *
 
-Aspect_Display = NewType('Aspect_Display', None)
-Aspect_Drawable = NewType('Aspect_Drawable', int)
-Aspect_FBConfig = NewType('Aspect_FBConfig', GLXFBConfig)
-Aspect_Handle = NewType('Aspect_Handle', int)
-Aspect_RenderingContext = NewType('Aspect_RenderingContext', None)
-#the following typedef cannot be wrapped as is
-Aspect_TouchMap = NewType('Aspect_TouchMap', Any)
-Aspect_VKey = NewType('Aspect_VKey', int)
-Aspect_VKeyFlags = NewType('Aspect_VKeyFlags', int)
-Aspect_VKeyMouse = NewType('Aspect_VKeyMouse', int)
-#the following typedef cannot be wrapped as is
-Aspect_XRActionMap = NewType('Aspect_XRActionMap', Any)
-#the following typedef cannot be wrapped as is
-Aspect_XRActionSetMap = NewType('Aspect_XRActionSetMap', Any)
-#the following typedef cannot be wrapped as is
-GLXFBConfig = NewType('GLXFBConfig', Any)
-HANDLE = NewType('HANDLE', None)
+Aspect_Display = NewType("Aspect_Display", None)
+Aspect_Drawable = NewType("Aspect_Drawable", int)
+Aspect_FBConfig = NewType("Aspect_FBConfig", GLXFBConfig)
+Aspect_Handle = NewType("Aspect_Handle", int)
+Aspect_RenderingContext = NewType("Aspect_RenderingContext", None)
+# the following typedef cannot be wrapped as is
+Aspect_TouchMap = NewType("Aspect_TouchMap", Any)
+Aspect_VKey = NewType("Aspect_VKey", int)
+Aspect_VKeyFlags = NewType("Aspect_VKeyFlags", int)
+Aspect_VKeyMouse = NewType("Aspect_VKeyMouse", int)
+# the following typedef cannot be wrapped as is
+Aspect_XRActionMap = NewType("Aspect_XRActionMap", Any)
+# the following typedef cannot be wrapped as is
+Aspect_XRActionSetMap = NewType("Aspect_XRActionSetMap", Any)
+# the following typedef cannot be wrapped as is
+GLXFBConfig = NewType("GLXFBConfig", Any)
+HANDLE = NewType("HANDLE", None)
 
 class Aspect_SequenceOfColor:
     def __init__(self) -> None: ...
@@ -840,6 +840,19 @@ class Aspect_Touch:
 
 class Aspect_TrackedDevicePose:
     def __init__(self) -> None: ...
+
+class Aspect_VKeySet(Standard_Transient):
+    def __init__(self) -> None: ...
+    def DownTime(self, theKey: Aspect_VKey) -> float: ...
+    def IsFreeKey(self, theKey: Aspect_VKey) -> bool: ...
+    def IsKeyDown(self, theKey: Aspect_VKey) -> bool: ...
+    def KeyDown(self, theKey: Aspect_VKey, theTime: float, thePressure: Optional[float] = 1.0) -> None: ...
+    def KeyFromAxis(self, theNegative: Aspect_VKey, thePositive: Aspect_VKey, theTime: float, thePressure: float) -> None: ...
+    def KeyUp(self, theKey: Aspect_VKey, theTime: float) -> None: ...
+    def Modifiers(self) -> Aspect_VKeyFlags: ...
+    def Mutex(self) -> Standard_Mutex: ...
+    def Reset(self) -> None: ...
+    def TimeUp(self, theKey: Aspect_VKey) -> float: ...
 
 class Aspect_Window(Standard_Transient):
     def Background(self) -> Aspect_Background: ...

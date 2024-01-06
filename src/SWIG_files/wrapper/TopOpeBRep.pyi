@@ -20,13 +20,13 @@ from OCC.Core.TopTools import *
 from OCC.Core.Geom2d import *
 from OCC.Core.Geom import *
 
-TopOpeBRep_PEdgesIntersector = NewType('TopOpeBRep_PEdgesIntersector', TopOpeBRep_EdgesIntersector)
-TopOpeBRep_PFacesFiller = NewType('TopOpeBRep_PFacesFiller', TopOpeBRep_FacesFiller)
-TopOpeBRep_PFacesIntersector = NewType('TopOpeBRep_PFacesIntersector', TopOpeBRep_FacesIntersector)
-TopOpeBRep_PIntRes2d_IntersectionPoint = NewType('TopOpeBRep_PIntRes2d_IntersectionPoint', IntRes2d_IntersectionPoint)
-TopOpeBRep_PLineInter = NewType('TopOpeBRep_PLineInter', TopOpeBRep_LineInter)
-TopOpeBRep_PPntOn2S = NewType('TopOpeBRep_PPntOn2S', IntSurf_PntOn2S)
-TopOpeBRep_PThePointOfIntersection = NewType('TopOpeBRep_PThePointOfIntersection', IntPatch_Point)
+TopOpeBRep_PEdgesIntersector = NewType("TopOpeBRep_PEdgesIntersector", TopOpeBRep_EdgesIntersector)
+TopOpeBRep_PFacesFiller = NewType("TopOpeBRep_PFacesFiller", TopOpeBRep_FacesFiller)
+TopOpeBRep_PFacesIntersector = NewType("TopOpeBRep_PFacesIntersector", TopOpeBRep_FacesIntersector)
+TopOpeBRep_PIntRes2d_IntersectionPoint = NewType("TopOpeBRep_PIntRes2d_IntersectionPoint", IntRes2d_IntersectionPoint)
+TopOpeBRep_PLineInter = NewType("TopOpeBRep_PLineInter", TopOpeBRep_LineInter)
+TopOpeBRep_PPntOn2S = NewType("TopOpeBRep_PPntOn2S", IntSurf_PntOn2S)
+TopOpeBRep_PThePointOfIntersection = NewType("TopOpeBRep_PThePointOfIntersection", IntPatch_Point)
 
 class TopOpeBRep_Array1OfLineInter:
     @overload

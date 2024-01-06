@@ -18,8 +18,8 @@ from OCC.Core.TopAbs import *
 from OCC.Core.GeomAdaptor import *
 from OCC.Core.IntRes2d import *
 
-#the following typedef cannot be wrapped as is
-ShapeAnalysis_BoxBndTree = NewType('ShapeAnalysis_BoxBndTree', Any)
+# the following typedef cannot be wrapped as is
+ShapeAnalysis_BoxBndTree = NewType("ShapeAnalysis_BoxBndTree", Any)
 
 class ShapeAnalysis_SequenceOfFreeBounds:
     def __init__(self) -> None: ...

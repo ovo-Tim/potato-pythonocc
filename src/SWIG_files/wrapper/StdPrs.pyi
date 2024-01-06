@@ -24,11 +24,11 @@ from OCC.Core.TopAbs import *
 from OCC.Core.Adaptor2d import *
 from OCC.Core.BRepLib import *
 
-StdPrs_BndBox = NewType('StdPrs_BndBox', Prs3d_BndBox)
-#the following typedef cannot be wrapped as is
-StdPrs_Point = NewType('StdPrs_Point', Any)
-#the following typedef cannot be wrapped as is
-StdPrs_Vertex = NewType('StdPrs_Vertex', Any)
+StdPrs_BndBox = NewType("StdPrs_BndBox", Prs3d_BndBox)
+# the following typedef cannot be wrapped as is
+StdPrs_Point = NewType("StdPrs_Point", Any)
+# the following typedef cannot be wrapped as is
+StdPrs_Vertex = NewType("StdPrs_Vertex", Any)
 
 class StdPrs_Volume(IntEnum):
     StdPrs_Volume_Autodetection: int = ...

@@ -6,37 +6,37 @@ from OCC.Core.NCollection import *
 from OCC.Core.TCollection import *
 from OCC.Core.TColStd import *
 
-#the following typedef cannot be wrapped as is
-TDF_AttributeDoubleMap = NewType('TDF_AttributeDoubleMap', Any)
-#the following typedef cannot be wrapped as is
-TDF_AttributeIndexedMap = NewType('TDF_AttributeIndexedMap', Any)
-#the following typedef cannot be wrapped as is
-TDF_AttributeMap = NewType('TDF_AttributeMap', Any)
-#the following typedef cannot be wrapped as is
-TDF_DoubleMapIteratorOfAttributeDoubleMap = NewType('TDF_DoubleMapIteratorOfAttributeDoubleMap', Any)
-#the following typedef cannot be wrapped as is
-TDF_DoubleMapIteratorOfGUIDProgIDMap = NewType('TDF_DoubleMapIteratorOfGUIDProgIDMap', Any)
-#the following typedef cannot be wrapped as is
-TDF_DoubleMapIteratorOfLabelDoubleMap = NewType('TDF_DoubleMapIteratorOfLabelDoubleMap', Any)
-#the following typedef cannot be wrapped as is
-TDF_GUIDProgIDMap = NewType('TDF_GUIDProgIDMap', Any)
-#the following typedef cannot be wrapped as is
-TDF_HAllocator = NewType('TDF_HAllocator', Any)
-#the following typedef cannot be wrapped as is
-TDF_IDMap = NewType('TDF_IDMap', Any)
-#the following typedef cannot be wrapped as is
-TDF_LabelDoubleMap = NewType('TDF_LabelDoubleMap', Any)
-#the following typedef cannot be wrapped as is
-TDF_LabelIndexedMap = NewType('TDF_LabelIndexedMap', Any)
-#the following typedef cannot be wrapped as is
-TDF_LabelMap = NewType('TDF_LabelMap', Any)
-TDF_LabelNodePtr = NewType('TDF_LabelNodePtr', TDF_LabelNode)
-#the following typedef cannot be wrapped as is
-TDF_MapIteratorOfAttributeMap = NewType('TDF_MapIteratorOfAttributeMap', Any)
-#the following typedef cannot be wrapped as is
-TDF_MapIteratorOfIDMap = NewType('TDF_MapIteratorOfIDMap', Any)
-#the following typedef cannot be wrapped as is
-TDF_MapIteratorOfLabelMap = NewType('TDF_MapIteratorOfLabelMap', Any)
+# the following typedef cannot be wrapped as is
+TDF_AttributeDoubleMap = NewType("TDF_AttributeDoubleMap", Any)
+# the following typedef cannot be wrapped as is
+TDF_AttributeIndexedMap = NewType("TDF_AttributeIndexedMap", Any)
+# the following typedef cannot be wrapped as is
+TDF_AttributeMap = NewType("TDF_AttributeMap", Any)
+# the following typedef cannot be wrapped as is
+TDF_DoubleMapIteratorOfAttributeDoubleMap = NewType("TDF_DoubleMapIteratorOfAttributeDoubleMap", Any)
+# the following typedef cannot be wrapped as is
+TDF_DoubleMapIteratorOfGUIDProgIDMap = NewType("TDF_DoubleMapIteratorOfGUIDProgIDMap", Any)
+# the following typedef cannot be wrapped as is
+TDF_DoubleMapIteratorOfLabelDoubleMap = NewType("TDF_DoubleMapIteratorOfLabelDoubleMap", Any)
+# the following typedef cannot be wrapped as is
+TDF_GUIDProgIDMap = NewType("TDF_GUIDProgIDMap", Any)
+# the following typedef cannot be wrapped as is
+TDF_HAllocator = NewType("TDF_HAllocator", Any)
+# the following typedef cannot be wrapped as is
+TDF_IDMap = NewType("TDF_IDMap", Any)
+# the following typedef cannot be wrapped as is
+TDF_LabelDoubleMap = NewType("TDF_LabelDoubleMap", Any)
+# the following typedef cannot be wrapped as is
+TDF_LabelIndexedMap = NewType("TDF_LabelIndexedMap", Any)
+# the following typedef cannot be wrapped as is
+TDF_LabelMap = NewType("TDF_LabelMap", Any)
+TDF_LabelNodePtr = NewType("TDF_LabelNodePtr", TDF_LabelNode)
+# the following typedef cannot be wrapped as is
+TDF_MapIteratorOfAttributeMap = NewType("TDF_MapIteratorOfAttributeMap", Any)
+# the following typedef cannot be wrapped as is
+TDF_MapIteratorOfIDMap = NewType("TDF_MapIteratorOfIDMap", Any)
+# the following typedef cannot be wrapped as is
+TDF_MapIteratorOfLabelMap = NewType("TDF_MapIteratorOfLabelMap", Any)
 
 class TDF_AttributeArray1:
     @overload

@@ -15,79 +15,79 @@ from OCC.Core.Image import *
 from OCC.Core.OSD import *
 from OCC.Core.Media import *
 
-Graphic3d_ArrayFlags = NewType('Graphic3d_ArrayFlags', Standard_Integer)
-#the following typedef cannot be wrapped as is
-Graphic3d_ArrayOfIndexedMapOfStructure = NewType('Graphic3d_ArrayOfIndexedMapOfStructure', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_BndBox3d = NewType('Graphic3d_BndBox3d', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_BndBox4d = NewType('Graphic3d_BndBox4d', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_BndBox4f = NewType('Graphic3d_BndBox4f', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_CameraLerp = NewType('Graphic3d_CameraLerp', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_IndexedMapOfStructure = NewType('Graphic3d_IndexedMapOfStructure', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_IndexedMapOfView = NewType('Graphic3d_IndexedMapOfView', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_MapIteratorOfMapOfStructure = NewType('Graphic3d_MapIteratorOfMapOfStructure', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_MapOfStructure = NewType('Graphic3d_MapOfStructure', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Mat4 = NewType('Graphic3d_Mat4', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Mat4d = NewType('Graphic3d_Mat4d', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_NMapOfTransient = NewType('Graphic3d_NMapOfTransient', Any)
-Graphic3d_Texture2Dmanual = NewType('Graphic3d_Texture2Dmanual', Graphic3d_Texture2D)
-#the following typedef cannot be wrapped as is
-Graphic3d_UniformFloat = NewType('Graphic3d_UniformFloat', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_UniformInt = NewType('Graphic3d_UniformInt', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_UniformVec2 = NewType('Graphic3d_UniformVec2', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_UniformVec2i = NewType('Graphic3d_UniformVec2i', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_UniformVec3 = NewType('Graphic3d_UniformVec3', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_UniformVec3i = NewType('Graphic3d_UniformVec3i', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_UniformVec4 = NewType('Graphic3d_UniformVec4', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_UniformVec4i = NewType('Graphic3d_UniformVec4i', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec2 = NewType('Graphic3d_Vec2', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec2b = NewType('Graphic3d_Vec2b', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec2d = NewType('Graphic3d_Vec2d', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec2i = NewType('Graphic3d_Vec2i', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec2ub = NewType('Graphic3d_Vec2ub', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec3 = NewType('Graphic3d_Vec3', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec3b = NewType('Graphic3d_Vec3b', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec3d = NewType('Graphic3d_Vec3d', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec3i = NewType('Graphic3d_Vec3i', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec3ub = NewType('Graphic3d_Vec3ub', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec4 = NewType('Graphic3d_Vec4', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec4b = NewType('Graphic3d_Vec4b', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec4d = NewType('Graphic3d_Vec4d', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec4i = NewType('Graphic3d_Vec4i', Any)
-#the following typedef cannot be wrapped as is
-Graphic3d_Vec4ub = NewType('Graphic3d_Vec4ub', Any)
-Graphic3d_ZLayerId = NewType('Graphic3d_ZLayerId', Standard_Integer)
+Graphic3d_ArrayFlags = NewType("Graphic3d_ArrayFlags", Standard_Integer)
+# the following typedef cannot be wrapped as is
+Graphic3d_ArrayOfIndexedMapOfStructure = NewType("Graphic3d_ArrayOfIndexedMapOfStructure", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_BndBox3d = NewType("Graphic3d_BndBox3d", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_BndBox4d = NewType("Graphic3d_BndBox4d", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_BndBox4f = NewType("Graphic3d_BndBox4f", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_CameraLerp = NewType("Graphic3d_CameraLerp", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_IndexedMapOfStructure = NewType("Graphic3d_IndexedMapOfStructure", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_IndexedMapOfView = NewType("Graphic3d_IndexedMapOfView", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_MapIteratorOfMapOfStructure = NewType("Graphic3d_MapIteratorOfMapOfStructure", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_MapOfStructure = NewType("Graphic3d_MapOfStructure", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Mat4 = NewType("Graphic3d_Mat4", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Mat4d = NewType("Graphic3d_Mat4d", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_NMapOfTransient = NewType("Graphic3d_NMapOfTransient", Any)
+Graphic3d_Texture2Dmanual = NewType("Graphic3d_Texture2Dmanual", Graphic3d_Texture2D)
+# the following typedef cannot be wrapped as is
+Graphic3d_UniformFloat = NewType("Graphic3d_UniformFloat", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_UniformInt = NewType("Graphic3d_UniformInt", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_UniformVec2 = NewType("Graphic3d_UniformVec2", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_UniformVec2i = NewType("Graphic3d_UniformVec2i", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_UniformVec3 = NewType("Graphic3d_UniformVec3", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_UniformVec3i = NewType("Graphic3d_UniformVec3i", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_UniformVec4 = NewType("Graphic3d_UniformVec4", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_UniformVec4i = NewType("Graphic3d_UniformVec4i", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec2 = NewType("Graphic3d_Vec2", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec2b = NewType("Graphic3d_Vec2b", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec2d = NewType("Graphic3d_Vec2d", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec2i = NewType("Graphic3d_Vec2i", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec2ub = NewType("Graphic3d_Vec2ub", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec3 = NewType("Graphic3d_Vec3", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec3b = NewType("Graphic3d_Vec3b", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec3d = NewType("Graphic3d_Vec3d", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec3i = NewType("Graphic3d_Vec3i", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec3ub = NewType("Graphic3d_Vec3ub", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec4 = NewType("Graphic3d_Vec4", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec4b = NewType("Graphic3d_Vec4b", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec4d = NewType("Graphic3d_Vec4d", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec4i = NewType("Graphic3d_Vec4i", Any)
+# the following typedef cannot be wrapped as is
+Graphic3d_Vec4ub = NewType("Graphic3d_Vec4ub", Any)
+Graphic3d_ZLayerId = NewType("Graphic3d_ZLayerId", Standard_Integer)
 
 class Graphic3d_Array1OfAttribute:
     @overload

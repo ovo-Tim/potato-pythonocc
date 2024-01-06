@@ -5,10 +5,10 @@ from OCC.Core.Standard import *
 from OCC.Core.NCollection import *
 from OCC.Core.Geom import *
 
-#the following typedef cannot be wrapped as is
-TColGeom_Array2OfBezierSurface = NewType('TColGeom_Array2OfBezierSurface', Any)
-#the following typedef cannot be wrapped as is
-TColGeom_Array2OfSurface = NewType('TColGeom_Array2OfSurface', Any)
+# the following typedef cannot be wrapped as is
+TColGeom_Array2OfBezierSurface = NewType("TColGeom_Array2OfBezierSurface", Any)
+# the following typedef cannot be wrapped as is
+TColGeom_Array2OfSurface = NewType("TColGeom_Array2OfSurface", Any)
 
 class TColGeom_Array1OfBSplineCurve:
     @overload

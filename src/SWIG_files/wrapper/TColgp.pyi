@@ -4,26 +4,26 @@ from typing import overload, NewType, Optional, Tuple
 from OCC.Core.Standard import *
 from OCC.Core.NCollection import *
 
-#the following typedef cannot be wrapped as is
-TColgp_Array2OfCirc2d = NewType('TColgp_Array2OfCirc2d', Any)
-#the following typedef cannot be wrapped as is
-TColgp_Array2OfDir = NewType('TColgp_Array2OfDir', Any)
-#the following typedef cannot be wrapped as is
-TColgp_Array2OfDir2d = NewType('TColgp_Array2OfDir2d', Any)
-#the following typedef cannot be wrapped as is
-TColgp_Array2OfLin2d = NewType('TColgp_Array2OfLin2d', Any)
-#the following typedef cannot be wrapped as is
-TColgp_Array2OfPnt = NewType('TColgp_Array2OfPnt', Any)
-#the following typedef cannot be wrapped as is
-TColgp_Array2OfPnt2d = NewType('TColgp_Array2OfPnt2d', Any)
-#the following typedef cannot be wrapped as is
-TColgp_Array2OfVec = NewType('TColgp_Array2OfVec', Any)
-#the following typedef cannot be wrapped as is
-TColgp_Array2OfVec2d = NewType('TColgp_Array2OfVec2d', Any)
-#the following typedef cannot be wrapped as is
-TColgp_Array2OfXY = NewType('TColgp_Array2OfXY', Any)
-#the following typedef cannot be wrapped as is
-TColgp_Array2OfXYZ = NewType('TColgp_Array2OfXYZ', Any)
+# the following typedef cannot be wrapped as is
+TColgp_Array2OfCirc2d = NewType("TColgp_Array2OfCirc2d", Any)
+# the following typedef cannot be wrapped as is
+TColgp_Array2OfDir = NewType("TColgp_Array2OfDir", Any)
+# the following typedef cannot be wrapped as is
+TColgp_Array2OfDir2d = NewType("TColgp_Array2OfDir2d", Any)
+# the following typedef cannot be wrapped as is
+TColgp_Array2OfLin2d = NewType("TColgp_Array2OfLin2d", Any)
+# the following typedef cannot be wrapped as is
+TColgp_Array2OfPnt = NewType("TColgp_Array2OfPnt", Any)
+# the following typedef cannot be wrapped as is
+TColgp_Array2OfPnt2d = NewType("TColgp_Array2OfPnt2d", Any)
+# the following typedef cannot be wrapped as is
+TColgp_Array2OfVec = NewType("TColgp_Array2OfVec", Any)
+# the following typedef cannot be wrapped as is
+TColgp_Array2OfVec2d = NewType("TColgp_Array2OfVec2d", Any)
+# the following typedef cannot be wrapped as is
+TColgp_Array2OfXY = NewType("TColgp_Array2OfXY", Any)
+# the following typedef cannot be wrapped as is
+TColgp_Array2OfXYZ = NewType("TColgp_Array2OfXYZ", Any)
 
 class TColgp_Array1OfCirc2d:
     @overload

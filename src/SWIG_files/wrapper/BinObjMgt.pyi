@@ -8,13 +8,13 @@ from OCC.Core.TCollection import *
 from OCC.Core.TDF import *
 from OCC.Core.Storage import *
 
-BinObjMgt_PByte = NewType('BinObjMgt_PByte', Standard_Byte)
-BinObjMgt_PChar = NewType('BinObjMgt_PChar', str)
-BinObjMgt_PExtChar = NewType('BinObjMgt_PExtChar', str)
-BinObjMgt_PInteger = NewType('BinObjMgt_PInteger', Standard_Integer)
-BinObjMgt_PReal = NewType('BinObjMgt_PReal', Standard_Real)
-BinObjMgt_PShortReal = NewType('BinObjMgt_PShortReal', Standard_ShortReal)
-BinObjMgt_SRelocationTable = NewType('BinObjMgt_SRelocationTable', TColStd_IndexedMapOfTransient)
+BinObjMgt_PByte = NewType("BinObjMgt_PByte", Standard_Byte)
+BinObjMgt_PChar = NewType("BinObjMgt_PChar", str)
+BinObjMgt_PExtChar = NewType("BinObjMgt_PExtChar", str)
+BinObjMgt_PInteger = NewType("BinObjMgt_PInteger", Standard_Integer)
+BinObjMgt_PReal = NewType("BinObjMgt_PReal", Standard_Real)
+BinObjMgt_PShortReal = NewType("BinObjMgt_PShortReal", Standard_ShortReal)
+BinObjMgt_SRelocationTable = NewType("BinObjMgt_SRelocationTable", TColStd_IndexedMapOfTransient)
 
 class BinObjMgt_Persistent:
     @overload

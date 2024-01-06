@@ -7,21 +7,21 @@ from OCC.Core.Adaptor3d import *
 from OCC.Core.TColStd import *
 from OCC.Core.Bnd import *
 
-#the following typedef cannot be wrapped as is
-IntPolyh_ArrayOfEdges = NewType('IntPolyh_ArrayOfEdges', Any)
-#the following typedef cannot be wrapped as is
-IntPolyh_ArrayOfPointNormal = NewType('IntPolyh_ArrayOfPointNormal', Any)
-#the following typedef cannot be wrapped as is
-IntPolyh_ArrayOfPoints = NewType('IntPolyh_ArrayOfPoints', Any)
-#the following typedef cannot be wrapped as is
-IntPolyh_ArrayOfSectionLines = NewType('IntPolyh_ArrayOfSectionLines', Any)
-#the following typedef cannot be wrapped as is
-IntPolyh_ArrayOfTangentZones = NewType('IntPolyh_ArrayOfTangentZones', Any)
-#the following typedef cannot be wrapped as is
-IntPolyh_ArrayOfTriangles = NewType('IntPolyh_ArrayOfTriangles', Any)
-#the following typedef cannot be wrapped as is
-IntPolyh_ListIteratorOfListOfCouples = NewType('IntPolyh_ListIteratorOfListOfCouples', Any)
-IntPolyh_PMaillageAffinage = NewType('IntPolyh_PMaillageAffinage', IntPolyh_MaillageAffinage)
+# the following typedef cannot be wrapped as is
+IntPolyh_ArrayOfEdges = NewType("IntPolyh_ArrayOfEdges", Any)
+# the following typedef cannot be wrapped as is
+IntPolyh_ArrayOfPointNormal = NewType("IntPolyh_ArrayOfPointNormal", Any)
+# the following typedef cannot be wrapped as is
+IntPolyh_ArrayOfPoints = NewType("IntPolyh_ArrayOfPoints", Any)
+# the following typedef cannot be wrapped as is
+IntPolyh_ArrayOfSectionLines = NewType("IntPolyh_ArrayOfSectionLines", Any)
+# the following typedef cannot be wrapped as is
+IntPolyh_ArrayOfTangentZones = NewType("IntPolyh_ArrayOfTangentZones", Any)
+# the following typedef cannot be wrapped as is
+IntPolyh_ArrayOfTriangles = NewType("IntPolyh_ArrayOfTriangles", Any)
+# the following typedef cannot be wrapped as is
+IntPolyh_ListIteratorOfListOfCouples = NewType("IntPolyh_ListIteratorOfListOfCouples", Any)
+IntPolyh_PMaillageAffinage = NewType("IntPolyh_PMaillageAffinage", IntPolyh_MaillageAffinage)
 
 class IntPolyh_ListOfCouples:
     def __init__(self) -> None: ...

@@ -5,13 +5,13 @@ from OCC.Core.Standard import *
 from OCC.Core.NCollection import *
 from OCC.Core.TCollection import *
 
-#the following typedef cannot be wrapped as is
-OSD_IOStreamBuffer = NewType('OSD_IOStreamBuffer', Any)
-#the following typedef cannot be wrapped as is
-OSD_IStreamBuffer = NewType('OSD_IStreamBuffer', Any)
-#the following typedef cannot be wrapped as is
-OSD_OStreamBuffer = NewType('OSD_OStreamBuffer', Any)
-OSD_PThread = NewType('OSD_PThread', pthread_t)
+# the following typedef cannot be wrapped as is
+OSD_IOStreamBuffer = NewType("OSD_IOStreamBuffer", Any)
+# the following typedef cannot be wrapped as is
+OSD_IStreamBuffer = NewType("OSD_IStreamBuffer", Any)
+# the following typedef cannot be wrapped as is
+OSD_OStreamBuffer = NewType("OSD_OStreamBuffer", Any)
+OSD_PThread = NewType("OSD_PThread", pthread_t)
 
 class OSD_FromWhere(IntEnum):
     OSD_FromBeginning: int = ...

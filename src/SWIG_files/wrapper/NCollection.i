@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2022 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2023 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define NCOLLECTIONDOCSTRING
 "NCollection module, see official documentation at
-https://www.opencascade.com/doc/occt-7.6.0/refman/html/package_ncollection.html"
+https://www.opencascade.com/doc/occt-7.7.0/refman/html/package_ncollection.html"
 %enddef
 %module (package="OCC.Core", docstring=NCOLLECTIONDOCSTRING) NCollection
 
@@ -86,10 +86,21 @@ from OCC.Core.Exception import *
 %ignore NCollection_List::Last();
 %ignore NCollection_TListIterator::Value();
 /* public enums */
+enum NCollection_CellFilter_Action {
+	CellFilter_Keep = 0,
+	CellFilter_Purge = 1,
+};
+
 /* end public enums declaration */
 
 /* python proxy classes for enums */
 %pythoncode {
+
+class NCollection_CellFilter_Action(IntEnum):
+	CellFilter_Keep = 0
+	CellFilter_Purge = 1
+CellFilter_Keep = NCollection_CellFilter_Action.CellFilter_Keep
+CellFilter_Purge = NCollection_CellFilter_Action.CellFilter_Purge
 };
 /* end python proxy for enums */
 
@@ -145,6 +156,15 @@ typedef size_t Standard_Size;
 /***************************
 * class NCollection_Buffer *
 ***************************/
+/*******************************
+* class NCollection_CellFilter *
+*******************************/
+/*******************************************
+* class NCollection_CellFilter_InspectorXY *
+*******************************************/
+/********************************************
+* class NCollection_CellFilter_InspectorXYZ *
+********************************************/
 /**********************************
 * class NCollection_DefaultHasher *
 **********************************/
@@ -187,52 +207,62 @@ typedef void value_type;
 		/****************** NCollection_StdAllocator ******************/
 		/**** md5 signature: 240c03d4b72541b1a032e1913b305d8b ****/
 		%feature("compactdefaultargs") NCollection_StdAllocator;
-		%feature("autodoc", "/*! creates an object using default open cascade allocation mechanism, i.e. which uses standard::allocate() and standard::free() underneath. */.
-
-Returns
+		%feature("autodoc", "Return
 -------
 None
+
+Description
+-----------
+/*! creates an object using default open cascade allocation mechanism, i.e. which uses standard::allocate() and standard::free() underneath. */.
 ") NCollection_StdAllocator;
 		 NCollection_StdAllocator();
 
 		/****************** NCollection_StdAllocator ******************/
 		/**** md5 signature: c45105f788e0b68d85b5ae58987f113a ****/
 		%feature("compactdefaultargs") NCollection_StdAllocator;
-		%feature("autodoc", "/*! saves \a thealloc as an underlying allocator instance.*/.
-
+		%feature("autodoc", "
 Parameters
 ----------
 theAlloc: NCollection_BaseAllocator
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/*! saves \a thealloc as an underlying allocator instance.*/.
 ") NCollection_StdAllocator;
 		 NCollection_StdAllocator(const opencascade::handle<NCollection_BaseAllocator> & theAlloc);
 
 		/****************** NCollection_StdAllocator ******************/
 		/**** md5 signature: d36f86ffeabb62b4a5cec1623b3cf39b ****/
 		%feature("compactdefaultargs") NCollection_StdAllocator;
-		%feature("autodoc", "/*! copies allocator() from \a x.*/.
-
+		%feature("autodoc", "
 Parameters
 ----------
 X: NCollection_StdAllocator
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+/*! copies allocator() from \a x.*/.
 ") NCollection_StdAllocator;
 		 NCollection_StdAllocator(const NCollection_StdAllocator & X);
 
 		/****************** Allocator ******************/
 		/**** md5 signature: c2190efebec564fb34d6c8e52682605e ****/
 		%feature("compactdefaultargs") Allocator;
-		%feature("autodoc", "/*! returns an object specified in the constructor.*/.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<NCollection_BaseAllocator>
+
+Description
+-----------
+/*! returns an object specified in the constructor.*/.
 ") Allocator;
 		const opencascade::handle<NCollection_BaseAllocator> & Allocator();
 
@@ -245,6 +275,9 @@ opencascade::handle<NCollection_BaseAllocator>
 	}
 };
 
+/********************************
+* class NCollection_StlIterator *
+********************************/
 /***************************
 * class NCollection_UBTree *
 ***************************/
@@ -371,6 +404,18 @@ class NCollection_AlignedAllocator:
 	pass
 
 @classnotwrapped
+class NCollection_CellFilter:
+	pass
+
+@classnotwrapped
+class NCollection_CellFilter_InspectorXYZ:
+	pass
+
+@classnotwrapped
+class NCollection_CellFilter_InspectorXY:
+	pass
+
+@classnotwrapped
 class NCollection_Sequence:
 	pass
 
@@ -448,6 +493,10 @@ class NCollection_UBTree:
 
 @classnotwrapped
 class NCollection_LocalArray:
+	pass
+
+@classnotwrapped
+class NCollection_StlIterator:
 	pass
 
 @classnotwrapped

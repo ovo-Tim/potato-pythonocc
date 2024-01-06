@@ -5,50 +5,50 @@ from OCC.Core.Standard import *
 from OCC.Core.NCollection import *
 from OCC.Core.TCollection import *
 
-#the following typedef cannot be wrapped as is
-TColStd_Array2OfBoolean = NewType('TColStd_Array2OfBoolean', Any)
-#the following typedef cannot be wrapped as is
-TColStd_Array2OfCharacter = NewType('TColStd_Array2OfCharacter', Any)
-#the following typedef cannot be wrapped as is
-TColStd_Array2OfInteger = NewType('TColStd_Array2OfInteger', Any)
-#the following typedef cannot be wrapped as is
-TColStd_Array2OfReal = NewType('TColStd_Array2OfReal', Any)
-#the following typedef cannot be wrapped as is
-TColStd_Array2OfTransient = NewType('TColStd_Array2OfTransient', Any)
-#the following typedef cannot be wrapped as is
-TColStd_IndexedDataMapOfStringString = NewType('TColStd_IndexedDataMapOfStringString', Any)
-#the following typedef cannot be wrapped as is
-TColStd_IndexedDataMapOfTransientTransient = NewType('TColStd_IndexedDataMapOfTransientTransient', Any)
-#the following typedef cannot be wrapped as is
-TColStd_IndexedMapOfInteger = NewType('TColStd_IndexedMapOfInteger', Any)
-#the following typedef cannot be wrapped as is
-TColStd_IndexedMapOfReal = NewType('TColStd_IndexedMapOfReal', Any)
-#the following typedef cannot be wrapped as is
-TColStd_IndexedMapOfTransient = NewType('TColStd_IndexedMapOfTransient', Any)
-#the following typedef cannot be wrapped as is
-TColStd_MapIntegerHasher = NewType('TColStd_MapIntegerHasher', Any)
-#the following typedef cannot be wrapped as is
-TColStd_MapIteratorOfMapOfAsciiString = NewType('TColStd_MapIteratorOfMapOfAsciiString', Any)
-#the following typedef cannot be wrapped as is
-TColStd_MapIteratorOfMapOfInteger = NewType('TColStd_MapIteratorOfMapOfInteger', Any)
-#the following typedef cannot be wrapped as is
-TColStd_MapIteratorOfMapOfReal = NewType('TColStd_MapIteratorOfMapOfReal', Any)
-#the following typedef cannot be wrapped as is
-TColStd_MapIteratorOfMapOfTransient = NewType('TColStd_MapIteratorOfMapOfTransient', Any)
-#the following typedef cannot be wrapped as is
-TColStd_MapIteratorOfPackedMapOfInteger = NewType('TColStd_MapIteratorOfPackedMapOfInteger', Any)
-#the following typedef cannot be wrapped as is
-TColStd_MapOfAsciiString = NewType('TColStd_MapOfAsciiString', Any)
-#the following typedef cannot be wrapped as is
-TColStd_MapOfInteger = NewType('TColStd_MapOfInteger', Any)
-#the following typedef cannot be wrapped as is
-TColStd_MapOfReal = NewType('TColStd_MapOfReal', Any)
-#the following typedef cannot be wrapped as is
-TColStd_MapOfTransient = NewType('TColStd_MapOfTransient', Any)
-#the following typedef cannot be wrapped as is
-TColStd_MapRealHasher = NewType('TColStd_MapRealHasher', Any)
-#the following typedef cannot be wrapped as is
-TColStd_MapTransientHasher = NewType('TColStd_MapTransientHasher', Any)
+# the following typedef cannot be wrapped as is
+TColStd_Array2OfBoolean = NewType("TColStd_Array2OfBoolean", Any)
+# the following typedef cannot be wrapped as is
+TColStd_Array2OfCharacter = NewType("TColStd_Array2OfCharacter", Any)
+# the following typedef cannot be wrapped as is
+TColStd_Array2OfInteger = NewType("TColStd_Array2OfInteger", Any)
+# the following typedef cannot be wrapped as is
+TColStd_Array2OfReal = NewType("TColStd_Array2OfReal", Any)
+# the following typedef cannot be wrapped as is
+TColStd_Array2OfTransient = NewType("TColStd_Array2OfTransient", Any)
+# the following typedef cannot be wrapped as is
+TColStd_IndexedDataMapOfStringString = NewType("TColStd_IndexedDataMapOfStringString", Any)
+# the following typedef cannot be wrapped as is
+TColStd_IndexedDataMapOfTransientTransient = NewType("TColStd_IndexedDataMapOfTransientTransient", Any)
+# the following typedef cannot be wrapped as is
+TColStd_IndexedMapOfInteger = NewType("TColStd_IndexedMapOfInteger", Any)
+# the following typedef cannot be wrapped as is
+TColStd_IndexedMapOfReal = NewType("TColStd_IndexedMapOfReal", Any)
+# the following typedef cannot be wrapped as is
+TColStd_IndexedMapOfTransient = NewType("TColStd_IndexedMapOfTransient", Any)
+# the following typedef cannot be wrapped as is
+TColStd_MapIntegerHasher = NewType("TColStd_MapIntegerHasher", Any)
+# the following typedef cannot be wrapped as is
+TColStd_MapIteratorOfMapOfAsciiString = NewType("TColStd_MapIteratorOfMapOfAsciiString", Any)
+# the following typedef cannot be wrapped as is
+TColStd_MapIteratorOfMapOfInteger = NewType("TColStd_MapIteratorOfMapOfInteger", Any)
+# the following typedef cannot be wrapped as is
+TColStd_MapIteratorOfMapOfReal = NewType("TColStd_MapIteratorOfMapOfReal", Any)
+# the following typedef cannot be wrapped as is
+TColStd_MapIteratorOfMapOfTransient = NewType("TColStd_MapIteratorOfMapOfTransient", Any)
+# the following typedef cannot be wrapped as is
+TColStd_MapIteratorOfPackedMapOfInteger = NewType("TColStd_MapIteratorOfPackedMapOfInteger", Any)
+# the following typedef cannot be wrapped as is
+TColStd_MapOfAsciiString = NewType("TColStd_MapOfAsciiString", Any)
+# the following typedef cannot be wrapped as is
+TColStd_MapOfInteger = NewType("TColStd_MapOfInteger", Any)
+# the following typedef cannot be wrapped as is
+TColStd_MapOfReal = NewType("TColStd_MapOfReal", Any)
+# the following typedef cannot be wrapped as is
+TColStd_MapOfTransient = NewType("TColStd_MapOfTransient", Any)
+# the following typedef cannot be wrapped as is
+TColStd_MapRealHasher = NewType("TColStd_MapRealHasher", Any)
+# the following typedef cannot be wrapped as is
+TColStd_MapTransientHasher = NewType("TColStd_MapTransientHasher", Any)
 
 class TColStd_Array1OfAsciiString:
     @overload

@@ -10,8 +10,8 @@ from OCC.Core.gp import *
 from OCC.Core.MAT import *
 from OCC.Core.Bisector import *
 
-#the following typedef cannot be wrapped as is
-MAT2d_Array2OfConnexion = NewType('MAT2d_Array2OfConnexion', Any)
+# the following typedef cannot be wrapped as is
+MAT2d_Array2OfConnexion = NewType("MAT2d_Array2OfConnexion", Any)
 
 class MAT2d_SequenceOfConnexion:
     def __init__(self) -> None: ...

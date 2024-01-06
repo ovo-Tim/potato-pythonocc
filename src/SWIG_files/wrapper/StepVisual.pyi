@@ -12,8 +12,8 @@ from OCC.Core.TCollection import *
 from OCC.Core.StepBasic import *
 from OCC.Core.TColgp import *
 
-#the following typedef cannot be wrapped as is
-StepVisual_VectorOfHSequenceOfInteger = NewType('StepVisual_VectorOfHSequenceOfInteger', Any)
+# the following typedef cannot be wrapped as is
+StepVisual_VectorOfHSequenceOfInteger = NewType("StepVisual_VectorOfHSequenceOfInteger", Any)
 
 class StepVisual_Array1OfAnnotationPlaneElement:
     @overload

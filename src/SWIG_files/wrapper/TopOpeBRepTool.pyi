@@ -20,15 +20,15 @@ from OCC.Core.TCollection import *
 from OCC.Core.GeomAbs import *
 from OCC.Core.Extrema import *
 
-#the following typedef cannot be wrapped as is
-TopOpeBRepTool_IndexedDataMapOfShapeBox = NewType('TopOpeBRepTool_IndexedDataMapOfShapeBox', Any)
-#the following typedef cannot be wrapped as is
-TopOpeBRepTool_IndexedDataMapOfShapeBox2d = NewType('TopOpeBRepTool_IndexedDataMapOfShapeBox2d', Any)
-#the following typedef cannot be wrapped as is
-TopOpeBRepTool_IndexedDataMapOfShapeconnexity = NewType('TopOpeBRepTool_IndexedDataMapOfShapeconnexity', Any)
-TopOpeBRepTool_PShapeClassifier = NewType('TopOpeBRepTool_PShapeClassifier', TopOpeBRepTool_ShapeClassifier)
-TopOpeBRepTool_PSoClassif = NewType('TopOpeBRepTool_PSoClassif', BRepClass3d_SolidClassifier)
-TopOpeBRepTool_Plos = NewType('TopOpeBRepTool_Plos', TopTools_ListOfShape)
+# the following typedef cannot be wrapped as is
+TopOpeBRepTool_IndexedDataMapOfShapeBox = NewType("TopOpeBRepTool_IndexedDataMapOfShapeBox", Any)
+# the following typedef cannot be wrapped as is
+TopOpeBRepTool_IndexedDataMapOfShapeBox2d = NewType("TopOpeBRepTool_IndexedDataMapOfShapeBox2d", Any)
+# the following typedef cannot be wrapped as is
+TopOpeBRepTool_IndexedDataMapOfShapeconnexity = NewType("TopOpeBRepTool_IndexedDataMapOfShapeconnexity", Any)
+TopOpeBRepTool_PShapeClassifier = NewType("TopOpeBRepTool_PShapeClassifier", TopOpeBRepTool_ShapeClassifier)
+TopOpeBRepTool_PSoClassif = NewType("TopOpeBRepTool_PSoClassif", BRepClass3d_SolidClassifier)
+TopOpeBRepTool_Plos = NewType("TopOpeBRepTool_Plos", TopTools_ListOfShape)
 
 class TopOpeBRepTool_ListOfC2DF:
     def __init__(self) -> None: ...

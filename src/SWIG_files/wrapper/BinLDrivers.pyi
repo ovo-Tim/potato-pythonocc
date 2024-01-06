@@ -11,8 +11,8 @@ from OCC.Core.TCollection import *
 from OCC.Core.CDM import *
 from OCC.Core.Storage import *
 
-#the following typedef cannot be wrapped as is
-BinLDrivers_VectorOfDocumentSection = NewType('BinLDrivers_VectorOfDocumentSection', Any)
+# the following typedef cannot be wrapped as is
+BinLDrivers_VectorOfDocumentSection = NewType("BinLDrivers_VectorOfDocumentSection", Any)
 
 class BinLDrivers_Marker(IntEnum):
     BinLDrivers_ENDATTRLIST: int = ...

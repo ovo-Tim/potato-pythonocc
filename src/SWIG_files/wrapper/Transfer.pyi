@@ -7,10 +7,10 @@ from OCC.Core.Message import *
 from OCC.Core.Interface import *
 from OCC.Core.TColStd import *
 
-#the following typedef cannot be wrapped as is
-Transfer_TransferMapOfProcessForFinder = NewType('Transfer_TransferMapOfProcessForFinder', Any)
-#the following typedef cannot be wrapped as is
-Transfer_TransferMapOfProcessForTransient = NewType('Transfer_TransferMapOfProcessForTransient', Any)
+# the following typedef cannot be wrapped as is
+Transfer_TransferMapOfProcessForFinder = NewType("Transfer_TransferMapOfProcessForFinder", Any)
+# the following typedef cannot be wrapped as is
+Transfer_TransferMapOfProcessForTransient = NewType("Transfer_TransferMapOfProcessForTransient", Any)
 
 class Transfer_SequenceOfBinder:
     def __init__(self) -> None: ...

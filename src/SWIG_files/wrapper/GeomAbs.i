@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2022 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2023 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define GEOMABSDOCSTRING
 "GeomAbs module, see official documentation at
-https://www.opencascade.com/doc/occt-7.6.0/refman/html/package_geomabs.html"
+https://www.opencascade.com/doc/occt-7.7.0/refman/html/package_geomabs.html"
 %enddef
 %module (package="OCC.Core", docstring=GEOMABSDOCSTRING) GeomAbs
 
