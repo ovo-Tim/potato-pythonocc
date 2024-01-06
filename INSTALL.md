@@ -75,11 +75,15 @@ RUN cmake \
  -DOCCT_INCLUDE_DIR=/opt/build/occt772/include/opencascade \
  -DOCCT_LIBRARY_DIR=/opt/build/occt772/lib \
  -DPYTHONOCC_BUILD_TYPE=Release \
- -DPYTHONOCC_INSTALL_DIR=/where_to_install
+ -DPYTHONOCC_INSTALL_DIRECTORY=<PATH-TO-INSTALL> \
   ..
 
 RUN make -j4 && make install 
+
+RUN  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/build/occt772/lib
 ```
+
+If `PYTHONOCC_INSTALL_DIRECTORY` is unset, it will be installed to `site-packages/OCC`. Also add your LD_LIBRARY_PATH in your .bashrc file.
 
 Build pythonocc with numpy support
 ----------------------------------
