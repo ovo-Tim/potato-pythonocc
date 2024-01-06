@@ -25,7 +25,13 @@ import sys
 
 from OCC.Core.AIS import AIS_Manipulator, AIS_Shape
 from OCC.Core.gp import gp_Trsf, gp_Pln, gp_Pnt, gp_Dir, gp_Vec, gp_Lin, gp_Origin, gp
-from OCC.Core.TopAbs import TopAbs_SOLID, TopAbs_EDGE
+from OCC.Core.TopAbs import (
+    TopAbs_FACE,
+    TopAbs_EDGE,
+    TopAbs_VERTEX,
+    TopAbs_SHELL,
+    TopAbs_SOLID,
+)
 from OCC.Display import OCCViewer
 from OCC.Core.Prs3d import  Prs3d_TypeOfHighlight_LocalDynamic, Prs3d_TypeOfHighlight_LocalSelected, Prs3d_TypeOfHighlight_Dynamic, Prs3d_TypeOfHighlight_Selected
 from OCC.Core.Quantity import Quantity_NOC_LIGHTSEAGREEN, Quantity_NOC_LIGHTSKYBLUE, Quantity_Color
@@ -34,7 +40,6 @@ from OCC.Core.PrsDim import PrsDim_LengthDimension
 from OCC.Core.GeomAPI import GeomAPI_IntCS
 
 from qtpy import QtGui, QtWidgets, QtCore
-import qtpy
 
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 log = logging.getLogger(__name__)
@@ -51,14 +56,13 @@ class qtBaseViewer(QtWidgets.QWidget):
         # # enable Mouse Tracking
         self.setMouseTracking(True)
 
-        # # Strong focus
-        # self.setFocusPolicy(QtCore.Qt.WheelFocus)
-
         self.setAttribute(QtCore.Qt.WA_NativeWindow)
         self.setAttribute(QtCore.Qt.WA_PaintOnScreen)
         self.setAttribute(QtCore.Qt.WA_NoSystemBackground)
 
         self.setAutoFillBackground(False)
+
+        self.setContentsMargins(0,0,0,0)
     
     def Create(self):
         self._display.Create(window_handle=self.winId(), parent=self)
@@ -80,9 +84,6 @@ class qtViewer3d(QtWidgets.QWidget):
 
         self.setObjectName("qt_viewer_3d")
 
-        # self.setAttribute(QtCore.Qt.WA_NativeWindow)
-        # self.setAttribute(QtCore.Qt.WA_PaintOnScreen)
-        # self.setAttribute(QtCore.Qt.WA_NoSystemBackground)
         self.setAttribute(QtCore.Qt.WA_DontCreateNativeAncestors)
 
         self.main_layout = QtWidgets.QVBoxLayout(self)
@@ -108,12 +109,7 @@ class qtViewer3d(QtWidgets.QWidget):
         self.mouse_pos = [0,0]
         self.zoom_at_cursor = True
         self.zoom_speed = 0.1
-
-        self.change_select_timer = QtCore.QTimer()
-        self.change_select_timer.timeout.connect(self.change_select)
-        self._change_select = True
-        self.select_mode = 0
-        self._max_select_mode = 3
+        
         self._select_solid = False
 
         self.set_highlight()
@@ -124,13 +120,18 @@ class qtViewer3d(QtWidgets.QWidget):
         self.activity_plane: gp_Pln = gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1))
 
         self.setMouseTracking(True)
+        self.setContentsMargins(0,0,0,0)
 
     def select_solid(self):
-        self._select_solid = not self._select_solid
-        if self._select_solid:
+        if len(self._display.selected_shapes) and not self._select_solid:
+            # print(1)
             self._display.SetSelectionMode(TopAbs_SOLID)
+            self._select_solid = True
         else:
-            self.change_select_timer.start(1)
+            self._select_solid = False
+            self._display.Context.Activate(AIS_Shape.SelectionMode(TopAbs_FACE), True) 
+            self._display.Context.Activate(AIS_Shape.SelectionMode(TopAbs_EDGE), True) 
+            self._display.Context.Activate(AIS_Shape.SelectionMode(TopAbs_VERTEX), True) 
 
     @property
     def qApp(self):
@@ -142,7 +143,6 @@ class qtViewer3d(QtWidgets.QWidget):
         self._qApp = value
 
     def InitDriver(self):
-        # self._display.Create(window_handle=int(self.winId()), parent=self)
         self.qtBaseViewer.Create()
         # background gradient
         self._display.SetModeShaded()
@@ -192,25 +192,12 @@ class qtViewer3d(QtWidgets.QWidget):
         else:
             log.info("key: code %i not mapped to any function" % code)
 
-    # def focusInEvent(self, event):
-    #     if self._inited:
-    #         # self._display.View.MustBeResized()
-    #         self._display.Repaint()
-
-    # def focusOutEvent(self, event):
-    #     if self._inited:
-    #         self._display.Repaint()
-
     def paintEvent(self, event):
         if not self._inited:
             self.InitDriver()
 
         self._display.View.MustBeResized()
-        # self._display.Context.UpdateCurrentViewer()
         self._display.Repaint()
-
-        # print(self.qtBaseViewer.size())
-
         if self._drawbox:
             painter = QtGui.QPainter(self)
             painter.setPen(QtGui.QPen(QtGui.QColor(0, 0, 0), 2))
@@ -257,13 +244,12 @@ class qtViewer3d(QtWidgets.QWidget):
         modifiers = event.modifiers()
 
         if event.button() == QtCore.Qt.LeftButton:
-            if (self._display.selected_shapes and (self._display.Context.DetectedOwner())) or self._select_solid:
-                self.select_solid()
+            self.select_solid()
             if self._select_area:
                 [Xmin, Ymin, dx, dy] = self._drawbox
                 self._display.SelectArea(Xmin, Ymin, Xmin + dx, Ymin + dy)
                 self._select_area = False
-            elif modifiers == QtCore.Qt.Modifier.SHIFT:
+            elif modifiers == QtCore.Qt.ShiftModifier:
                 self._display.ShiftSelect(pt.x(), pt.y())
             else:
                 # single select otherwise
@@ -272,7 +258,7 @@ class qtViewer3d(QtWidgets.QWidget):
                 if self._display.selected_shapes is not None:
                     self.sig_topods_selected.emit(self._display.selected_shapes)
 
-        elif event.button() == QtCore.Qt.MouseButton.RightButton:
+        elif event.button() == QtCore.Qt.RightButton:
             if self._zoom_area:
                 [Xmin, Ymin, dx, dy] = self._drawbox
                 self._display.ZoomArea(Xmin, Ymin, Xmin + dx, Ymin + dy)
@@ -358,36 +344,8 @@ class qtViewer3d(QtWidgets.QWidget):
                 
                 self._display.MoveTo(*off_mouse_pos) # Change by potato-pythonocc forum.qt.io/topic/147605/get-incorrect-widget-size-by-window-handle
                 self.cursor = "arrow"
-
-            if not self._select_solid:
-                self.change_select_timer.start(1)
         except Exception as e:
             logging.error(e)
-
-    def change_select(self):
-        if self._change_select and (self._display.Context.DetectedOwner() is None):
-            self._display.Context.Activate(AIS_Shape.SelectionMode(self._display.lmodes[self.select_mode]), True)
-            # self._display.Context.UpdateSelected(True)
-            self.select_mode += 1
-            self._change_select = False
-            return
-
-        if not self._change_select:
-            if not (self._display.Context.DetectedOwner() is None): # 找到了    
-                self._display.Context.UpdateSelected(True)
-                self.change_select_timer.stop()
-                self._change_select = False
-                return
-            
-            if (self.select_mode >= self._max_select_mode): 
-                #找不到了
-                self.select_mode = 0
-                self._change_select = True
-                self.change_select_timer.stop()
-                return
-            
-            self._change_select = True
-            # print(self._display.lmodes[self.select_mode - 1])
 
     def set_highlight(self, 
                         select_color = Quantity_Color(Quantity_NOC_LIGHTSEAGREEN),
@@ -464,31 +422,8 @@ class qtViewer3d(QtWidgets.QWidget):
                 point = CS.Point(1)
                 return point.X(), point.Y(), point.Z()
         except Exception as e:
-            logging.error(e)
-
-        # XEye, YEye, ZEye = self._display.View.Eye()
-        # XAt, YAt, ZAt = self._display.View.At()
-        # EyePoint = gp_Pnt(XEye, YEye, ZEye)
-        # AtPoint = gp_Pnt(XAt, YAt, ZAt)
-
-        # EyeVector = gp_Vec(EyePoint, AtPoint)
-        # EyeDir = gp_Dir(EyeVector)
-
-        # if PlaneOfTheView is None:
-        #     PlaneOfTheView = gp_Pln(AtPoint, EyeDir)
-        # X, Y, Z, Vx, Vy, Vz = self._display.View.ConvertWithProj(int(x), int(y))
-        # ConvertedPoint = gp_Pnt(X, Y, Z)
-        # ConvertedPointOnPlane = projlib.Project(PlaneOfTheView, ConvertedPoint)
-
-        # ResultPoint = elslib.Value(ConvertedPointOnPlane.X(), ConvertedPointOnPlane.Y(), PlaneOfTheView)
-        # print(ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z())
-        # return ResultPoint.X(), ResultPoint.Y(), ResultPoint.Z()
-
-    # paintevent
-    # def resizeEvent(self, event):
-    #     super().resizeEvent(event)
-    #     self._display.View.MustBeResized()
-    #     self._display.Repaint()
+            logging.error("Error in ConvertPos: " + str(e))
+            return 0,0,0
 
 class qtViewer3dWithManipulator(qtViewer3d):
     # emit signal when selection is changed
@@ -565,9 +500,10 @@ class qtViewer3dWithManipulator(qtViewer3d):
                 self.cursor = "rotate"
                 self._display.Rotation(pt.x(), pt.y())
                 self._drawbox = False
+        # DYNAMIC ZOOM
         elif (
-            buttons == QtCore.Qt.MouseButton.RightButton
-            and modifiers != QtCore.Qt.Modifier.SHIFT
+            buttons == QtCore.Qt.RightButton
+            and not modifiers == QtCore.Qt.ShiftModifier
         ):
             self.cursor = "zoom"
             self._display.Repaint()
@@ -580,7 +516,8 @@ class qtViewer3dWithManipulator(qtViewer3d):
             self.dragStartPosX = pt.x()
             self.dragStartPosY = pt.y()
             self._drawbox = False
-        elif buttons == QtCore.Qt.MouseButton.MidButton:
+        # PAN
+        elif buttons == QtCore.Qt.MidButton:
             dx = pt.x() - self.dragStartPosX
             dy = pt.y() - self.dragStartPosY
             self.dragStartPosX = pt.x()
@@ -588,12 +525,12 @@ class qtViewer3dWithManipulator(qtViewer3d):
             self.cursor = "pan"
             self._display.Pan(dx, -dy)
             self._drawbox = False
-        elif buttons == QtCore.Qt.MouseButton.RightButton:
+        elif buttons == QtCore.Qt.RightButton:
             self._zoom_area = True
             self.cursor = "zoom-area"
             self.DrawBox(evt)
             self.update()
-        elif buttons == QtCore.Qt.MouseButton.LeftButton:
+        elif buttons == QtCore.Qt.LeftButton:
             self._select_area = True
             self.DrawBox(evt)
             self.update()
@@ -618,7 +555,7 @@ class qtViewer3dWithManipulator(qtViewer3d):
     def mouseReleaseEvent(self, event):
         pt = event.pos()
         modifiers = event.modifiers()
-        if event.button() == QtCore.Qt.MouseButton.LeftButton:
+        if event.button() == QtCore.Qt.LeftButton:
             if self.manip_moved:
                 self.trsf_manip.append(self.trsf)
                 self.manip_moved = False
@@ -638,13 +575,10 @@ class qtViewer3dWithManipulator(qtViewer3d):
 
                         self.sig_topods_selected.emit(self._display.selected_shapes)
 
-        elif event.button() == QtCore.Qt.MouseButton.RightButton:
+        elif event.button() == QtCore.Qt.RightButton:
             if self._zoom_area:
                 [Xmin, Ymin, dx, dy] = self._drawbox
                 self._display.ZoomArea(Xmin, Ymin, Xmin + dx, Ymin + dy)
                 self._zoom_area = False
 
         self.cursor = "arrow"
-
-
-
