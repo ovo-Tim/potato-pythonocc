@@ -19,6 +19,7 @@ import os
 
 from OCC.Core.TopoDS import TopoDS_Shape
 from OCC.Core.TopAbs import TopAbs_SOLID, TopAbs_SHELL, TopAbs_COMPOUND
+from OCC.Core.BRepTools import breptools
 from OCC.Core.BRepMesh import BRepMesh_IncrementalMesh
 from OCC.Core.StlAPI import stlapi, StlAPI_Writer
 from OCC.Core.BRep import BRep_Builder
@@ -47,13 +48,26 @@ from OCC.Core.TDF import TDF_LabelSequence, TDF_Label
 from OCC.Core.Quantity import Quantity_Color, Quantity_TOC_RGB
 from OCC.Core.TopLoc import TopLoc_Location
 from OCC.Core.BRepBuilderAPI import BRepBuilderAPI_Transform
-from OCC.Core.ShapeFix import shapefix
+
+from OCC.Core.TColStd import TColStd_IndexedDataMapOfStringString
+from OCC.Core.TCollection import TCollection_AsciiString
+from OCC.Core.RWPly import RWPly_CafWriter
+from OCC.Core.Message import Message_ProgressRange
+
+from OCC.Core.RWGltf import RWGltf_CafReader, RWGltf_CafWriter
+from OCC.Core.RWObj import RWObj_CafWriter, RWObj_CafReader
+from OCC.Core.RWMesh import (
+    RWMesh_CoordinateSystem_posYfwd_posZup,
+    RWMesh_CoordinateSystem_negZfwd_posYup,
+)
+from OCC.Core.UnitsMethods import unitsmethods
 
 from OCC.Extend.TopologyUtils import (
     discretize_edge,
     get_sorted_hlr_edges,
     list_of_shapes_to_compound,
 )
+from OCC.Core.AIS import AIS_Shape
 
 from OCC.Core.BRepTools import breptools
 
@@ -69,8 +83,17 @@ def _create_Compound(shapes: list):
     compound = TopoDS_Compound()
     builder.MakeCompound(compound)
     for i in shapes:
+        if isinstance(i, AIS_Shape):
+            i = i.Shape()
         builder.Add(compound, i)
     return compound
+
+
+def check_svgwrite_installed():
+    if not HAVE_SVGWRITE:
+        raise IOError(
+            "svg exporter not available because the svgwrite package is not installed. use $pip install svgwrite'"
+        )
 
 
 ##########################
@@ -89,36 +112,35 @@ def read_step_file(filename, as_compound=True, verbosity=True):
     step_reader = STEPControl_Reader()
     status = step_reader.ReadFile(filename)
 
-    if status == IFSelect_RetDone:  # check status
-        if verbosity:
-            failsonly = False
-            step_reader.PrintCheckLoad(failsonly, IFSelect_ItemsByEntity)
-            step_reader.PrintCheckTransfer(failsonly, IFSelect_ItemsByEntity)
-        transfer_result = step_reader.TransferRoots()
-        if not transfer_result:
-            raise AssertionError("Transfer failed.")
-        _nbs = step_reader.NbShapes()
-        if _nbs == 0:
-            raise AssertionError("No shape to transfer.")
-        if _nbs == 1:  # most cases
-            return step_reader.Shape(1)
-        if _nbs > 1:
-            print("Number of shapes:", _nbs)
-            shps = []
-            # loop over root shapes
-            for k in range(1, _nbs + 1):
-                new_shp = step_reader.Shape(k)
-                if not new_shp.IsNull():
-                    shps.append(new_shp)
-            if as_compound:
-                compound, result = list_of_shapes_to_compound(shps)
-                if not result:
-                    print("Warning: all shapes were not added to the compound")
-                return compound
-            print("Warning, returns a list of shapes.")
-            return shps
-    else:
+    if status != IFSelect_RetDone:
         raise AssertionError("Error: can't read file.")
+    if verbosity:
+        failsonly = False
+        step_reader.PrintCheckLoad(failsonly, IFSelect_ItemsByEntity)
+        step_reader.PrintCheckTransfer(failsonly, IFSelect_ItemsByEntity)
+    transfer_result = step_reader.TransferRoots()
+    if not transfer_result:
+        raise AssertionError("Transfer failed.")
+    _nbs = step_reader.NbShapes()
+    if _nbs == 0:
+        raise AssertionError("No shape to transfer.")
+    if _nbs == 1:  # most cases
+        return step_reader.Shape(1)
+    if _nbs > 1:
+        print("Number of shapes:", _nbs)
+        shps = []
+        # loop over root shapes
+        for k in range(1, _nbs + 1):
+            new_shp = step_reader.Shape(k)
+            if not new_shp.IsNull():
+                shps.append(new_shp)
+        if as_compound:
+            compound, result = list_of_shapes_to_compound(shps)
+            if not result:
+                print("Warning: all shapes were not added to the compound")
+            return compound
+        print("Warning, returns a list of shapes.")
+        return shps
     return None
 
 
@@ -167,6 +189,8 @@ def write_step_file(shapes, filename, application_protocol="AP203"):
         step_writer = STEPControl_Writer()
         Interface_Static.SetCVal("write.step.schema", application_protocol)
         for i in shapes:
+            if isinstance(i, AIS_Shape):
+                i = i.Shape()
             if i.IsNull():
                 raise AssertionError(f"Shape is null.")
             step_writer.Transfer(i, STEPControl_AsIs)
@@ -189,7 +213,7 @@ def read_step_file_with_names_colors(filename):
     output_shapes = {}
 
     # create an handle to a document
-    doc = TDocStd_Document("pythonocc-doc")
+    doc = TDocStd_Document("pythonocc-doc-step-import")
 
     # Get root assembly
     shape_tool = XCAFDoc_DocumentTool.ShapeTool(doc.Main())
@@ -338,7 +362,7 @@ def read_step_file_with_names_colors(filename):
                     )
 
             shape_disp = BRepBuilderAPI_Transform(shape, loc.Transformation()).Shape()
-            if not shape_disp in output_shapes:
+            if shape_disp not in output_shapes:
                 output_shapes[shape_disp] = [lab.GetLabelName(), c]
             for i in range(l_subss.Length()):
                 lab_subs = l_subss.Value(i + 1)
@@ -389,7 +413,7 @@ def read_step_file_with_names_colors(filename):
                     shape_sub, loc.Transformation()
                 ).Shape()
                 # position the subshape to display
-                if not shape_to_disp in output_shapes:
+                if shape_to_disp not in output_shapes:
                     output_shapes[shape_to_disp] = [lab_subs.GetLabelName(), c]
 
     def _get_shapes():
@@ -592,6 +616,8 @@ def write_iges_file(shapes, filename):
             print(f"Warning: {filename} already exists and will be replaced")
         iges_writer = IGESControl_Writer()
         for a_shape in shapes:
+            if isinstance(i, AIS_Shape):
+                i = i.Shape()
             if a_shape.IsNull():
                 raise AssertionError("Shape is null.")
             iges_writer.AddShape(a_shape)
@@ -610,6 +636,8 @@ def write_iges_file(shapes, filename):
 ##############
 def edge_to_svg_polyline(topods_edge, tol=0.1, unit="mm"):
     """Returns a svgwrite.Path for the edge, and the 2d bounding box"""
+    check_svgwrite_installed()
+
     unit_factor = 1  # by default
 
     if unit == "mm":
@@ -656,15 +684,10 @@ def export_shape_to_svg(
     color (optional), "default to "black".
     line_width (optional, default to 1): an integer
     """
+    check_svgwrite_installed()
+
     if shape.IsNull():
         raise AssertionError("shape is Null")
-
-    if not HAVE_SVGWRITE:
-        print(
-            "svg exporter not available because the svgwrite package is not installed."
-        )
-        print("please use '$ conda install -c conda-forge svgwrite'")
-        return False
 
     # find all edges
     visible_edges, hidden_edges = get_sorted_hlr_edges(
@@ -745,3 +768,145 @@ def write_brep_file(shapes, filename):
     if not os.path.isfile(filename):
         raise IOError("File not written to disk.")
     
+#################################################
+# ply export (write not avaiable from upstream) #
+#################################################
+def write_ply_file(a_shape, ply_filename):
+    """ocaf based ply exporter"""
+    # create a document
+    doc = TDocStd_Document("pythonocc-doc-ply-export")
+    shape_tool = XCAFDoc_DocumentTool.ShapeTool(doc.Main())
+
+    # mesh shape
+    breptools.Clean(a_shape)
+    msh_algo = BRepMesh_IncrementalMesh(a_shape, True)
+    msh_algo.Perform()
+
+    shape_tool.AddShape(a_shape)
+
+    # metadata
+    a_file_info = TColStd_IndexedDataMapOfStringString()
+    a_file_info.Add(
+        TCollection_AsciiString("Authors"), TCollection_AsciiString("pythonocc")
+    )
+
+    rwply_writer = RWPly_CafWriter(ply_filename)
+
+    rwply_writer.SetNormals(True)
+    rwply_writer.SetColors(True)
+    rwply_writer.SetTexCoords(True)
+    rwply_writer.SetPartId(True)
+    rwply_writer.SetFaceId(True)
+
+    rwply_writer.Perform(doc, a_file_info, Message_ProgressRange())
+
+
+#################################################
+# Obj export (write not avaiable from upstream) #
+#################################################
+def write_obj_file(a_shape, obj_filename):
+    """ocaf based ply exporter"""
+    # create a document
+    doc = TDocStd_Document("pythonocc-doc-obj-export")
+    shape_tool = XCAFDoc_DocumentTool.ShapeTool(doc.Main())
+
+    # mesh shape
+    breptools.Clean(a_shape)
+    msh_algo = BRepMesh_IncrementalMesh(a_shape, True)
+    msh_algo.Perform()
+
+    shape_tool.AddShape(a_shape)
+
+    # metadata
+    a_file_info = TColStd_IndexedDataMapOfStringString()
+    a_file_info.Add(
+        TCollection_AsciiString("Authors"), TCollection_AsciiString("pythonocc")
+    )
+
+    rwobj_writer = RWObj_CafWriter(obj_filename)
+
+    # apply a scale factor of 0.001 to mimic conversion from m to mm
+    csc = rwobj_writer.ChangeCoordinateSystemConverter()
+
+    system_unit_factor = unitsmethods.GetCasCadeLengthUnit() * 0.001
+    csc.SetInputLengthUnit(system_unit_factor)
+    csc.SetOutputLengthUnit(system_unit_factor)
+    csc.SetInputCoordinateSystem(RWMesh_CoordinateSystem_posYfwd_posZup)
+    csc.SetOutputCoordinateSystem(RWMesh_CoordinateSystem_negZfwd_posYup)
+
+    rwobj_writer.SetCoordinateSystemConverter(csc)
+
+    rwobj_writer.Perform(doc, a_file_info, Message_ProgressRange())
+
+
+########
+# gltf #
+########
+def read_gltf_file(
+    filename,
+    is_parallel=False,
+    is_double_precision=False,
+    skip_late_data_loading=True,
+    keep_late_data=True,
+    verbose=False,
+    load_all_scenes=False,
+):
+    shapes_to_return = []
+
+    if not os.path.isfile(filename):
+        raise FileNotFoundError(f"{filename} not found.")
+    doc = TDocStd_Document("pythonocc-doc-gltf-import")
+
+    # Get root assembly
+    shape_tool = XCAFDoc_DocumentTool.ShapeTool(doc.Main())
+
+    gltf_reader = RWGltf_CafReader()
+    # gltf_reader.SetSystemLengthUnit (aScaleFactorM);
+    gltf_reader.SetSystemCoordinateSystem(RWMesh_CoordinateSystem_posYfwd_posZup)
+    gltf_reader.SetDocument(doc)
+    gltf_reader.SetParallel(is_parallel)
+    gltf_reader.SetDoublePrecision(is_double_precision)
+    gltf_reader.SetToSkipLateDataLoading(skip_late_data_loading)
+    gltf_reader.SetToKeepLateData(keep_late_data)
+    gltf_reader.SetToPrintDebugMessages(verbose)
+    gltf_reader.SetLoadAllScenes(load_all_scenes)
+
+    status = gltf_reader.Perform(filename, Message_ProgressRange())
+
+    if status != IFSelect_RetDone:
+        raise IOError("Error while writing shape to STEP file.")
+
+    labels = TDF_LabelSequence()
+    shape_tool.GetFreeShapes(labels)
+
+    for i in range(1, labels.Length()):
+        shapes_to_return.append(shape_tool.GetShape(labels.Value(i)))
+
+    return shapes_to_return
+
+
+def write_gltf_file(a_shape, gltf_filename):
+    """ocaf based ply exporter"""
+    # create a document
+    doc = TDocStd_Document("pythonocc-doc-gltf-export")
+    shape_tool = XCAFDoc_DocumentTool.ShapeTool(doc.Main())
+
+    # mesh shape
+    breptools.Clean(a_shape)
+    msh_algo = BRepMesh_IncrementalMesh(a_shape, True)
+    msh_algo.Perform()
+
+    shape_tool.AddShape(a_shape)
+
+    # metadata
+    a_file_info = TColStd_IndexedDataMapOfStringString()
+    a_file_info.Add(
+        TCollection_AsciiString("Authors"), TCollection_AsciiString("pythonocc")
+    )
+
+    rwgltf_writer = RWGltf_CafWriter(gltf_filename, True)
+
+    status = rwgltf_writer.Perform(doc, a_file_info, Message_ProgressRange())
+
+    if status != IFSelect_RetDone:
+        raise IOError("Error while writing shape to STEP file.")

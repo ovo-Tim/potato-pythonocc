@@ -1,75 +1,114 @@
-Overview
---------
-
-pythonOCC is a python library whose purpose is to provide 3D modeling features.
-It's intended to
-developers who aim at developing a complete CAD/PLM application, and to
-engineers who want to have a total control over the data during complex design
-activities.
-
-About this document
--------------------
-
-This file explains how to build pythonocc-core from source on Windows, Linux or
-MacOSX platforms.
+Build pythonocc-7.7.2 from scratch on a fresh Ubuntu 22.04 install
+------------------------------------------------------------------
 
 Requirements
 ------------
 
-pythonOCC needs the following libraries or programs to be installed before you
-can compile/use it :
+pythonOCC-7.7.2 needs the following libraries or programs to be installed before you
+can compile/use it:
 
-*   the python programming language (<http://www.python.org>). Python 3.x is required.
+*   the python programming language (<https://www.python.org>). Python 3.8 or more is required.
+*   OpenCascade 7.7.2 (<https://dev.opencascade.org>)
+*   SWIG 4.1.1 (<https://www.swig.org>)
+*   rapidjson (<https://rapidjson.org/>) for Gltf import/export
+*   cmake
 
-*   OpenCascade 7.7.0 (<https://dev.opencascade.org>)
+All the necessary libraries can be downloaded/installed using apt:
+```bash
+sudo apt-get update
+sudo apt-get install -y wget libglu1-mesa-dev libgl1-mesa-dev libxmu-dev libxi-dev build-essential cmake libfreetype6-dev tk-dev python3-dev rapidjson-dev python3 git python3-pip libpcre2-dev
+```
 
-    IMPORTANT: OpenCASCADE has to be compiled using flag -D BUILD_RELEASE_DISABLE_EXCEPTIONS=OFF
+Build swig
+----------
+The required swgi version is 4.1.1. Unfortunately, the ubuntu ppa only provides an outdated 4.0.2 version. If swig 4.1.1 is not available on your machine, you have to download/build by yourself (depends on libpcre2, previously installed):
+```bash
+wget http://prdownloads.sourceforge.net/swig/swig-4.1.1.tar.gz
+tar -zxvf swig-4.1.1.tar.gz
+cd swig-4.1.1
+./configure && make -j4 && make install
+```
 
-*   SWIG 4.0.2 (<http://www.swig.org>)
+Build OpenCascade
+-----------------
+Download/extract version 7.7.2 https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=cec1ecd0c9f3b3d2572c47035d11949e8dfa85e2;sf=tgz
 
-Optional
---------
+```bash
+wget -o occt-7.7.2.tgz https://git.dev.opencascade.org/gitweb/?p=occt.git;a=snapshot;h=cec1ecd0c9f3b3d2572c47035d11949e8dfa85e2;sf=tgz
+tar -zxvf occt-7.7.2.tgz
+```
 
-If you want to benefit from a 3D graphical rendering, you will need a GUI manager, e.g. PyQt, PySide or wxPython.
+Prepare the build stage:
+```bash
+cd occt-cec1ecd
+mkdir cmake-build
+cd cmake-build
+```
 
-Create a local copy of the repository
--------------------------------------
+Choose an installation destination. Default is /usr/local, but it is better to set up
+an other folder so that it's easier to work with concurrent versions.
+```bash
+$ cmake -DINSTALL_DIR=/opt/build/occt772 -DBUILD_RELEASE_DISABLE_EXCEPTIONS=OFF ..
+```
+then
+```bash
+make -j4
+sudo make install
+```
+and finally add the libraries to the system
+```bash
+echo "/opt/build/occt772/lib" >> /etc/ld.so.conf.d/occt.conf
+```
 
-    git clone git://github.com/tpaviot/pythonocc-core.git
+Build pythonocc
+---------------
+First create a local copy of the git repository:
+```bash
+git clone https://github.com/tpaviot/pythonocc-core.git
+```
+then
+```bash
+cd xx/pythonocc-core
+mkdir cmake-build && cd cmake-build
 
-pythonocc-core compilation
---------------------------
+RUN cmake \
+ -DOCCT_INCLUDE_DIR=/opt/build/occt772/include/opencascade \
+ -DOCCT_LIBRARY_DIR=/opt/build/occt772/lib \
+ -DPYTHONOCC_BUILD_TYPE=Release \
+ -DPYTHONOCC_INSTALL_DIRECTORY=<PATH-TO-INSTALL> \
+  ..
 
-    cd pythonocc-core
-    mkdir cmake-build
-    cd cmake-build
+RUN make -j4 && make install 
 
-The configuration steps uses cmake:
+RUN  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/build/occt772/lib
+```
 
-    cmake ..
-By default, cmake looks for oce include headers in /usr/local/include/oce and
-libraries in /usr/local/include/lib. If these paths don't match your
-installation, you have to set OCE_INCLUDE_PATH and OCE_LIB_PATH:
+If `PYTHONOCC_INSTALL_DIRECTORY` is unset, it will be installed to `site-packages/OCC`. Also add your LD_LIBRARY_PATH in your .bashrc file.
 
-    cmake -DOCE_INCLUDE_PATH=/your_oce_headers -DOCE_LIB_PATH=/your_lib_dir ..
+Build pythonocc with numpy support
+----------------------------------
+numpy enables fast STL file loading. In order to benefit from this feature, you must install the numpy package (including the dev part), and compile pythonocc with:
+```bash
+ -DPYTHONOCC_MESHDS_NUMPY=ON
+```
 
-And launch the build process
+simple test
+-----------
+```bash
+$ python
+>>> from OCC.Core.gp import gp_Pnt
+>>> p = gp_Pnt(1., 2., 3.)
+>>> p.X()
+1.0
+>>>
+```
 
-    make
-
-If you have many cpus, you can increase the compilation speed with:
-
-    make -j$ncpus
-
-According to your machine/os/ncpus, the total compilation time should be around 15 minutes.
-
-Then
-
-    make install
-
-You may require admin privileges to install
-
-    sudo make install
+additional dependencies
+-----------------------
+Additional python packages are required if you want to benefit from all pythonocc features.
+```
+pip install svgwrite numpy matplotlib PyQt5
+```
 
 test
 ----

@@ -10,8 +10,8 @@ from OCC.Core.Message import *
 from OCC.Core.OSD import *
 from OCC.Core.TColStd import *
 
-#the following typedef cannot be wrapped as is
-MoniTool_IndexedDataMapOfShapeTransient = NewType('MoniTool_IndexedDataMapOfShapeTransient', Any)
+# the following typedef cannot be wrapped as is
+MoniTool_IndexedDataMapOfShapeTransient = NewType("MoniTool_IndexedDataMapOfShapeTransient", Any)
 
 class MoniTool_SequenceOfElement:
     def __init__(self) -> None: ...

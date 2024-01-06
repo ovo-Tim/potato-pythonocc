@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2022 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2023 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define TCOLGEOMDOCSTRING
 "TColGeom module, see official documentation at
-https://www.opencascade.com/doc/occt-7.6.0/refman/html/package_tcolgeom.html"
+https://www.opencascade.com/doc/occt-7.7.0/refman/html/package_tcolgeom.html"
 %enddef
 %module (package="OCC.Core", docstring=TCOLGEOMDOCSTRING) TColGeom
 
@@ -67,10 +67,10 @@ from OCC.Core.Exception import *
 /* end python proxy for enums */
 
 /* handles */
-%wrap_handle(TColGeom_HArray1OfSurface)
-%wrap_handle(TColGeom_HArray1OfBezierCurve)
 %wrap_handle(TColGeom_HArray1OfBSplineCurve)
+%wrap_handle(TColGeom_HArray1OfSurface)
 %wrap_handle(TColGeom_HArray1OfCurve)
+%wrap_handle(TColGeom_HArray1OfBezierCurve)
 %wrap_handle(TColGeom_HArray2OfSurface)
 %wrap_handle(TColGeom_HSequenceOfBoundedCurve)
 %wrap_handle(TColGeom_HSequenceOfCurve)
@@ -259,28 +259,6 @@ typedef NCollection_Sequence<opencascade::handle<Geom_Surface>> TColGeom_Sequenc
 
 /* harray1 classes */
 
-class TColGeom_HArray1OfSurface : public TColGeom_Array1OfSurface, public Standard_Transient {
-  public:
-    TColGeom_HArray1OfSurface(const Standard_Integer theLower, const Standard_Integer theUpper);
-    TColGeom_HArray1OfSurface(const Standard_Integer theLower, const Standard_Integer theUpper, const TColGeom_Array1OfSurface::value_type& theValue);
-    TColGeom_HArray1OfSurface(const TColGeom_Array1OfSurface& theOther);
-    const TColGeom_Array1OfSurface& Array1();
-    TColGeom_Array1OfSurface& ChangeArray1();
-};
-%make_alias(TColGeom_HArray1OfSurface)
-
-
-class TColGeom_HArray1OfBezierCurve : public TColGeom_Array1OfBezierCurve, public Standard_Transient {
-  public:
-    TColGeom_HArray1OfBezierCurve(const Standard_Integer theLower, const Standard_Integer theUpper);
-    TColGeom_HArray1OfBezierCurve(const Standard_Integer theLower, const Standard_Integer theUpper, const TColGeom_Array1OfBezierCurve::value_type& theValue);
-    TColGeom_HArray1OfBezierCurve(const TColGeom_Array1OfBezierCurve& theOther);
-    const TColGeom_Array1OfBezierCurve& Array1();
-    TColGeom_Array1OfBezierCurve& ChangeArray1();
-};
-%make_alias(TColGeom_HArray1OfBezierCurve)
-
-
 class TColGeom_HArray1OfBSplineCurve : public TColGeom_Array1OfBSplineCurve, public Standard_Transient {
   public:
     TColGeom_HArray1OfBSplineCurve(const Standard_Integer theLower, const Standard_Integer theUpper);
@@ -292,6 +270,17 @@ class TColGeom_HArray1OfBSplineCurve : public TColGeom_Array1OfBSplineCurve, pub
 %make_alias(TColGeom_HArray1OfBSplineCurve)
 
 
+class TColGeom_HArray1OfSurface : public TColGeom_Array1OfSurface, public Standard_Transient {
+  public:
+    TColGeom_HArray1OfSurface(const Standard_Integer theLower, const Standard_Integer theUpper);
+    TColGeom_HArray1OfSurface(const Standard_Integer theLower, const Standard_Integer theUpper, const TColGeom_Array1OfSurface::value_type& theValue);
+    TColGeom_HArray1OfSurface(const TColGeom_Array1OfSurface& theOther);
+    const TColGeom_Array1OfSurface& Array1();
+    TColGeom_Array1OfSurface& ChangeArray1();
+};
+%make_alias(TColGeom_HArray1OfSurface)
+
+
 class TColGeom_HArray1OfCurve : public TColGeom_Array1OfCurve, public Standard_Transient {
   public:
     TColGeom_HArray1OfCurve(const Standard_Integer theLower, const Standard_Integer theUpper);
@@ -301,6 +290,17 @@ class TColGeom_HArray1OfCurve : public TColGeom_Array1OfCurve, public Standard_T
     TColGeom_Array1OfCurve& ChangeArray1();
 };
 %make_alias(TColGeom_HArray1OfCurve)
+
+
+class TColGeom_HArray1OfBezierCurve : public TColGeom_Array1OfBezierCurve, public Standard_Transient {
+  public:
+    TColGeom_HArray1OfBezierCurve(const Standard_Integer theLower, const Standard_Integer theUpper);
+    TColGeom_HArray1OfBezierCurve(const Standard_Integer theLower, const Standard_Integer theUpper, const TColGeom_Array1OfBezierCurve::value_type& theValue);
+    TColGeom_HArray1OfBezierCurve(const TColGeom_Array1OfBezierCurve& theOther);
+    const TColGeom_Array1OfBezierCurve& Array1();
+    TColGeom_Array1OfBezierCurve& ChangeArray1();
+};
+%make_alias(TColGeom_HArray1OfBezierCurve)
 
 /* harray2 classes */
 class TColGeom_HArray2OfSurface : public TColGeom_Array2OfSurface, public Standard_Transient {

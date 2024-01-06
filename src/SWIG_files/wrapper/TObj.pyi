@@ -9,10 +9,10 @@ from OCC.Core.Message import *
 from OCC.Core.TDF import *
 from OCC.Core.gp import *
 
-#the following typedef cannot be wrapped as is
-TObj_TIntSparseArray_MapOfData = NewType('TObj_TIntSparseArray_MapOfData', Any)
-#the following typedef cannot be wrapped as is
-TObj_TIntSparseArray_VecOfData = NewType('TObj_TIntSparseArray_VecOfData', Any)
+# the following typedef cannot be wrapped as is
+TObj_TIntSparseArray_MapOfData = NewType("TObj_TIntSparseArray_MapOfData", Any)
+# the following typedef cannot be wrapped as is
+TObj_TIntSparseArray_VecOfData = NewType("TObj_TIntSparseArray_VecOfData", Any)
 
 class TObj_SequenceOfIterator:
     def __init__(self) -> None: ...

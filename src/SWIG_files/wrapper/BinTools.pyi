@@ -10,7 +10,21 @@ from OCC.Core.Geom import *
 from OCC.Core.TopLoc import *
 from OCC.Core.TopAbs import *
 
-BinTools_LocationSetPtr = NewType('BinTools_LocationSetPtr', BinTools_LocationSet)
+BinTools_LocationSetPtr = NewType("BinTools_LocationSetPtr", BinTools_LocationSet)
+
+
+class BinTools_FormatVersion(IntEnum):
+    BinTools_FormatVersion_VERSION_1: int = ...
+    BinTools_FormatVersion_VERSION_2: int = ...
+    BinTools_FormatVersion_VERSION_3: int = ...
+    BinTools_FormatVersion_VERSION_4: int = ...
+    BinTools_FormatVersion_CURRENT: int = ...
+
+BinTools_FormatVersion_VERSION_1 = BinTools_FormatVersion.BinTools_FormatVersion_VERSION_1
+BinTools_FormatVersion_VERSION_2 = BinTools_FormatVersion.BinTools_FormatVersion_VERSION_2
+BinTools_FormatVersion_VERSION_3 = BinTools_FormatVersion.BinTools_FormatVersion_VERSION_3
+BinTools_FormatVersion_VERSION_4 = BinTools_FormatVersion.BinTools_FormatVersion_VERSION_4
+BinTools_FormatVersion_CURRENT = BinTools_FormatVersion.BinTools_FormatVersion_CURRENT
 
 class BinTools_ObjectType(IntEnum):
     BinTools_ObjectType_Unknown: int = ...
@@ -60,20 +74,6 @@ BinTools_ObjectType_Triangulation = BinTools_ObjectType.BinTools_ObjectType_Tria
 BinTools_ObjectType_EmptyTriangulation = BinTools_ObjectType.BinTools_ObjectType_EmptyTriangulation
 BinTools_ObjectType_EmptyShape = BinTools_ObjectType.BinTools_ObjectType_EmptyShape
 BinTools_ObjectType_EndShape = BinTools_ObjectType.BinTools_ObjectType_EndShape
-
-class BinTools_FormatVersion(IntEnum):
-    BinTools_FormatVersion_VERSION_1: int = ...
-    BinTools_FormatVersion_VERSION_2: int = ...
-    BinTools_FormatVersion_VERSION_3: int = ...
-    BinTools_FormatVersion_VERSION_4: int = ...
-    BinTools_FormatVersion_CURRENT: int = ...
-
-BinTools_FormatVersion_VERSION_1 = BinTools_FormatVersion.BinTools_FormatVersion_VERSION_1
-BinTools_FormatVersion_VERSION_2 = BinTools_FormatVersion.BinTools_FormatVersion_VERSION_2
-BinTools_FormatVersion_VERSION_3 = BinTools_FormatVersion.BinTools_FormatVersion_VERSION_3
-BinTools_FormatVersion_VERSION_4 = BinTools_FormatVersion.BinTools_FormatVersion_VERSION_4
-BinTools_FormatVersion_CURRENT = BinTools_FormatVersion.BinTools_FormatVersion_CURRENT
-
 
 class bintools:
     @overload

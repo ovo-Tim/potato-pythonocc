@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2022 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2023 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define XCAFAPPDOCSTRING
 "XCAFApp module, see official documentation at
-https://www.opencascade.com/doc/occt-7.6.0/refman/html/package_xcafapp.html"
+https://www.opencascade.com/doc/occt-7.7.0/refman/html/package_xcafapp.html"
 %enddef
 %module (package="OCC.Core", docstring=XCAFAPPDOCSTRING) XCAFApp
 
@@ -91,47 +91,55 @@ from OCC.Core.Exception import *
 class XCAFApp_Application : public TDocStd_Application {
 	public:
 
-            %feature("autodoc", "1");
-            %extend{
-                std::string DumpJsonToString(int depth=-1) {
-                std::stringstream s;
-                self->DumpJson(s, depth);
-                return s.str();}
-            };
+        /****************** DumpJsonToString ******************/
+        %feature("autodoc", "Json string serializer.");
+        %extend{
+            std::string DumpJsonToString(int depth=-1) {
+            std::stringstream s;
+            self->DumpJson(s, depth);
+            return "{" + s.str() + "}" ;}
+        };
 		/****************** GetApplication ******************/
 		/**** md5 signature: 097aa584b7d888f94db50bb186c7ba88 ****/
 		%feature("compactdefaultargs") GetApplication;
-		%feature("autodoc", "Initializes (for the first time) and returns the static object (xcafapp_application) this is the only valid method to get xcafapp_application object, and it should be called at least once before any actions with documents in order to init application.
-
-Returns
+		%feature("autodoc", "Return
 -------
 opencascade::handle<XCAFApp_Application>
+
+Description
+-----------
+Initializes (for the first time) and returns the static object (xcafapp_application) this is the only valid method to get xcafapp_application object, and it should be called at least once before any actions with documents in order to init application.
 ") GetApplication;
 		static opencascade::handle<XCAFApp_Application> GetApplication();
 
 		/****************** InitDocument ******************/
 		/**** md5 signature: cb8b1250bf5bfec47bac72c3724adc69 ****/
 		%feature("compactdefaultargs") InitDocument;
-		%feature("autodoc", "Set xcafdoc_documenttool attribute.
-
+		%feature("autodoc", "
 Parameters
 ----------
 aDoc: CDM_Document
 
-Returns
+Return
 -------
 None
+
+Description
+-----------
+Set xcafdoc_documenttool attribute.
 ") InitDocument;
 		virtual void InitDocument(const opencascade::handle<CDM_Document> & aDoc);
 
 		/****************** ResourcesName ******************/
 		/**** md5 signature: 96f8731792cfcab6c0cf55cdc1a09a9b ****/
 		%feature("compactdefaultargs") ResourcesName;
-		%feature("autodoc", "Methods from tdocstd_application ================================.
-
-Returns
+		%feature("autodoc", "Return
 -------
 str
+
+Description
+-----------
+Methods from tdocstd_application ================================.
 ") ResourcesName;
 		virtual Standard_CString ResourcesName();
 

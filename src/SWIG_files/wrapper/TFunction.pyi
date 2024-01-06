@@ -6,10 +6,10 @@ from OCC.Core.NCollection import *
 from OCC.Core.TDF import *
 from OCC.Core.TColStd import *
 
-#the following typedef cannot be wrapped as is
-TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel = NewType('TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel', Any)
-#the following typedef cannot be wrapped as is
-TFunction_DoubleMapOfIntegerLabel = NewType('TFunction_DoubleMapOfIntegerLabel', Any)
+# the following typedef cannot be wrapped as is
+TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel = NewType("TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel", Any)
+# the following typedef cannot be wrapped as is
+TFunction_DoubleMapOfIntegerLabel = NewType("TFunction_DoubleMapOfIntegerLabel", Any)
 
 class TFunction_Array1OfDataMapOfGUIDDriver:
     @overload

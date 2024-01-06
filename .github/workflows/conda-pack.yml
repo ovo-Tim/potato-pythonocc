@@ -1,4 +1,4 @@
-name: pythonocc-core-unstable bulider
+name: potato-pythonocc bulider
 
 on:
   # pull_request:

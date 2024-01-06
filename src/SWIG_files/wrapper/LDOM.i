@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2022 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2023 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define LDOMDOCSTRING
 "LDOM module, see official documentation at
-https://www.opencascade.com/doc/occt-7.6.0/refman/html/package_ldom.html"
+https://www.opencascade.com/doc/occt-7.7.0/refman/html/package_ldom.html"
 %enddef
 %module (package="OCC.Core", docstring=LDOMDOCSTRING) LDOM
 
@@ -135,15 +135,27 @@ from OCC.Core.Exception import *
 /* python proxy for excluded classes */
 %pythoncode {
 @classnotwrapped
-class LDOM_LDOMImplementation:
-	pass
-
-@classnotwrapped
 class LDOM_CharacterData:
 	pass
 
 @classnotwrapped
-class LDOM_CDATASection:
+class LDOM_BasicElement:
+	pass
+
+@classnotwrapped
+class LDOM_Text:
+	pass
+
+@classnotwrapped
+class LDOM_DocumentType:
+	pass
+
+@classnotwrapped
+class LDOM_XmlReader:
+	pass
+
+@classnotwrapped
+class LDOM_BasicAttribute:
 	pass
 
 @classnotwrapped
@@ -151,11 +163,39 @@ class LDOM_Node:
 	pass
 
 @classnotwrapped
+class LDOM_CDATASection:
+	pass
+
+@classnotwrapped
+class LDOM_LDOMImplementation:
+	pass
+
+@classnotwrapped
 class LDOM_Element:
 	pass
 
 @classnotwrapped
-class LDOM_Text:
+class LDOM_BasicNode:
+	pass
+
+@classnotwrapped
+class LDOM_CharReference:
+	pass
+
+@classnotwrapped
+class LDOM_MemManager:
+	pass
+
+@classnotwrapped
+class LDOM_Comment:
+	pass
+
+@classnotwrapped
+class LDOM_Document:
+	pass
+
+@classnotwrapped
+class LDOM_Attr:
 	pass
 
 @classnotwrapped
@@ -171,51 +211,11 @@ class LDOM_OSStream:
 	pass
 
 @classnotwrapped
-class LDOM_CharReference:
-	pass
-
-@classnotwrapped
 class LDOM_XmlWriter:
 	pass
 
 @classnotwrapped
-class LDOM_BasicElement:
-	pass
-
-@classnotwrapped
-class LDOM_Comment:
-	pass
-
-@classnotwrapped
-class LDOM_BasicAttribute:
-	pass
-
-@classnotwrapped
 class LDOM_BasicText:
-	pass
-
-@classnotwrapped
-class LDOM_Document:
-	pass
-
-@classnotwrapped
-class LDOM_Attr:
-	pass
-
-@classnotwrapped
-class LDOM_DocumentType:
-	pass
-
-@classnotwrapped
-class LDOM_XmlReader:
-	pass
-
-@classnotwrapped
-class LDOM_BasicNode:
-	pass
-
-@classnotwrapped
-class LDOM_MemManager:
 	pass
 
 }

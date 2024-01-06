@@ -5,14 +5,14 @@ from OCC.Core.Standard import *
 from OCC.Core.NCollection import *
 from OCC.Core.gp import *
 
-#the following typedef cannot be wrapped as is
-TopLoc_IndexedMapOfLocation = NewType('TopLoc_IndexedMapOfLocation', Any)
-#the following typedef cannot be wrapped as is
-TopLoc_MapIteratorOfMapOfLocation = NewType('TopLoc_MapIteratorOfMapOfLocation', Any)
-#the following typedef cannot be wrapped as is
-TopLoc_MapLocationHasher = NewType('TopLoc_MapLocationHasher', Any)
-#the following typedef cannot be wrapped as is
-TopLoc_MapOfLocation = NewType('TopLoc_MapOfLocation', Any)
+# the following typedef cannot be wrapped as is
+TopLoc_IndexedMapOfLocation = NewType("TopLoc_IndexedMapOfLocation", Any)
+# the following typedef cannot be wrapped as is
+TopLoc_MapIteratorOfMapOfLocation = NewType("TopLoc_MapIteratorOfMapOfLocation", Any)
+# the following typedef cannot be wrapped as is
+TopLoc_MapLocationHasher = NewType("TopLoc_MapLocationHasher", Any)
+# the following typedef cannot be wrapped as is
+TopLoc_MapOfLocation = NewType("TopLoc_MapOfLocation", Any)
 
 class TopLoc_Datum3D(Standard_Transient):
     @overload

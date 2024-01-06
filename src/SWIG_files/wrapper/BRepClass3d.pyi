@@ -12,8 +12,8 @@ from OCC.Core.TopTools import *
 from OCC.Core.IntCurvesFace import *
 from OCC.Core.BRepAdaptor import *
 
-#the following typedef cannot be wrapped as is
-BRepClass3d_BndBoxTree = NewType('BRepClass3d_BndBoxTree', Any)
+# the following typedef cannot be wrapped as is
+BRepClass3d_BndBoxTree = NewType("BRepClass3d_BndBoxTree", Any)
 
 class brepclass3d:
     @staticmethod

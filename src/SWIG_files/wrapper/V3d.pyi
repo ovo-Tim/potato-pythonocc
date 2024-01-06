@@ -13,16 +13,16 @@ from OCC.Core.TColStd import *
 from OCC.Core.Bnd import *
 from OCC.Core.Image import *
 
-Handle_V3d_Light = NewType('Handle_V3d_Light', Handle_Graphic3d_CLight)
-V3d_Light = NewType('V3d_Light', Graphic3d_CLight)
-#the following typedef cannot be wrapped as is
-V3d_ListOfLightIterator = NewType('V3d_ListOfLightIterator', Any)
-#the following typedef cannot be wrapped as is
-V3d_ListOfViewIterator = NewType('V3d_ListOfViewIterator', Any)
-V3d_TypeOfBackfacingModel = NewType('V3d_TypeOfBackfacingModel', Graphic3d_TypeOfBackfacingModel)
-V3d_TypeOfLight = NewType('V3d_TypeOfLight', Graphic3d_TypeOfLightSource)
-V3d_TypeOfShadingModel = NewType('V3d_TypeOfShadingModel', Graphic3d_TypeOfShadingModel)
-V3d_ViewerPointer = NewType('V3d_ViewerPointer', V3d_Viewer)
+Handle_V3d_Light = NewType("Handle_V3d_Light", Handle_Graphic3d_CLight)
+V3d_Light = NewType("V3d_Light", Graphic3d_CLight)
+# the following typedef cannot be wrapped as is
+V3d_ListOfLightIterator = NewType("V3d_ListOfLightIterator", Any)
+# the following typedef cannot be wrapped as is
+V3d_ListOfViewIterator = NewType("V3d_ListOfViewIterator", Any)
+V3d_TypeOfBackfacingModel = NewType("V3d_TypeOfBackfacingModel", Graphic3d_TypeOfBackfacingModel)
+V3d_TypeOfLight = NewType("V3d_TypeOfLight", Graphic3d_TypeOfLightSource)
+V3d_TypeOfShadingModel = NewType("V3d_TypeOfShadingModel", Graphic3d_TypeOfShadingModel)
+V3d_ViewerPointer = NewType("V3d_ViewerPointer", V3d_Viewer)
 
 class V3d_ListOfLight:
     def __init__(self) -> None: ...
@@ -52,20 +52,6 @@ class V3d_ListOfView:
     def Value(self, theIndex: int) -> False: ...
     def SetValue(self, theIndex: int, theValue: False) -> None: ...
 
-class V3d_TypeOfVisualization(IntEnum):
-    V3d_WIREFRAME: int = ...
-    V3d_ZBUFFER: int = ...
-
-V3d_WIREFRAME = V3d_TypeOfVisualization.V3d_WIREFRAME
-V3d_ZBUFFER = V3d_TypeOfVisualization.V3d_ZBUFFER
-
-class V3d_TypeOfView(IntEnum):
-    V3d_ORTHOGRAPHIC: int = ...
-    V3d_PERSPECTIVE: int = ...
-
-V3d_ORTHOGRAPHIC = V3d_TypeOfView.V3d_ORTHOGRAPHIC
-V3d_PERSPECTIVE = V3d_TypeOfView.V3d_PERSPECTIVE
-
 class V3d_StereoDumpOptions(IntEnum):
     V3d_SDO_MONO: int = ...
     V3d_SDO_LEFT_EYE: int = ...
@@ -76,6 +62,15 @@ V3d_SDO_MONO = V3d_StereoDumpOptions.V3d_SDO_MONO
 V3d_SDO_LEFT_EYE = V3d_StereoDumpOptions.V3d_SDO_LEFT_EYE
 V3d_SDO_RIGHT_EYE = V3d_StereoDumpOptions.V3d_SDO_RIGHT_EYE
 V3d_SDO_BLENDED = V3d_StereoDumpOptions.V3d_SDO_BLENDED
+
+class V3d_TypeOfAxe(IntEnum):
+    V3d_X: int = ...
+    V3d_Y: int = ...
+    V3d_Z: int = ...
+
+V3d_X = V3d_TypeOfAxe.V3d_X
+V3d_Y = V3d_TypeOfAxe.V3d_Y
+V3d_Z = V3d_TypeOfAxe.V3d_Z
 
 class V3d_TypeOfOrientation(IntEnum):
     V3d_Xpos: int = ...
@@ -164,14 +159,19 @@ V3d_TypeOfOrientation_Yup_Bottom = V3d_TypeOfOrientation.V3d_TypeOfOrientation_Y
 V3d_TypeOfOrientation_Yup_Left = V3d_TypeOfOrientation.V3d_TypeOfOrientation_Yup_Left
 V3d_TypeOfOrientation_Yup_Right = V3d_TypeOfOrientation.V3d_TypeOfOrientation_Yup_Right
 
-class V3d_TypeOfAxe(IntEnum):
-    V3d_X: int = ...
-    V3d_Y: int = ...
-    V3d_Z: int = ...
+class V3d_TypeOfView(IntEnum):
+    V3d_ORTHOGRAPHIC: int = ...
+    V3d_PERSPECTIVE: int = ...
 
-V3d_X = V3d_TypeOfAxe.V3d_X
-V3d_Y = V3d_TypeOfAxe.V3d_Y
-V3d_Z = V3d_TypeOfAxe.V3d_Z
+V3d_ORTHOGRAPHIC = V3d_TypeOfView.V3d_ORTHOGRAPHIC
+V3d_PERSPECTIVE = V3d_TypeOfView.V3d_PERSPECTIVE
+
+class V3d_TypeOfVisualization(IntEnum):
+    V3d_WIREFRAME: int = ...
+    V3d_ZBUFFER: int = ...
+
+V3d_WIREFRAME = V3d_TypeOfVisualization.V3d_WIREFRAME
+V3d_ZBUFFER = V3d_TypeOfVisualization.V3d_ZBUFFER
 
 class v3d:
     @staticmethod

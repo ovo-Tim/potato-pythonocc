@@ -64,7 +64,7 @@ from OCC.Core.gp import (
 )
 from OCC.Core.math import math_Matrix, math_Vector
 from OCC.Core.GC import GC_MakeSegment
-from OCC.Core.STEPControl import STEPControl_Writer
+from OCC.Core.STEPControl import STEPControl_Writer, STEPControl_AsIs
 from OCC.Core.Interface import Interface_Static
 from OCC.Core.GCE2d import GCE2d_MakeSegment
 from OCC.Core.ShapeFix import ShapeFix_Solid, ShapeFix_Wire
@@ -111,6 +111,12 @@ from OCC.Core.Exception import (
     MethodNotWrappedError,
     ClassNotWrappedError,
 )
+from OCC.Core.BinXCAFDrivers import binxcafdrivers
+from OCC.Core.TDocStd import TDocStd_Application, TDocStd_Document
+from OCC.Core.XCAFDoc import XCAFDoc_DocumentTool
+from OCC.Core.TDataStd import TDataStd_Name
+from OCC.Core.STEPCAFControl import STEPCAFControl_Writer
+from OCC.Core.IFSelect import IFSelect_RetDone
 
 from OCC.Extend.TopologyUtils import TopologyExplorer
 
@@ -467,7 +473,7 @@ class TestWrapperFeatures(unittest.TestCase):
         # for this unittest, don't use the issinstance() function,
         # since the OCC.Geom2d module
         # is *not* manually imported
-        returned_object_type = "%s" % type(returned_object)
+        returned_object_type = f"{type(returned_object)}"
         self.assertEqual(
             returned_object_type, "<class 'OCC.Core.Geom2d.Geom2d_TrimmedCurve'>"
         )
@@ -606,8 +612,8 @@ class TestWrapperFeatures(unittest.TestCase):
         line = Geom_Line.DownCast(curve)
         self.assertTrue(isinstance(line, Geom_Curve))
         # Hence, it should not be possible to downcast it as a B-Spline curve
-        bspline = Geom_BSplineCurve.DownCast(curve)
-        self.assertTrue(bspline is None)
+        with self.assertRaises(SystemError):
+            Geom_BSplineCurve.DownCast(curve)
 
     def test_return_enum(self) -> None:
         """Check that returned enums are properly handled, whether they're returned
@@ -757,8 +763,27 @@ class TestWrapperFeatures(unittest.TestCase):
         # check dump json export is working
         json_string = bnd_box.DumpJsonToString()
         # try to  the output string
-        json_imported_dict = json.loads("{" + json_string + "}")
-        self.assertTrue(len(json_imported_dict) > 0)  # at least one entry
+        json_imported_dict = json.loads(json_string)
+        self.assertEqual(json_imported_dict["CornerMin"], [-10, -10, -10])
+        self.assertEqual(json_imported_dict["CornerMax"], [10, 10, 10])
+
+    def test_ImportFromJson(self) -> None:
+        """Since opencascade 7x, some objects can be serialized to json"""
+        # create a sphere with a radius of 10.
+        p1 = gp_Pnt(1.0, 3.14, -5)
+        p2 = gp_Pnt()
+        p2.InitFromJsonString(p1.DumpJsonToString())
+        self.assertEqual(p2.X(), 1.0)
+        self.assertEqual(p2.Y(), 3.14)
+        self.assertEqual(p2.Z(), -5)
+
+    def test_json_pickle(self) -> None:
+        p1 = gp_Pnt(-1.0, 0.414, 7.88)
+        dmp = pickle.dumps(p1)
+        res = pickle.loads(dmp)
+        self.assertEqual(res.X(), -1.0)
+        self.assertEqual(res.Y(), 0.414)
+        self.assertEqual(res.Z(), 7.88)
 
     def test_harray1_harray2_hsequence(self) -> None:
         """Check that special wrappers for harray1, harray2 and hsequence.
@@ -861,7 +886,7 @@ class TestWrapperFeatures(unittest.TestCase):
         # try to import the module
         for core_module in available_core_modules:
             module_name = os.path.basename(core_module).split(".")[0]
-            importlib.import_module("OCC.Core.%s" % module_name)
+            importlib.import_module(f"OCC.Core.{module_name}")
 
     def test_aliases(self) -> None:
         """some classes are defined in c++ as typedef, i.e. they are only
@@ -948,6 +973,36 @@ class TestWrapperFeatures(unittest.TestCase):
         with self.assertWarns(DeprecationWarning):
             gp_OX()
         self.assertTrue(isinstance(gp.OX(), gp_Ax1))
+
+    def test_wrap_extendedstring_as_pyunicodestring(self):
+        """not necessary anymore to instanciate a TCollection_ExtendedString,
+        pass a regular python string"""
+        # Create XDE document
+        app = TDocStd_Application()
+        binxcafdrivers.DefineFormat(app)
+        doc = TDocStd_Document(f"example")
+        app.NewDocument("BinXCAF", doc)
+        shape_tool = XCAFDoc_DocumentTool.ShapeTool(doc.Main())
+        shape = BRepPrimAPI_MakeBox(10, 10, 10).Shape()
+        label = shape_tool.AddShape(shape, False)
+
+        a_unicode_string = "Some text with umlauts äöü and japanese (琵琶)"
+        TDataStd_Name.Set(label, a_unicode_string)
+        # Initialize the STEP exporter
+        step_writer = STEPCAFControl_Writer()
+        Interface_Static.SetIVal("write.stepcaf.subshapes.name", 1)
+        Interface_Static.SetCVal("write.step.schema", "AP214")
+        Interface_Static.SetCVal("write.step.product.name", "my product")
+        step_writer.Transfer(doc, STEPControl_AsIs)
+        status = step_writer.Write("compound_with_unicode_label.step")
+
+        if status != IFSelect_RetDone:
+            raise AssertionError("write failed")
+
+        # check that the unicode string was actually exported to file
+        with open("compound_with_unicode_label.step", "r", encoding="utf8") as f:
+            step_file_content = f.read()
+            self.assertTrue(a_unicode_string in step_file_content)
 
 
 def suite() -> unittest.TestSuite:

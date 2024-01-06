@@ -1,5 +1,5 @@
 /*
-Copyright 2008-2022 Thomas Paviot (tpaviot@gmail.com)
+Copyright 2008-2023 Thomas Paviot (tpaviot@gmail.com)
 
 This file is part of pythonOCC.
 pythonOCC is free software: you can redistribute it and/or modify
@@ -17,7 +17,7 @@ along with pythonOCC.  If not, see <http://www.gnu.org/licenses/>.
 */
 %define DSGPRSDOCSTRING
 "DsgPrs module, see official documentation at
-https://www.opencascade.com/doc/occt-7.6.0/refman/html/package_dsgprs.html"
+https://www.opencascade.com/doc/occt-7.7.0/refman/html/package_dsgprs.html"
 %enddef
 %module (package="OCC.Core", docstring=DSGPRSDOCSTRING) DsgPrs
 
@@ -179,75 +179,7 @@ DsgPrs_AS_FIRSTPT_LASTAR = DsgPrs_ArrowSide.DsgPrs_AS_FIRSTPT_LASTAR
 /* python proxy for excluded classes */
 %pythoncode {
 @classnotwrapped
-class DsgPrs_EllipseRadiusPresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_XYZPlanePresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_ConcentricPresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_AnglePresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_ShadedPlanePresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_RadiusPresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_TangentPresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_SymbPresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_FilletRadiusPresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_SymmetricPresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_ShapeDirPresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_FixPresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_IdenticPresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_MidPointPresentation:
-	pass
-
-@classnotwrapped
 class DsgPrs_EqualRadiusPresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_LengthPresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_EqualDistancePresentation:
-	pass
-
-@classnotwrapped
-class DsgPrs_DatumPrs:
 	pass
 
 @classnotwrapped
@@ -255,7 +187,11 @@ class DsgPrs_DiameterPresentation:
 	pass
 
 @classnotwrapped
-class DsgPrs_ParalPresentation:
+class DsgPrs_DatumPrs:
+	pass
+
+@classnotwrapped
+class DsgPrs_EqualDistancePresentation:
 	pass
 
 @classnotwrapped
@@ -263,7 +199,31 @@ class DsgPrs_OffsetPresentation:
 	pass
 
 @classnotwrapped
-class DsgPrs_XYZAxisPresentation:
+class DsgPrs_FixPresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_SymmetricPresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_AnglePresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_SymbPresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_LengthPresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_PerpenPresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_FilletRadiusPresentation:
 	pass
 
 @classnotwrapped
@@ -271,7 +231,47 @@ class DsgPrs_Chamf2dPresentation:
 	pass
 
 @classnotwrapped
-class DsgPrs_PerpenPresentation:
+class DsgPrs_XYZPlanePresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_EllipseRadiusPresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_MidPointPresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_RadiusPresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_ParalPresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_TangentPresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_ShapeDirPresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_ShadedPlanePresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_IdenticPresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_ConcentricPresentation:
+	pass
+
+@classnotwrapped
+class DsgPrs_XYZAxisPresentation:
 	pass
 
 @classnotwrapped

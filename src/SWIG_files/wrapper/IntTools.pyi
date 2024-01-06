@@ -21,15 +21,15 @@ from OCC.Core.IntPatch import *
 from OCC.Core.GeomAdaptor import *
 from OCC.Core.GeomInt import *
 
-IntTools_CArray1OfReal = NewType('IntTools_CArray1OfReal', TColStd_Array1OfReal)
-#the following typedef cannot be wrapped as is
-IntTools_MapIteratorOfMapOfCurveSample = NewType('IntTools_MapIteratorOfMapOfCurveSample', Any)
-#the following typedef cannot be wrapped as is
-IntTools_MapIteratorOfMapOfSurfaceSample = NewType('IntTools_MapIteratorOfMapOfSurfaceSample', Any)
-#the following typedef cannot be wrapped as is
-IntTools_MapOfCurveSample = NewType('IntTools_MapOfCurveSample', Any)
-#the following typedef cannot be wrapped as is
-IntTools_MapOfSurfaceSample = NewType('IntTools_MapOfSurfaceSample', Any)
+IntTools_CArray1OfReal = NewType("IntTools_CArray1OfReal", TColStd_Array1OfReal)
+# the following typedef cannot be wrapped as is
+IntTools_MapIteratorOfMapOfCurveSample = NewType("IntTools_MapIteratorOfMapOfCurveSample", Any)
+# the following typedef cannot be wrapped as is
+IntTools_MapIteratorOfMapOfSurfaceSample = NewType("IntTools_MapIteratorOfMapOfSurfaceSample", Any)
+# the following typedef cannot be wrapped as is
+IntTools_MapOfCurveSample = NewType("IntTools_MapOfCurveSample", Any)
+# the following typedef cannot be wrapped as is
+IntTools_MapOfSurfaceSample = NewType("IntTools_MapOfSurfaceSample", Any)
 
 class IntTools_Array1OfRange:
     @overload

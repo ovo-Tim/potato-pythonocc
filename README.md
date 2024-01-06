@@ -1,21 +1,24 @@
 # potato-pythonocc
 在 [pythonocc](https://github.com/tpaviot/pythonocc-core) 的基础上增加了一些喜欢的功能，实际更贴近一般 CAD 一些
 
-<!-- TOC -->
+<!-- vscode-markdown-toc -->
+* 1. [安装](#)
+* 2. [更改](#-1)
+	* 2.1. [使用 qtpy 加载 QT 增加对 PySide6 的支持](#qtpyQTPySide6)
+	* 2.2. [zoom at cursor](#zoomatcursor)
+	* 2.3. [无需切换即可选中 点线面](#-1)
+	* 2.4. [重写了部分格式的导出函数，实现多个模型导出一个文件](#-1)
+	* 2.5. [重写高亮主题](#-1)
+	* 2.6. [增加新的坐标转换函数](#-1)
+	* 2.7. [增加网格捕捉功能](#-1)
 
-- [potato-pythonocc](#potato-pythonocc)
-  - [安装](#安装)
-  - [更改](#更改)
-    - [增加对 PySide6 的支持](#增加对-pyside6-的支持)
-    - [zoom at cursor](#zoom-at-cursor)
-    - [无需切换即可选中 点线面](#无需切换即可选中-点线面)
-    - [记录 Viewer3d 所有的 shape](#记录-viewer3d-所有的-shape)
-    - [重写了部分格式的导出函数，实现多个模型导出一个文件](#重写了部分格式的导出函数实现多个模型导出一个文件)
-    - [重写高亮主题](#重写高亮主题)
+<!-- vscode-markdown-toc-config
+	numbering=true
+	autoSave=true
+	/vscode-markdown-toc-config -->
+<!-- /vscode-markdown-toc -->
 
-<!-- /TOC -->
-
-## 安装
+##  1. <a name=''></a>安装
 [conda主页](https://anaconda.org/ovo-tim/potato-pythonocc)
 安装：
 ``` bash
@@ -23,22 +26,25 @@ conda install -c "ovo-tim/label/dev" potato-pythonocc
 ```
 (全部由 [github action](https://github.com/ovo-Tim/potato-pythonocc/actions/workflows/conda-pack.yml) 自动打包上传, 目前 MacOS 上传时出现问题)
 
-## 更改
-### 增加对 PySide6 的支持
-实测 PySide2 一堆 BUG, 
-直接 `load_backend("qt-pyside6")` 即可食用
+##  2. <a name='-1'></a>更改
 
-### zoom at cursor
+###  2.1. <a name='qtpyQTPySide6'></a>使用 qtpy 加载 QT 增加对 PySide6 的支持
+实测 PySide2 一堆 BUG,
+
+~~直接 `load_backend("qt-pyside6")` 即可食用~~
+
+设置 `QT_API` 环境变量即可，例：`os.environ['QT_API'] = 'pyside6'`
+
+(`qtpy` 可能打破了 `SimpleGui` 原本的结构，不建议使用，有逝可以提 issus)
+
+###  2.2. <a name='zoomatcursor'></a>zoom at cursor
 实现在鼠标处缩放功能，而不是原版的定点缩放。
 这个可以通过设定 `qtViewer3d.zoom_at_cursor = False` 关掉
 
-### 无需切换即可选中 点线面
+###  2.3. <a name='-1'></a>无需切换即可选中 点线面
 原版需按`G`切换选择模式，现在无需切换即可选择(自动帮你切换成需要的选择模式)
 
-### 记录 Viewer3d 所有的 shape
-记录了每次调用 `Viewer3d.DisplayShape()` 创建的所有图形。保存在 `Viewer3d.shapes` 里
-
-### 重写了部分格式的导出函数，实现多个模型导出一个文件
+###  2.4. <a name='-1'></a>重写了部分格式的导出函数，实现多个模型导出一个文件
 使用: `导出函数(shapes 列表, 导出路径)`
 
 已支持函数:
@@ -61,7 +67,8 @@ write_step_file([my_torus, box], "./test.step")
 write_iges_file([my_torus, box], "./test.iges")
 write_brep_file([my_torus, box], "./test.brep")
 ```
-### 重写高亮主题
+
+###  2.5. <a name='-1'></a>重写高亮主题
 现在支持直接高亮一个面
 以前(只能高亮描边，不好看):
 ![](image/high%20light%20old.png)
@@ -81,3 +88,10 @@ qtViewer3d.set_highlight(self,
                         dynamic_transparency = 0.35
                       )
 ```
+
+###  2.6. <a name='-1'></a>增加新的坐标转换函数
+使用：`qtViewer3d.ConvertPos(X, Y)`
+
+相比于 `display.View.Convert`， `ConvertPos` 会将鼠标限制与某一个面上
+###  2.7. <a name='-1'></a>增加网格捕捉功能
+设置 `qtViewer3d.grid_snap` 即可设置捕捉距离，设0禁用

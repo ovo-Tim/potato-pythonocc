@@ -91,6 +91,9 @@ from OCC.Core.Graphic3d import (
 )
 from OCC.Core.Aspect import Aspect_TOTP_RIGHT_LOWER, Aspect_FM_STRETCH, Aspect_FM_NONE
 
+from OCC.Extend.TopologyUtils import TopologyExplorer
+from OCC.Extend.DataExchange import write_step_file
+
 # Shaders and Units definition must be found by occ
 # the fastest way to get done is to set the CASROOT env variable
 # it must point to the /share folder.
@@ -169,8 +172,6 @@ class Viewer3d(Display3d):
             [TopAbs_VERTEX, TopAbs_EDGE, TopAbs_FACE, TopAbs_SOLID]
         )
         self.lmodes = [TopAbs_VERTEX, TopAbs_EDGE, TopAbs_FACE]
-
-        self.shapes = []
 
     def get_parent(self):
         return self._parent
@@ -500,39 +501,42 @@ class Viewer3d(Display3d):
         elif isinstance(shapes, Geom2d_Curve):
             edge2d = BRepBuilderAPI_MakeEdge2d(shapes)
             shapes = [edge2d.Shape()]
+
         # if only one shapes, create a list with a single shape
         if not isinstance(shapes, list):
             shapes = [shapes]
         # build AIS_Shapes list
         for shape in shapes:
-            if material or texture:
-                if texture:
-                    shape_to_display = AIS_TexturedShape(shape)
-                    (
-                        filename,
-                        toScaleU,
-                        toScaleV,
-                        toRepeatU,
-                        toRepeatV,
-                        originU,
-                        originV,
-                    ) = texture.GetProperties()
-                    shape_to_display.SetTextureFileName(filename)
-                    shape_to_display.SetTextureMapOn()
-                    shape_to_display.SetTextureScale(True, toScaleU, toScaleV)
-                    shape_to_display.SetTextureRepeat(True, toRepeatU, toRepeatV)
-                    shape_to_display.SetTextureOrigin(True, originU, originV)
-                    shape_to_display.SetDisplayMode(3)
-                elif material:
-                    shape_to_display = AIS_Shape(shape)
-                    if isinstance(material, Graphic3d_NameOfMaterial):
-                        shape_to_display.SetMaterial(Graphic3d_MaterialAspect(material))
-                    else:
-                        shape_to_display.SetMaterial(material)
+            if material and texture or not material and texture:
+                shape_to_display = AIS_TexturedShape(shape)
+                (
+                    filename,
+                    toScaleU,
+                    toScaleV,
+                    toRepeatU,
+                    toRepeatV,
+                    originU,
+                    originV,
+                ) = texture.GetProperties()
+                shape_to_display.SetTextureFileName(filename)
+                shape_to_display.SetTextureMapOn()
+                shape_to_display.SetTextureScale(True, toScaleU, toScaleV)
+                shape_to_display.SetTextureRepeat(True, toRepeatU, toRepeatV)
+                shape_to_display.SetTextureOrigin(True, originU, originV)
+                shape_to_display.SetDisplayMode(3)
+            elif material:
+                shape_to_display = AIS_Shape(shape)
+                if isinstance(material, Graphic3d_NameOfMaterial):
+                    shape_to_display.SetMaterial(Graphic3d_MaterialAspect(material))
+                else:
+                    shape_to_display.SetMaterial(material)
             else:
                 # TODO: can we use .Set to attach all TopoDS_Shapes
                 # to this AIS_Shape instance?
-                shape_to_display = AIS_Shape(shape)
+                if not isinstance(shape, AIS_Shape):
+                    shape_to_display = AIS_Shape(shape)
+                else:
+                    shape_to_display = shape
 
             ais_shapes.append(shape_to_display)
 
@@ -572,7 +576,6 @@ class Viewer3d(Display3d):
             self.FitAll()
             self.Repaint()
         
-        self.shapes += ais_shapes
         return ais_shapes
 
     def DisplayColoredShape(

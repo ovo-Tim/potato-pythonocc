@@ -13,11 +13,11 @@ from OCC.Core.gp import *
 from OCC.Core.TColStd import *
 from OCC.Core.V3d import *
 
-Handle_PrsMgr_Presentation3d = NewType('Handle_PrsMgr_Presentation3d', Handle_PrsMgr_Presentation)
-Handle_PrsMgr_PresentationManager3d = NewType('Handle_PrsMgr_PresentationManager3d', Handle_PrsMgr_PresentationManager)
-Prs3d_Presentation = NewType('Prs3d_Presentation', Graphic3d_Structure)
-PrsMgr_Presentation3d = NewType('PrsMgr_Presentation3d', PrsMgr_Presentation)
-PrsMgr_PresentationManager3d = NewType('PrsMgr_PresentationManager3d', PrsMgr_PresentationManager)
+Handle_PrsMgr_Presentation3d = NewType("Handle_PrsMgr_Presentation3d", Handle_PrsMgr_Presentation)
+Handle_PrsMgr_PresentationManager3d = NewType("Handle_PrsMgr_PresentationManager3d", Handle_PrsMgr_PresentationManager)
+Prs3d_Presentation = NewType("Prs3d_Presentation", Graphic3d_Structure)
+PrsMgr_Presentation3d = NewType("PrsMgr_Presentation3d", PrsMgr_Presentation)
+PrsMgr_PresentationManager3d = NewType("PrsMgr_PresentationManager3d", PrsMgr_PresentationManager)
 
 class PrsMgr_ListOfPresentableObjects:
     def __init__(self) -> None: ...
@@ -62,13 +62,6 @@ class PrsMgr_Presentations:
     def Value(self, theIndex: int) -> False: ...
     def SetValue(self, theIndex: int, theValue: False) -> None: ...
 
-class PrsMgr_TypeOfPresentation3d(IntEnum):
-    PrsMgr_TOP_AllView: int = ...
-    PrsMgr_TOP_ProjectorDependent: int = ...
-
-PrsMgr_TOP_AllView = PrsMgr_TypeOfPresentation3d.PrsMgr_TOP_AllView
-PrsMgr_TOP_ProjectorDependent = PrsMgr_TypeOfPresentation3d.PrsMgr_TOP_ProjectorDependent
-
 class PrsMgr_DisplayStatus(IntEnum):
     PrsMgr_DisplayStatus_Displayed: int = ...
     PrsMgr_DisplayStatus_Erased: int = ...
@@ -83,6 +76,13 @@ PrsMgr_DisplayStatus_None = PrsMgr_DisplayStatus.PrsMgr_DisplayStatus_None
 AIS_DS_Displayed = PrsMgr_DisplayStatus.AIS_DS_Displayed
 AIS_DS_Erased = PrsMgr_DisplayStatus.AIS_DS_Erased
 AIS_DS_None = PrsMgr_DisplayStatus.AIS_DS_None
+
+class PrsMgr_TypeOfPresentation3d(IntEnum):
+    PrsMgr_TOP_AllView: int = ...
+    PrsMgr_TOP_ProjectorDependent: int = ...
+
+PrsMgr_TOP_AllView = PrsMgr_TypeOfPresentation3d.PrsMgr_TOP_AllView
+PrsMgr_TOP_ProjectorDependent = PrsMgr_TypeOfPresentation3d.PrsMgr_TOP_ProjectorDependent
 
 class PrsMgr_PresentableObject(Standard_Transient):
     def AcceptDisplayMode(self, theMode: int) -> bool: ...

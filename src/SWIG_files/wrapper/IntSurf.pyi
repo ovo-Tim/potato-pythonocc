@@ -7,8 +7,8 @@ from OCC.Core.gp import *
 from OCC.Core.Adaptor3d import *
 from OCC.Core.GeomAbs import *
 
-#the following typedef cannot be wrapped as is
-IntSurf_Allocator = NewType('IntSurf_Allocator', Any)
+# the following typedef cannot be wrapped as is
+IntSurf_Allocator = NewType("IntSurf_Allocator", Any)
 
 class IntSurf_ListOfPntOn2S:
     def __init__(self) -> None: ...

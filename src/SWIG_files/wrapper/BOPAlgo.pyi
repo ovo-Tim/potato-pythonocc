@@ -15,14 +15,14 @@ from OCC.Core.BRepTools import *
 from OCC.Core.BOPTools import *
 from OCC.Core.TopAbs import *
 
-#the following typedef cannot be wrapped as is
-BOPAlgo_ListIteratorOfListOfCheckResult = NewType('BOPAlgo_ListIteratorOfListOfCheckResult', Any)
-BOPAlgo_PArgumentAnalyzer = NewType('BOPAlgo_PArgumentAnalyzer', BOPAlgo_ArgumentAnalyzer)
-BOPAlgo_PBOP = NewType('BOPAlgo_PBOP', BOPAlgo_BOP)
-BOPAlgo_PBuilder = NewType('BOPAlgo_PBuilder', BOPAlgo_Builder)
-BOPAlgo_PPaveFiller = NewType('BOPAlgo_PPaveFiller', BOPAlgo_PaveFiller)
-BOPAlgo_PSection = NewType('BOPAlgo_PSection', BOPAlgo_Section)
-BOPAlgo_PWireEdgeSet = NewType('BOPAlgo_PWireEdgeSet', BOPAlgo_WireEdgeSet)
+# the following typedef cannot be wrapped as is
+BOPAlgo_ListIteratorOfListOfCheckResult = NewType("BOPAlgo_ListIteratorOfListOfCheckResult", Any)
+BOPAlgo_PArgumentAnalyzer = NewType("BOPAlgo_PArgumentAnalyzer", BOPAlgo_ArgumentAnalyzer)
+BOPAlgo_PBOP = NewType("BOPAlgo_PBOP", BOPAlgo_BOP)
+BOPAlgo_PBuilder = NewType("BOPAlgo_PBuilder", BOPAlgo_Builder)
+BOPAlgo_PPaveFiller = NewType("BOPAlgo_PPaveFiller", BOPAlgo_PaveFiller)
+BOPAlgo_PSection = NewType("BOPAlgo_PSection", BOPAlgo_Section)
+BOPAlgo_PWireEdgeSet = NewType("BOPAlgo_PWireEdgeSet", BOPAlgo_WireEdgeSet)
 
 class BOPAlgo_ListOfCheckResult:
     def __init__(self) -> None: ...
@@ -65,6 +65,15 @@ BOPAlgo_GeomAbs_C0 = BOPAlgo_CheckStatus.BOPAlgo_GeomAbs_C0
 BOPAlgo_InvalidCurveOnSurface = BOPAlgo_CheckStatus.BOPAlgo_InvalidCurveOnSurface
 BOPAlgo_NotValid = BOPAlgo_CheckStatus.BOPAlgo_NotValid
 
+class BOPAlgo_GlueEnum(IntEnum):
+    BOPAlgo_GlueOff: int = ...
+    BOPAlgo_GlueShift: int = ...
+    BOPAlgo_GlueFull: int = ...
+
+BOPAlgo_GlueOff = BOPAlgo_GlueEnum.BOPAlgo_GlueOff
+BOPAlgo_GlueShift = BOPAlgo_GlueEnum.BOPAlgo_GlueShift
+BOPAlgo_GlueFull = BOPAlgo_GlueEnum.BOPAlgo_GlueFull
+
 class BOPAlgo_Operation(IntEnum):
     BOPAlgo_COMMON: int = ...
     BOPAlgo_FUSE: int = ...
@@ -79,15 +88,6 @@ BOPAlgo_CUT = BOPAlgo_Operation.BOPAlgo_CUT
 BOPAlgo_CUT21 = BOPAlgo_Operation.BOPAlgo_CUT21
 BOPAlgo_SECTION = BOPAlgo_Operation.BOPAlgo_SECTION
 BOPAlgo_UNKNOWN = BOPAlgo_Operation.BOPAlgo_UNKNOWN
-
-class BOPAlgo_GlueEnum(IntEnum):
-    BOPAlgo_GlueOff: int = ...
-    BOPAlgo_GlueShift: int = ...
-    BOPAlgo_GlueFull: int = ...
-
-BOPAlgo_GlueOff = BOPAlgo_GlueEnum.BOPAlgo_GlueOff
-BOPAlgo_GlueShift = BOPAlgo_GlueEnum.BOPAlgo_GlueShift
-BOPAlgo_GlueFull = BOPAlgo_GlueEnum.BOPAlgo_GlueFull
 
 class BOPAlgo_CheckResult:
     def __init__(self) -> None: ...
