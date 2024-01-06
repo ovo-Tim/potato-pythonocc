@@ -1,4 +1,4 @@
-{% set version = "7.8.3" %}
+{% set version = "7.8.4" %}
 
 package:
   name: potato-pythonocc
