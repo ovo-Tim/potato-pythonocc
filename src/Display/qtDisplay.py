@@ -20,7 +20,6 @@
 import logging
 import os
 import sys
-import time
 
 # import faulthandler; faulthandler.enable()
 
@@ -37,67 +36,16 @@ from OCC.Core.GeomAPI import GeomAPI_IntCS
 from qtpy import QtGui, QtWidgets, QtCore
 import qtpy
 
-import multiprocessing_mq as mq
-
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 log = logging.getLogger(__name__)
 
-class viewer(OCCViewer.Viewer3d):
-    def __init__(self):
-        super().__init__()
-        self.set_highlight()
-
-    def set_highlight(self, 
-                        select_color = Quantity_Color(Quantity_NOC_LIGHTSEAGREEN),
-                        select_DisplayMode = 1,
-                        select_transparency = 0.5,
-                        dynamic_color = Quantity_Color(Quantity_NOC_LIGHTSKYBLUE),
-                        dynamic_DisplayMode = 1,
-                        dynamic_transparency = 0.35
-                      ):
-        '''
-        Sets the highlight styles for the local select, select, local dynamic, and dynamic features of the display context.
-
-        Parameters:
-            select_color (Quantity_Color): The color for the local select and select styles. Default is Quantity_Color(Quantity_NOC_LIGHTSEAGREEN).
-            select_DisplayMode (int): The display mode for the local select and select styles. Default is 1.
-            select_transparency (float): The transparency for the local select and select styles. Default is 0.5.
-            dynamic_color (Quantity_Color): The color for the local dynamic and dynamic styles. Default is Quantity_Color(Quantity_NOC_LIGHTSKYBLUE).
-            dynamic_DisplayMode (int): The display mode for the local dynamic and dynamic styles. Default is 1.
-            dynamic_transparency (float): The transparency for the local dynamic and dynamic styles. Default is 0.35.
-        '''
-        self.LocalSelect_style = self.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalSelected)
-        self.LocalSelect_style.SetColor(select_color)
-        self.LocalSelect_style.SetDisplayMode(select_DisplayMode)
-        self.LocalSelect_style.SetTransparency(select_transparency)
-
-        self.select_style = self.Context.HighlightStyle(Prs3d_TypeOfHighlight_Selected)
-        self.select_style.SetColor(select_color)
-        self.select_style.SetDisplayMode(select_DisplayMode)
-        self.select_style.SetTransparency(select_transparency)
-
-        self.LocalDynamic_style = self.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalDynamic)
-        self.LocalDynamic_style.SetColor(dynamic_color)
-        self.LocalDynamic_style.SetDisplayMode(dynamic_DisplayMode)
-        self.LocalDynamic_style.SetTransparency(dynamic_transparency)
-
-        self.Dynamic_style = self.Context.HighlightStyle(Prs3d_TypeOfHighlight_Dynamic)
-        self.Dynamic_style.SetColor(dynamic_color)
-        self.Dynamic_style.SetDisplayMode(dynamic_DisplayMode)
-        self.Dynamic_style.SetTransparency(dynamic_transparency)
-
-def init_viewer():
-    _display = viewer()
-    return locals()
 
 class qtBaseViewer(QtWidgets.QWidget):
     """The base Qt Widget for an OCC viewer"""
 
     def __init__(self, parent=None):
         super(qtBaseViewer, self).__init__(parent)
-        # self._display = viewer()
-        self._display_pro = mq.Process(init=init_viewer, rest_time=0.001, suspend=False, without_return=["Repaint", "MustBeResized"])
-        self._display = self._display_pro.inter._display
+        self._display = OCCViewer.Viewer3d()
         self._inited = False
 
         # # enable Mouse Tracking
@@ -113,7 +61,7 @@ class qtBaseViewer(QtWidgets.QWidget):
         self.setAutoFillBackground(False)
     
     def Create(self):
-        self._display.Create(window_handle=self.winId())
+        self._display.Create(window_handle=self.winId(), parent=self)
 
 class qtViewer3d(QtWidgets.QWidget):
 
@@ -142,7 +90,6 @@ class qtViewer3d(QtWidgets.QWidget):
         self.qtBaseViewer = qtBaseViewer()
         self.main_layout.addWidget(self.qtBaseViewer)
         self._display = self.qtBaseViewer._display
-        self._display_pro = self.qtBaseViewer._display_pro
 
         self._drawbox = False
         self._zoom_area = False
@@ -168,6 +115,8 @@ class qtViewer3d(QtWidgets.QWidget):
         self.select_mode = 0
         self._max_select_mode = 3
         self._select_solid = False
+
+        self.set_highlight()
 
         self.mouse_3d_pos = [0,0,0]
 
@@ -439,6 +388,45 @@ class qtViewer3d(QtWidgets.QWidget):
             
             self._change_select = True
             # print(self._display.lmodes[self.select_mode - 1])
+
+    def set_highlight(self, 
+                        select_color = Quantity_Color(Quantity_NOC_LIGHTSEAGREEN),
+                        select_DisplayMode = 1,
+                        select_transparency = 0.5,
+                        dynamic_color = Quantity_Color(Quantity_NOC_LIGHTSKYBLUE),
+                        dynamic_DisplayMode = 1,
+                        dynamic_transparency = 0.35
+                      ):
+        '''
+        Sets the highlight styles for the local select, select, local dynamic, and dynamic features of the display context.
+
+        Parameters:
+            select_color (Quantity_Color): The color for the local select and select styles. Default is Quantity_Color(Quantity_NOC_LIGHTSEAGREEN).
+            select_DisplayMode (int): The display mode for the local select and select styles. Default is 1.
+            select_transparency (float): The transparency for the local select and select styles. Default is 0.5.
+            dynamic_color (Quantity_Color): The color for the local dynamic and dynamic styles. Default is Quantity_Color(Quantity_NOC_LIGHTSKYBLUE).
+            dynamic_DisplayMode (int): The display mode for the local dynamic and dynamic styles. Default is 1.
+            dynamic_transparency (float): The transparency for the local dynamic and dynamic styles. Default is 0.35.
+        '''
+        self.LocalSelect_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalSelected)
+        self.LocalSelect_style.SetColor(select_color)
+        self.LocalSelect_style.SetDisplayMode(select_DisplayMode)
+        self.LocalSelect_style.SetTransparency(select_transparency)
+
+        self.select_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_Selected)
+        self.select_style.SetColor(select_color)
+        self.select_style.SetDisplayMode(select_DisplayMode)
+        self.select_style.SetTransparency(select_transparency)
+
+        self.LocalDynamic_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_LocalDynamic)
+        self.LocalDynamic_style.SetColor(dynamic_color)
+        self.LocalDynamic_style.SetDisplayMode(dynamic_DisplayMode)
+        self.LocalDynamic_style.SetTransparency(dynamic_transparency)
+
+        self.Dynamic_style = self._display.Context.HighlightStyle(Prs3d_TypeOfHighlight_Dynamic)
+        self.Dynamic_style.SetColor(dynamic_color)
+        self.Dynamic_style.SetDisplayMode(dynamic_DisplayMode)
+        self.Dynamic_style.SetTransparency(dynamic_transparency)
 
     def ConvertPos(self, x:int, y:int, PlaneOfTheView:gp_Pln = None):
         """
