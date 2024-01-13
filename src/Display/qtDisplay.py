@@ -63,11 +63,9 @@ class qtBaseViewer(QtWidgets.QWidget):
         self.setAutoFillBackground(False)
 
         self.setContentsMargins(0,0,0,0)
-    
-    def Create(self):
-        self._display.Create(window_handle=self.winId(), parent=self)
 
-class qtViewer3d(QtWidgets.QWidget):
+
+class qtViewer3d(qtBaseViewer):
 
     # emit signal when selection is changed
     # is a list of TopoDS_*
@@ -85,13 +83,7 @@ class qtViewer3d(QtWidgets.QWidget):
         self.setObjectName("qt_viewer_3d")
 
         self.setAttribute(QtCore.Qt.WA_DontCreateNativeAncestors)
-
-        self.main_layout = QtWidgets.QVBoxLayout(self)
-        self.setLayout(self.main_layout)
-        self.qtBaseViewer = qtBaseViewer()
-        self.main_layout.addWidget(self.qtBaseViewer)
-        self._display = self.qtBaseViewer._display
-
+        
         self._drawbox = False
         self._zoom_area = False
         self._select_area = False
@@ -119,9 +111,6 @@ class qtViewer3d(QtWidgets.QWidget):
         self.grid_snap = 25 # Set 0 to disable 
         self.activity_plane: gp_Pln = gp_Pln(gp_Pnt(0,0,0),gp_Dir(0,0,1))
 
-        self.setMouseTracking(True)
-        self.setContentsMargins(0,0,0,0)
-
     def select_solid(self):
         if len(self._display.selected_shapes) and not self._select_solid:
             # print(1)
@@ -143,7 +132,7 @@ class qtViewer3d(QtWidgets.QWidget):
         self._qApp = value
 
     def InitDriver(self):
-        self.qtBaseViewer.Create()
+        self._display.Create(window_handle=int(self.winId()), parent=self)
         # background gradient
         self._display.SetModeShaded()
         self._inited = True
@@ -582,3 +571,6 @@ class qtViewer3dWithManipulator(qtViewer3d):
                 self._zoom_area = False
 
         self.cursor = "arrow"
+
+
+
