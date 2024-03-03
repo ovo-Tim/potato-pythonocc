@@ -1,6 +1,8 @@
 # potato-pythonocc
 在 [pythonocc](https://github.com/tpaviot/pythonocc-core) 的基础上增加了一些喜欢的功能，实际更贴近一般 CAD 一些
 
+**已迁移到 [pyOCCT2](https://github.com/ovo-Tim/pyOCCT2)**
+
 <!-- vscode-markdown-toc -->
 * 1. [安装](#)
 * 2. [更改](#-1)
